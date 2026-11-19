@@ -5,9 +5,17 @@ export default defineConfig({
   plugins: [react()],
 
   server: {
+    host: '127.0.0.1',
+    port: 5173,
+    strictPort: true,
+
     watch: {
       usePolling: true,
-      interval: 300,
+      interval: 500,
+    },
+
+    hmr: {
+      overlay: true,
     },
   },
 });

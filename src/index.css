@@ -17,12 +17,28 @@ body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
-  color: #edf3ef;
-  background: #0d1717;
-  font-family: 'Manrope', Arial, sans-serif;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
+  background: #e9edf8;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.app-container {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  background: #fcfaff;
+  overflow-x: hidden;
+}
+
+.app-content {
+  width: 100%;
+  min-height: 100dvh;
 }
 
 /* Form elements */

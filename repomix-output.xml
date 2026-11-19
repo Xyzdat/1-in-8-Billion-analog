@@ -1,0 +1,1943 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+public/
+  favicon.svg
+  icons.svg
+src/
+  assets/
+    жанкло.png
+    женева.png
+    луиза.png
+    hero.png
+    image1.png
+    react.svg
+    vite.svg
+  components/
+    bearthPage/
+      bearthPage.jsx
+      bearthPage.module.scss
+    bearthSetupPage/
+      bearthSetupPage.jsx
+      bearthSetupPage.module.scss
+    customScrollbar/
+      customScrollbar.jsx
+      customScrollbar.module.scss
+    header/
+      header.jsx
+      header.module.scss
+    mainPage/
+      mainPage.jsx
+      mainPage.module.scss
+    navbar/
+      navbar.jsx
+      navbar.module.scss
+  App.jsx
+  index.css
+  main.jsx
+.gitignore
+eslint.config.js
+index.html
+package.json
+README.md
+vite.config.js
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="src/components/bearthPage/bearthPage.jsx">
+import styles from './bearthPage.module.scss';
+import ReactCountryFlag from 'react-country-flag';
+
+function BirthplacePage() {
+  return (
+    <main className={styles.birthplace}>
+      <div className={styles.birthplace__content}>
+        <div className={styles.birthplace__flag}>
+          <ReactCountryFlag
+            countryCode="JP"
+            svg
+            style={{
+              width: '52px',
+              height: '38px',
+            }}
+          />
+        </div>
+
+        <p className={styles.birthplace__label}>
+          ОПРЕДЕЛЯЕТСЯ МЕСТО РОЖДЕНИЯ
+        </p>
+
+        <h1 className={styles.birthplace__country}>
+          Япония
+        </h1>
+
+        <div className={styles.birthplace__chance}>
+          <span>Шанс родиться:</span>
+          <strong>1 из 1400</strong>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+export default BirthplacePage;
+</file>
+
+<file path="src/components/bearthPage/bearthPage.module.scss">
+.birthplace {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  padding: 24px;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      #ffffff 0%,
+      #f8faff 48%,
+      #e1e9ff 100%
+    );
+
+  color: #202033;
+  font-family: 'Manrope', Arial, sans-serif;
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: 100%;
+    text-align: center;
+
+    transform: translateY(-35px);
+  }
+
+  &__flag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 18px;
+  }
+
+  &__label {
+    margin: 0 0 12px;
+
+    color: #747995;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+  }
+
+  &__country {
+    margin: 0 0 16px;
+
+    color: #202033;
+    font-size: clamp(42px, 12vw, 64px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -2px;
+  }
+
+  &__chance {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    padding: 8px 18px;
+
+    border: 1px solid #e4eaff;
+    border-radius: 30px;
+
+    background: rgba(255, 255, 255, 0.8);
+
+    color: #747995;
+    font-size: 16px;
+    font-weight: 500;
+    white-space: nowrap;
+
+    strong {
+      color: #6388ff;
+      font-weight: 800;
+    }
+  }
+}
+
+@media (max-width: 360px) {
+  .birthplace {
+    &__label {
+      font-size: 11px;
+    }
+
+    &__chance {
+      font-size: 14px;
+      padding: 8px 14px;
+    }
+  }
+}
+</file>
+
+<file path="src/components/bearthSetupPage/bearthSetupPage.jsx">
+import styles from './bearthSetupPage.module.scss';
+
+const character = {
+  name: 'Юи Ватанабе',
+  gender: '♀',
+  country: 'Япония',
+  city: 'Кобе',
+  region: 'префектура Хёго',
+  birthYear: '2026',
+  familyWealth: 'Скромный',
+  birthChance: '1 из 1400',
+};
+
+const characteristics = [
+  { icon: '❤️', name: 'Здоровье', value: 91 },
+  { icon: '🧠', name: 'Интеллект', value: 72 },
+  { icon: '🔥', name: 'Внешность', value: 64 },
+];
+
+const family = [
+  {
+    icon: '👩',
+    name: 'Мама – Акико, 29 лет',
+    description: 'Медсестра. Заботливая и терпеливая.',
+  },
+  {
+    icon: '👨',
+    name: 'Папа – Кэнта, 32 года',
+    description: 'Автомеханик. Спокойный и требовательный.',
+  },
+  {
+    icon: '👶',
+    name: 'Брат – Хару, 5 лет',
+    description: 'Ходит в садик. Любит рисовать',
+  },
+  {
+    icon: '👶',
+    name: 'Брат – Хару, 5 лет',
+    description: 'Ходит в садик. Любит рисовать',
+  },
+];
+
+const familyDetails = [
+  ['Жильё', 'Съёмная квартира'],
+  ['Достаток', 'Скромный, стабильный доход'],
+  ['Отношения в семье', 'Тёплые и крепкие'],
+  ['Вера семьи', 'Буддизм'],
+  ['Язык в семье', 'Японский'],
+];
+
+const countryDetails = [
+  ['⛩️', 'Религии страны', 'Синтоизм и буддизм'],
+  ['💸', 'ВВП на душу населения', '$55,419'],
+  ['💱', 'Валюта', 'Иена'],
+];
+
+function BirthSetupPage({ onStartLife, onChangeParameters }) {
+  return (
+    <div className={styles.page}>
+      <main className={styles.content}>
+        {/* Персонаж */}
+        <section className={`${styles.card} ${styles.profileCard}`}>
+          <div className={styles.flag}>🇯🇵</div>
+
+          <h2>
+            Ты {character.name}
+            <span className={styles.gender}>{character.gender}</span>
+          </h2>
+
+          <p className={styles.location}>
+            {character.country}, {character.city}
+          </p>
+
+          <p className={styles.region}>
+            Регион: {character.region}
+          </p>
+
+          <div className={styles.birthStats}>
+            <div className={styles.stat}>
+              <span className={styles.statIcon}>📅</span>
+              <strong>{character.birthYear}</strong>
+              <span>год рождения</span>
+            </div>
+
+            <div className={styles.stat}>
+              <span className={styles.statIcon}>💰</span>
+              <strong>{character.familyWealth}</strong>
+              <span>остаток семьи</span>
+            </div>
+
+            <div className={styles.stat}>
+              <span className={styles.statIcon}>🎲</span>
+              <strong>{character.birthChance}</strong>
+              <span>шанс родиться</span>
+            </div>
+          </div>
+        </section>
+
+        {/* Характеристики */}
+        <section className={styles.card}>
+          <h3>О тебе</h3>
+
+          <div className={styles.characteristics}>
+            {characteristics.map((item) => (
+              <div className={styles.characteristic} key={item.name}>
+                <span className={styles.characteristicIcon}>
+                  {item.icon}
+                </span>
+
+                <div className={styles.characteristicInfo}>
+                  <div className={styles.characteristicHeading}>
+                    <span>{item.name}</span>
+                    <span>{item.value} из 100</span>
+                  </div>
+
+                  <div className={styles.progress}>
+                    <div
+                      className={styles.progressValue}
+                      style={{ width: `${item.value}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p className={styles.hint}>
+            Показатели будут меняться в течение жизни.
+          </p>
+        </section>
+
+        {/* Семья */}
+        <section className={styles.card}>
+          <h3>Твоя семья</h3>
+
+          <div className={styles.familyList}>
+            {family.map((member, index) => (
+              <div className={styles.familyMember} key={`${member.name}-${index}`}>
+                <span className={styles.familyIcon}>{member.icon}</span>
+
+                <div className={styles.familyInfo}>
+                  <strong>{member.name}</strong>
+                  <span>{member.description}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className={styles.familyDetails}>
+            {familyDetails.map(([label, value]) => (
+              <div className={styles.detailRow} key={label}>
+                <span>{label}</span>
+                <strong>{value}</strong>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Страна */}
+        <section className={styles.card}>
+          <h3>О стране · {character.country}</h3>
+
+          <div className={styles.map}>
+            <span className={styles.mapDot}>●</span>
+          </div>
+
+          <div className={styles.countryDetails}>
+            {countryDetails.map(([icon, label, value]) => (
+              <div className={styles.detailRow} key={label}>
+                <span className={styles.countryLabel}>
+                  <span>{icon}</span>
+                  {label}
+                </span>
+                <strong>{value}</strong>
+              </div>
+            ))}
+          </div>
+
+          <div className={styles.countryStats}>
+            <div className={styles.countryStat}>
+              <span className={styles.statIcon}>🕒</span>
+              <strong>69 лет</strong>
+              <span>ожидаемая продолжительность жизни</span>
+            </div>
+
+            <div className={styles.countryStat}>
+              <span className={styles.statIcon}>🕊️</span>
+              <strong>5.3%</strong>
+              <span>вероятность смерти в возрасте до 5 лет</span>
+            </div>
+          </div>
+        </section>
+
+        {/* Правила */}
+        <section className={styles.card}>
+          <h3>Как играть</h3>
+
+          <ol className={styles.rules}>
+            <li>Время идёт само по себе</li>
+            <li>Выбирай действия. Решения влияют на всю жизнь.</li>
+            <li>Следи за состоянием персонажа.</li>
+          </ol>
+        </section>
+
+        {/* Действия */}
+        <div className={styles.actions}>
+          <button
+            className={styles.startButton}
+            onClick={onStartLife}
+          >
+            Начать жизнь
+          </button>
+
+          <button
+            className={styles.changeButton}
+            onClick={onChangeParameters}
+          >
+            Поменять параметры
+          </button>
+        </div>
+      </main>
+    </div>
+  );
+}
+
+export default BirthSetupPage;
+</file>
+
+<file path="src/components/bearthSetupPage/bearthSetupPage.module.scss">
+$blue: #668cff;
+$text: #34415f;
+$muted: #71809f;
+$background: #eef1f9;
+$soft: #f2f3fc;
+
+.page {
+  width: 100%;
+  min-height: 100dvh;
+  background: $background;
+  color: $text;
+  font-family: 'Manrope', sans-serif;
+
+  min-height: 100dvh;
+  padding-top: 65px;
+  padding-bottom: 100px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  padding: 10px 20px 24px;
+}
+
+.card {
+  padding: 18px;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 2px 3px rgba(90, 115, 180, 0.12);
+
+  h3 {
+    margin: 0 0 15px;
+    font-size: 19px;
+    font-weight: 800;
+  }
+}
+
+.profileCard {
+  padding: 20px 10px 26px;
+  text-align: center;
+
+  h2 {
+    margin: 20px 0 3px;
+    font-size: 26px;
+    line-height: 1.3;
+    font-weight: 800;
+  }
+}
+
+.flag {
+  font-size: 43px;
+  line-height: 1.4;
+}
+
+.gender {
+  margin-left: 8px;
+  color: #f16bd0;
+}
+
+.location {
+  margin: 0;
+  color: #596987;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.region {
+  margin: 2px 0 18px;
+  font-size: 14px;
+}
+
+.birthStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.stat,
+.countryStat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+
+  min-width: 0;
+  padding: 12px 5px;
+  border-radius: 20px;
+  background: $soft;
+
+  strong {
+    color: $blue;
+    font-size: 15px;
+    line-height: 1.3;
+  }
+
+  > span:last-child {
+    color: #596987;
+    font-size: 11px;
+    line-height: 1.35;
+    font-weight: 700;
+  }
+}
+
+.statIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+  margin-bottom: 3px;
+
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(100, 130, 200, 0.15);
+  font-size: 19px;
+}
+
+.characteristics {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.characteristic {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.characteristicIcon,
+.familyIcon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+
+  width: 33px;
+  height: 33px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(100, 130, 200, 0.2);
+  font-size: 18px;
+}
+
+.characteristicInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.characteristicHeading {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 3px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.progress {
+  height: 9px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #e3e8ff;
+}
+
+.progressValue {
+  height: 100%;
+  border-radius: inherit;
+  background: #7193ff;
+}
+
+.hint {
+  margin: 12px 0 0;
+  color: #8a9ac0;
+  text-align: center;
+  font-size: 11px;
+}
+
+.familyList {
+  display: flex;
+  flex-direction: column;
+}
+
+.familyMember {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 50px;
+
+  &:not(:last-child) .familyInfo {
+    border-bottom: 1px solid #e4e8f4;
+  }
+}
+
+.familyInfo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-self: stretch;
+  min-width: 0;
+  padding: 6px 0;
+
+  strong {
+    color: $blue;
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  span {
+    font-size: 11px;
+    line-height: 1.3;
+  }
+}
+
+.familyDetails,
+.countryDetails {
+  margin-top: 12px;
+  padding: 12px 15px;
+  border-radius: 15px;
+  background: $soft;
+}
+
+.detailRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 28px;
+  font-size: 12px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #e4e8f4;
+  }
+
+  > span {
+    font-weight: 700;
+  }
+
+  > strong {
+    color: $blue;
+    font-size: 11px;
+    text-align: right;
+  }
+}
+
+.map {
+  position: relative;
+  height: 175px;
+  margin: 0 -8px 8px;
+  overflow: hidden;
+
+  // Декоративная точечная карта. Позже можно заменить SVG-картой.
+  background-image: radial-gradient(#8ba4ff 1px, transparent 1.2px);
+  background-size: 4px 4px;
+  opacity: 0.8;
+
+  clip-path: polygon(
+    0 25%, 12% 20%, 19% 8%, 31% 15%, 39% 25%,
+    48% 18%, 57% 26%, 68% 16%, 79% 24%, 100% 20%,
+    100% 75%, 87% 70%, 76% 90%, 65% 72%, 52% 88%,
+    40% 65%, 29% 90%, 18% 70%, 8% 55%, 0 60%
+  );
+}
+
+.mapDot {
+  position: absolute;
+  top: 40%;
+  right: 18%;
+  color: #7193ff;
+  font-size: 17px;
+  filter: drop-shadow(0 0 5px #7193ff);
+}
+
+.countryDetails {
+  margin-top: 0;
+}
+
+.countryLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.countryStats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.countryStat {
+  min-height: 125px;
+  padding: 12px 8px;
+
+  strong {
+    font-size: 15px;
+    font-weight: 600;
+  }
+}
+
+.rules {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: rule;
+
+  li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 38px;
+    padding: 8px 0 8px 36px;
+    border-bottom: 1px solid #e4e8f4;
+    font-size: 11px;
+    font-weight: 700;
+    counter-increment: rule;
+
+    &:last-child {
+      border-bottom: 0;
+    }
+
+    &::before {
+      content: counter(rule);
+      position: absolute;
+      left: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 23px;
+      height: 23px;
+      border-radius: 50%;
+      background: #e8edff;
+      color: $blue;
+      font-size: 13px;
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.startButton,
+.changeButton {
+  width: 100%;
+  min-height: 54px;
+  border: 0;
+  border-radius: 11px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 3px 7px rgba(100, 130, 200, 0.15);
+}
+
+.startButton {
+  color: #fff;
+  background: linear-gradient(105deg, #8299ff, #ff68a8);
+}
+
+.changeButton {
+  color: $blue;
+  background: #fff;
+  border: 1px solid #e3eaff;
+}
+
+@media (max-width: 360px) {
+  .content {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .profileCard h2 {
+    font-size: 22px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  .stat strong {
+    font-size: 13px;
+  }
+}
+</file>
+
+<file path="src/components/customScrollbar/customScrollbar.jsx">
+import { useEffect, useRef, useState } from 'react';
+import styles from './customScrollbar.module.scss';
+
+function CustomScrollbar({ scrollContainerRef }) {
+  const [thumb, setThumb] = useState({
+    height: 0,
+    top: 0,
+  });
+
+  const isDragging = useRef(false);
+  const dragStartY = useRef(0);
+  const dragStartTop = useRef(0);
+  const trackRef = useRef(null);
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+
+    if (!container) return;
+
+    const updateScrollbar = () => {
+      const { scrollTop, scrollHeight, clientHeight } = container;
+
+      if (scrollHeight <= clientHeight) {
+        setThumb({ height: 0, top: 0 });
+        return;
+      }
+
+      const height = (clientHeight / scrollHeight) * clientHeight;
+      const top =
+        (scrollTop / (scrollHeight - clientHeight)) *
+        (clientHeight - height);
+
+      setThumb({ height, top });
+    };
+
+    updateScrollbar();
+
+    container.addEventListener('scroll', updateScrollbar);
+    window.addEventListener('resize', updateScrollbar);
+
+    const observer = new ResizeObserver(updateScrollbar);
+    observer.observe(container);
+
+    return () => {
+      container.removeEventListener('scroll', updateScrollbar);
+      window.removeEventListener('resize', updateScrollbar);
+      observer.disconnect();
+    };
+  }, [scrollContainerRef]);
+
+  const handlePointerDown = (event) => {
+    event.preventDefault();
+
+    isDragging.current = true;
+    dragStartY.current = event.clientY;
+    dragStartTop.current = thumb.top;
+
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handlePointerMove = (event) => {
+    if (!isDragging.current) return;
+
+    const container = scrollContainerRef.current;
+    const track = trackRef.current;
+
+    if (!container || !track) return;
+
+    const trackHeight = track.clientHeight;
+    const maxThumbTop = trackHeight - thumb.height;
+
+    const delta = event.clientY - dragStartY.current;
+    const newTop = Math.max(
+      0,
+      Math.min(maxThumbTop, dragStartTop.current + delta)
+    );
+
+    container.scrollTop =
+      (newTop / maxThumbTop) *
+      (container.scrollHeight - container.clientHeight);
+  };
+
+  const handlePointerUp = () => {
+    isDragging.current = false;
+  };
+
+  if (!thumb.height) return null;
+
+  return (
+    <div ref={trackRef} className={styles.scrollbar}>
+      <div
+        className={styles.scrollbar__thumb}
+        style={{
+          height: `${thumb.height}px`,
+          transform: `translateY(${thumb.top}px)`,
+        }}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+      />
+    </div>
+  );
+}
+
+export default CustomScrollbar;
+</file>
+
+<file path="src/components/customScrollbar/customScrollbar.module.scss">
+.scrollbar {
+  position: absolute;
+  z-index: 20;
+  top: 0;
+  right: 3px;
+  bottom: 0;
+
+  width: 5px;
+
+  pointer-events: none;
+}
+
+.scrollbar__thumb {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  width: 4px;
+  min-height: 30px;
+
+  border-radius: 10px;
+  background: rgba(117, 143, 255, 0.55);
+
+  pointer-events: auto;
+  touch-action: none;
+  cursor: grab;
+
+  transition: background 0.2s;
+
+  &:hover {
+    background: rgba(117, 143, 255, 0.9);
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+</file>
+
+<file path="src/components/header/header.jsx">
+import styles from './header.module.scss';
+
+function Header() {
+    return (
+    <div className={styles.header}>
+        <button
+            className={styles.header__menu}
+            aria-label="Открыть меню"
+        >
+            <span />
+            <span />
+            <span />
+        </button>
+
+        <h1 className={styles.header__title}>
+            Жизнь без конца
+        </h1>
+
+        <button
+            className={styles.header__share}
+            aria-label="Поделиться"
+        >
+            <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            >
+            <path d="M12 16V3m-5 5 5-5 5 5" />
+            <path d="M5 12v8h14v-8" />
+            </svg>
+        </button>
+    </div>
+    )
+}
+
+export default Header;
+</file>
+
+<file path="src/components/header/header.module.scss">
+.header {
+    position: fixed;
+    z-index: 5;
+    top: 0;
+    left: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+    max-width: 430px;
+    height: 65px;
+    padding: 0 12px;
+
+    transform: translateX(-50%);
+
+    border-radius: 0 0 16px 16px;
+    background: #fff;
+
+  &__menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    width: 25px;
+    height: 25px;
+    padding: 4px;
+    border: none;
+    border-radius: 50%;
+    background: #7595ff;
+
+    span {
+      width: 14px;
+      height: 2px;
+      border-radius: 10px;
+      background: white;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color:  #202b45;
+  }
+
+  &__share {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #e3e6f1;
+    border-radius: 8px;
+    background: #fff;
+    color: #7595ff;
+  }
+
+}
+</file>
+
+<file path="src/components/mainPage/mainPage.jsx">
+import styles from './mainPage.module.scss';
+import headerImage from '../../assets/image1.png';
+import ReactCountryFlag from 'react-country-flag';
+import {Dices} from 'lucide-react';
+import luisa from '../../assets/луиза.png'
+import janklo from '../../assets/жанкло.png'
+import jeneva from '../../assets/женева.png'
+import CustomScrollbar from '../customScrollbar/customScrollbar';
+import { useRef } from 'react';
+
+<ReactCountryFlag
+  countryCode="CA"
+  svg
+  style={{
+    width: '24px',
+    height: '18px',
+  }}
+/>
+
+const lives = [
+  {
+    id: 1,
+    title: 'Луиза Браун',
+    years: '1970 – 2046',
+    description: 'Писательница и гениальная художница',
+    image: luisa,
+  },
+  {
+    id: 2,
+    title: 'Женнева Джули',
+    years: '1990 – 2096',
+    description: 'Встречается с принцессой из окружения семьи и 4 внуков',
+    image: jeneva,
+  },
+  {
+    id: 3,
+    title: 'Жак',
+    years: '1944 – 2080',
+    description: 'Станет известным во всём мире',
+    image: janklo,
+  },
+];
+
+
+
+function MainPage({ onStart }) {
+  const scrollContainerRef = useRef(null);
+
+  return (
+    <div className={styles.mainPageWrapper}> 
+      <main className={styles.mainPage}
+            ref={scrollContainerRef}
+      >
+        <section className={styles.mainPage__hero}>
+          <img
+            className={styles.mainPage__heroImage}
+            src={headerImage}
+            alt="Заснеженная зимняя улица"
+          />
+        </section>
+
+        <div className={styles.mainPage__content}>
+          <section className={styles.mainPage__intro}>
+            <h2 className={styles.mainPage__title}>
+              Жизнь без конца
+            </h2>
+
+            <p className={styles.mainPage__description}>
+              Ты рождаешься в случайной стране, семье
+              и эпохе и проживаешь целую жизнь. Где учиться,
+              с кем сблизиться, остаться дома или уехать —
+              твои решения меняют ход истории.
+            </p>
+          </section>
+
+          <section className={styles.mainPage__chance}>
+            <div className={styles.mainPage__chanceInfo}>
+              <span className={styles.mainPage__chanceLabel}>
+                ШАНС РОДИТЬСЯ В
+              </span>
+
+              <div className={styles.mainPage__country}>
+                <span className={styles.mainPage__flag}><ReactCountryFlag countryCode="CA" svg /></span>
+                <span>Канада, Оттава</span>
+              </div>
+            </div>
+
+            <div className={styles.mainPage__chanceValue}>
+              <span>ШАНС</span>
+              <strong>1 ИЗ 1400</strong>
+            </div>
+          </section>
+
+          <div className={styles.mainPage__separator} />
+
+          <button className={styles.mainPage__start}
+                  onClick={onStart}
+          >
+            <span className={styles.mainPage__startIcon}><Dices /></span>
+            <span className={styles.mainPage__startTitle}>Старт</span>
+          </button>
+
+          <section className={styles.mainPage__lives}>
+            <h3 className={styles.mainPage__sectionTitle}>
+              Параллельные жизни
+            </h3>
+
+            <div className={styles.mainPage__livesList}>
+              {lives.map((life) => (
+                <article className={styles.lifeCard} key={life.id}>
+                  <img
+                    className={styles.lifeCard__image}
+                    src={life.image}
+                    alt={life.title}
+                  />
+
+                  <h4 className={styles.lifeCard__title}>
+                    {life.title}
+                  </h4>
+
+                  <span className={styles.lifeCard__years}>
+                    {life.years}
+                  </span>
+
+                  <p className={styles.lifeCard__description}>
+                    {life.description}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <CustomScrollbar
+        scrollContainerRef={scrollContainerRef}
+      />
+    </div>
+    
+  );
+}
+
+export default MainPage;
+</file>
+
+<file path="src/components/mainPage/mainPage.module.scss">
+.mainPageWrapper {
+  position: relative;
+
+  width: 100%;
+  max-width: 430px;
+  height: 100dvh;
+
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.mainPage {
+  position: relative; 
+  width: 100%;
+  max-width: 430px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding-bottom: 76px;
+  overflow: hidden;
+  background: #fcfaff;
+  color: #202b45;
+  font-family: Arial, sans-serif;
+  top: 45px;
+  
+   width: 100%;
+  height: 100%;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &__hero {
+    position: relative;
+    width: 100%;
+    height: 207px;
+    overflow: hidden;
+  }
+
+  &__hero::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 100px;
+
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      #fcfaff
+    );
+  }
+
+  &__heroImage {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  // Content
+
+  &__content {
+    padding: 10px 13px 0;
+  }
+
+  &__intro {
+    margin-bottom: 18px;
+  }
+
+  &__title {
+    margin: 0 0 8px;
+    font-size: clamp(23px, 7vw, 27px);
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(100deg, #8295ff 0%, #d779ce 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  &__description {
+    max-width: 100%;
+    margin: 0;
+    color: #646587;
+    font-size: 14px;
+    line-height: 1.45;
+    font-weight: 500;
+  }
+
+  // Chance card
+
+  &__chance {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 55px;
+    padding: 9px 13px;
+    border: 1px solid #e4d9ff;
+    border-radius: 11px;
+    background: #fff;
+  }
+
+  &__chanceInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__chanceLabel {
+    color: #77758f;
+    font-size: 7px;
+    font-weight: 500;
+  }
+
+  &__country {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  &__flag {
+    font-size: 24px;
+  }
+
+  &__chanceValue {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 35px;
+    border: 1px solid #ff6c9c;
+    border-radius: 7px;
+    color: #ff5c91;
+    font-size: 10px;
+
+    strong {
+      font-size: 8px;
+      font-weight: 600;
+    }
+  }
+
+  // Separator
+
+  &__separator {
+    margin: 12px 0 20px;
+    border-top: 2px dashed #e1d9f8;
+  }
+
+  // Start button
+
+  &__start {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    height: 36px;
+    margin-bottom: 11px;
+    border: none;
+    border-radius: 7px;
+    background: linear-gradient(100deg, #8196ff 0%, #ff69a8 100%);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+
+    &:active {
+      transform: scale(0.98);
+      opacity: 0.85;
+    }
+  }
+
+  &__startIcon {
+    font-size: 14px;
+  }
+
+  &__startTitle {
+    font-size: 18px;
+  }
+
+  // Lives
+
+  &__lives {
+    width: calc(100% + 13px);
+    overflow: hidden;
+  }
+
+  &__sectionTitle {
+    margin: 0 0 8px 3px;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  &__livesList {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  // Bottom navigation
+}
+
+// Life card
+
+.lifeCard {
+  flex: 0 0 107px;
+  min-width: 107px;
+  overflow: hidden;
+
+  &__image {
+    display: block;
+    width: 100%;
+    height: 72px;
+    object-fit: cover;
+    border-radius: 9px;
+  }
+
+  &__title {
+    margin: 4px 0 2px;
+    overflow: hidden;
+    color: #202b45;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__years {
+    display: block;
+    color: #77758f;
+    font-size: 10px;
+  }
+
+  &__description {
+    display: -webkit-box;
+    margin: 2px 0 0;
+    overflow: hidden;
+    color: #000000;
+    font-size: 10px;
+    line-height: 1.35;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+}
+</file>
+
+<file path="src/components/navbar/navbar.jsx">
+import styles from './navbar.module.scss'
+import {
+  MessagesSquare,
+  VenetianMask,
+  Heart,
+  ScrollText,
+  UserRound,
+} from 'lucide-react';
+
+const navigation = [
+  { id: 1, icon: MessagesSquare, label: 'Сообщения' },
+  { id: 2, icon: VenetianMask, label: 'Сообщество' },
+  { id: 3, icon: Heart, label: 'Избранное' },
+  { id: 4, icon: ScrollText, label: 'История' },
+  { id: 5, icon: UserRound, label: 'Профиль' },
+];
+
+function Navbar() {
+    return (
+    <div className={styles.navigation}>
+        {navigation.map(({ id, icon: Icon, label }) => (
+          <button
+            key={id}
+            className={styles.navigation__item}
+            aria-label={label}
+          >
+            <Icon
+              className={styles.navigation__icon}
+              size={27}
+              strokeWidth={2.5}
+            />
+          </button>
+        ))}
+      </div>
+    )
+} 
+
+export default Navbar;
+</file>
+
+<file path="src/components/navbar/navbar.module.scss">
+.navigation {
+    position: fixed;
+    z-index: 10;
+    bottom: 0;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    max-width: 430px;
+    height: 90px;
+    padding: 0 8px;
+    transform: translateX(-50%);
+    border-top: 1px solid #f0edf6;
+    background: rgba(255, 255, 255, 0.97);
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #9ba6b2;
+    cursor: pointer;
+    appearance: none;
+
+    &:hover {
+      color: #758fff;
+    }
+  }
+
+  &__icon {
+    display: block;
+    width: 27px;
+    height: 27px;
+  }
+}
+</file>
+
+<file path="public/favicon.svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="46" fill="none" viewBox="0 0 48 46"><path fill="#863bff" d="M25.946 44.938c-.664.845-2.021.375-2.021-.698V33.937a2.26 2.26 0 0 0-2.262-2.262H10.287c-.92 0-1.456-1.04-.92-1.788l7.48-10.471c1.07-1.497 0-3.578-1.842-3.578H1.237c-.92 0-1.456-1.04-.92-1.788L10.013.474c.214-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.471c-1.07 1.498 0 3.579 1.842 3.579h11.377c.943 0 1.473 1.088.89 1.83L25.947 44.94z" style="fill:#863bff;fill:color(display-p3 .5252 .23 1);fill-opacity:1"/><mask id="a" width="48" height="46" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:alpha"><path fill="#000" d="M25.842 44.938c-.664.844-2.021.375-2.021-.698V33.937a2.26 2.26 0 0 0-2.262-2.262H10.183c-.92 0-1.456-1.04-.92-1.788l7.48-10.471c1.07-1.498 0-3.579-1.842-3.579H1.133c-.92 0-1.456-1.04-.92-1.787L9.91.473c.214-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.471c-1.07 1.498 0 3.578 1.842 3.578h11.377c.943 0 1.473 1.088.89 1.832L25.843 44.94z" style="fill:#000;fill-opacity:1"/></mask><g mask="url(#a)"><g filter="url(#b)"><ellipse cx="5.508" cy="14.704" fill="#ede6ff" rx="5.508" ry="14.704" style="fill:#ede6ff;fill:color(display-p3 .9275 .9033 1);fill-opacity:1" transform="matrix(.00324 1 1 -.00324 -4.47 31.516)"/></g><g filter="url(#c)"><ellipse cx="10.399" cy="29.851" fill="#ede6ff" rx="10.399" ry="29.851" style="fill:#ede6ff;fill:color(display-p3 .9275 .9033 1);fill-opacity:1" transform="matrix(.00324 1 1 -.00324 -39.328 7.883)"/></g><g filter="url(#d)"><ellipse cx="5.508" cy="30.487" fill="#7e14ff" rx="5.508" ry="30.487" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.814 -25.913 -14.639)scale(1 -1)"/></g><g filter="url(#e)"><ellipse cx="5.508" cy="30.599" fill="#7e14ff" rx="5.508" ry="30.599" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.814 -32.644 -3.334)scale(1 -1)"/></g><g filter="url(#f)"><ellipse cx="5.508" cy="30.599" fill="#7e14ff" rx="5.508" ry="30.599" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="matrix(.00324 1 1 -.00324 -34.34 30.47)"/></g><g filter="url(#g)"><ellipse cx="14.072" cy="22.078" fill="#ede6ff" rx="14.072" ry="22.078" style="fill:#ede6ff;fill:color(display-p3 .9275 .9033 1);fill-opacity:1" transform="rotate(93.35 24.506 48.493)scale(-1 1)"/></g><g filter="url(#h)"><ellipse cx="3.47" cy="21.501" fill="#7e14ff" rx="3.47" ry="21.501" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.009 28.708 47.59)scale(-1 1)"/></g><g filter="url(#i)"><ellipse cx="3.47" cy="21.501" fill="#7e14ff" rx="3.47" ry="21.501" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.009 28.708 47.59)scale(-1 1)"/></g><g filter="url(#j)"><ellipse cx=".387" cy="8.972" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(39.51 .387 8.972)"/></g><g filter="url(#k)"><ellipse cx="47.523" cy="-6.092" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 47.523 -6.092)"/></g><g filter="url(#l)"><ellipse cx="41.412" cy="6.333" fill="#47bfff" rx="5.971" ry="9.665" style="fill:#47bfff;fill:color(display-p3 .2799 .748 1);fill-opacity:1" transform="rotate(37.892 41.412 6.333)"/></g><g filter="url(#m)"><ellipse cx="-1.879" cy="38.332" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 -1.88 38.332)"/></g><g filter="url(#n)"><ellipse cx="-1.879" cy="38.332" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 -1.88 38.332)"/></g><g filter="url(#o)"><ellipse cx="35.651" cy="29.907" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 35.651 29.907)"/></g><g filter="url(#p)"><ellipse cx="38.418" cy="32.4" fill="#47bfff" rx="5.971" ry="15.297" style="fill:#47bfff;fill:color(display-p3 .2799 .748 1);fill-opacity:1" transform="rotate(37.892 38.418 32.4)"/></g></g><defs><filter id="b" width="60.045" height="41.654" x="-19.77" y="16.149" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="7.659"/></filter><filter id="c" width="90.34" height="51.437" x="-54.613" y="-7.533" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="7.659"/></filter><filter id="d" width="79.355" height="29.4" x="-49.64" y="2.03" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="e" width="79.579" height="29.4" x="-45.045" y="20.029" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="f" width="79.579" height="29.4" x="-43.513" y="21.178" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="g" width="74.749" height="58.852" x="15.756" y="-17.901" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="7.659"/></filter><filter id="h" width="61.377" height="25.362" x="23.548" y="2.284" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="i" width="61.377" height="25.362" x="23.548" y="2.284" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="j" width="56.045" height="63.649" x="-27.636" y="-22.853" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="k" width="54.814" height="64.646" x="20.116" y="-38.415" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="l" width="33.541" height="35.313" x="24.641" y="-11.323" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="m" width="54.814" height="64.646" x="-29.286" y="6.009" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="n" width="54.814" height="64.646" x="-29.286" y="6.009" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="o" width="54.814" height="64.646" x="8.244" y="-2.416" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="p" width="39.409" height="43.623" x="18.713" y="10.588" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter></defs></svg>
+</file>
+
+<file path="public/icons.svg">
+<svg xmlns="http://www.w3.org/2000/svg">
+  <symbol id="bluesky-icon" viewBox="0 0 16 17">
+    <g clip-path="url(#bluesky-clip)"><path fill="#08060d" d="M7.75 7.735c-.693-1.348-2.58-3.86-4.334-5.097-1.68-1.187-2.32-.981-2.74-.79C.188 2.065.1 2.812.1 3.251s.241 3.602.398 4.13c.52 1.744 2.367 2.333 4.07 2.145-2.495.37-4.71 1.278-1.805 4.512 3.196 3.309 4.38-.71 4.987-2.746.608 2.036 1.307 5.91 4.93 2.746 2.72-2.746.747-4.143-1.747-4.512 1.702.189 3.55-.4 4.07-2.145.156-.528.397-3.691.397-4.13s-.088-1.186-.575-1.406c-.42-.19-1.06-.395-2.741.79-1.755 1.24-3.64 3.752-4.334 5.099"/></g>
+    <defs><clipPath id="bluesky-clip"><path fill="#fff" d="M.1.85h15.3v15.3H.1z"/></clipPath></defs>
+  </symbol>
+  <symbol id="discord-icon" viewBox="0 0 20 19">
+    <path fill="#08060d" d="M16.224 3.768a14.5 14.5 0 0 0-3.67-1.153c-.158.286-.343.67-.47.976a13.5 13.5 0 0 0-4.067 0c-.128-.306-.317-.69-.476-.976A14.4 14.4 0 0 0 3.868 3.77C1.546 7.28.916 10.703 1.231 14.077a14.7 14.7 0 0 0 4.5 2.306q.545-.748.965-1.587a9.5 9.5 0 0 1-1.518-.74q.191-.14.372-.293c2.927 1.369 6.107 1.369 8.999 0q.183.152.372.294-.723.437-1.52.74.418.838.963 1.588a14.6 14.6 0 0 0 4.504-2.308c.37-3.911-.63-7.302-2.644-10.309m-9.13 8.234c-.878 0-1.599-.82-1.599-1.82 0-.998.705-1.82 1.6-1.82.894 0 1.614.82 1.599 1.82.001 1-.705 1.82-1.6 1.82m5.91 0c-.878 0-1.599-.82-1.599-1.82 0-.998.705-1.82 1.6-1.82.893 0 1.614.82 1.599 1.82 0 1-.706 1.82-1.6 1.82"/>
+  </symbol>
+  <symbol id="documentation-icon" viewBox="0 0 21 20">
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="m15.5 13.333 1.533 1.322c.645.555.967.833.967 1.178s-.322.623-.967 1.179L15.5 18.333m-3.333-5-1.534 1.322c-.644.555-.966.833-.966 1.178s.322.623.966 1.179l1.534 1.321"/>
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M17.167 10.836v-4.32c0-1.41 0-2.117-.224-2.68-.359-.906-1.118-1.621-2.08-1.96-.599-.21-1.349-.21-2.848-.21-2.623 0-3.935 0-4.983.369-1.684.591-3.013 1.842-3.641 3.428C3 6.449 3 7.684 3 10.154v2.122c0 2.558 0 3.838.706 4.726q.306.383.713.671c.76.536 1.79.64 3.581.66"/>
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M3 10a2.78 2.78 0 0 1 2.778-2.778c.555 0 1.209.097 1.748-.047.48-.129.854-.503.982-.982.145-.54.048-1.194.048-1.749a2.78 2.78 0 0 1 2.777-2.777"/>
+  </symbol>
+  <symbol id="github-icon" viewBox="0 0 19 19">
+    <path fill="#08060d" fill-rule="evenodd" d="M9.356 1.85C5.05 1.85 1.57 5.356 1.57 9.694a7.84 7.84 0 0 0 5.324 7.44c.387.079.528-.168.528-.376 0-.182-.013-.805-.013-1.454-2.165.467-2.616-.935-2.616-.935-.349-.91-.864-1.143-.864-1.143-.71-.48.051-.48.051-.48.787.051 1.2.805 1.2.805.695 1.194 1.817.857 2.268.649.064-.507.27-.857.49-1.052-1.728-.182-3.545-.857-3.545-3.87 0-.857.31-1.558.8-2.104-.078-.195-.349-1 .077-2.078 0 0 .657-.208 2.14.805a7.5 7.5 0 0 1 1.946-.26c.657 0 1.328.092 1.946.26 1.483-1.013 2.14-.805 2.14-.805.426 1.078.155 1.883.078 2.078.502.546.799 1.247.799 2.104 0 3.013-1.818 3.675-3.558 3.87.284.247.528.714.528 1.454 0 1.052-.012 1.896-.012 2.156 0 .208.142.455.528.377a7.84 7.84 0 0 0 5.324-7.441c.013-4.338-3.48-7.844-7.773-7.844" clip-rule="evenodd"/>
+  </symbol>
+  <symbol id="social-icon" viewBox="0 0 20 20">
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M12.5 6.667a4.167 4.167 0 1 0-8.334 0 4.167 4.167 0 0 0 8.334 0"/>
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M2.5 16.667a5.833 5.833 0 0 1 8.75-5.053m3.837.474.513 1.035c.07.144.257.282.414.309l.93.155c.596.1.736.536.307.965l-.723.73a.64.64 0 0 0-.152.531l.207.903c.164.715-.213.991-.84.618l-.872-.52a.63.63 0 0 0-.577 0l-.872.52c-.624.373-1.003.094-.84-.618l.207-.903a.64.64 0 0 0-.152-.532l-.723-.729c-.426-.43-.289-.864.306-.964l.93-.156a.64.64 0 0 0 .412-.31l.513-1.034c.28-.562.735-.562 1.012 0"/>
+  </symbol>
+  <symbol id="x-icon" viewBox="0 0 19 19">
+    <path fill="#08060d" fill-rule="evenodd" d="M1.893 1.98c.052.072 1.245 1.769 2.653 3.77l2.892 4.114c.183.261.333.48.333.486s-.068.089-.152.183l-.522.593-.765.867-3.597 4.087c-.375.426-.734.834-.798.905a1 1 0 0 0-.118.148c0 .01.236.017.664.017h.663l.729-.83c.4-.457.796-.906.879-.999a692 692 0 0 0 1.794-2.038c.034-.037.301-.34.594-.675l.551-.624.345-.392a7 7 0 0 1 .34-.374c.006 0 .93 1.306 2.052 2.903l2.084 2.965.045.063h2.275c1.87 0 2.273-.003 2.266-.021-.008-.02-1.098-1.572-3.894-5.547-2.013-2.862-2.28-3.246-2.273-3.266.008-.019.282-.332 2.085-2.38l2-2.274 1.567-1.782c.022-.028-.016-.03-.65-.03h-.674l-.3.342a871 871 0 0 1-1.782 2.025c-.067.075-.405.458-.75.852a100 100 0 0 1-.803.91c-.148.172-.299.344-.99 1.127-.304.343-.32.358-.345.327-.015-.019-.904-1.282-1.976-2.808L6.365 1.85H1.8zm1.782.91 8.078 11.294c.772 1.08 1.413 1.973 1.425 1.984.016.017.241.02 1.05.017l1.03-.004-2.694-3.766L7.796 5.75 5.722 2.852l-1.039-.004-1.039-.004z" clip-rule="evenodd"/>
+  </symbol>
+</svg>
+</file>
+
+<file path="src/assets/react.svg">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="35.93" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 228"><path fill="#00D8FF" d="M210.483 73.824a171.49 171.49 0 0 0-8.24-2.597c.465-1.9.893-3.777 1.273-5.621c6.238-30.281 2.16-54.676-11.769-62.708c-13.355-7.7-35.196.329-57.254 19.526a171.23 171.23 0 0 0-6.375 5.848a155.866 155.866 0 0 0-4.241-3.917C100.759 3.829 77.587-4.822 63.673 3.233C50.33 10.957 46.379 33.89 51.995 62.588a170.974 170.974 0 0 0 1.892 8.48c-3.28.932-6.445 1.924-9.474 2.98C17.309 83.498 0 98.307 0 113.668c0 15.865 18.582 31.778 46.812 41.427a145.52 145.52 0 0 0 6.921 2.165a167.467 167.467 0 0 0-2.01 9.138c-5.354 28.2-1.173 50.591 12.134 58.266c13.744 7.926 36.812-.22 59.273-19.855a145.567 145.567 0 0 0 5.342-4.923a168.064 168.064 0 0 0 6.92 6.314c21.758 18.722 43.246 26.282 56.54 18.586c13.731-7.949 18.194-32.003 12.4-61.268a145.016 145.016 0 0 0-1.535-6.842c1.62-.48 3.21-.974 4.76-1.488c29.348-9.723 48.443-25.443 48.443-41.52c0-15.417-17.868-30.326-45.517-39.844Zm-6.365 70.984c-1.4.463-2.836.91-4.3 1.345c-3.24-10.257-7.612-21.163-12.963-32.432c5.106-11 9.31-21.767 12.459-31.957c2.619.758 5.16 1.557 7.61 2.4c23.69 8.156 38.14 20.213 38.14 29.504c0 9.896-15.606 22.743-40.946 31.14Zm-10.514 20.834c2.562 12.94 2.927 24.64 1.23 33.787c-1.524 8.219-4.59 13.698-8.382 15.893c-8.067 4.67-25.32-1.4-43.927-17.412a156.726 156.726 0 0 1-6.437-5.87c7.214-7.889 14.423-17.06 21.459-27.246c12.376-1.098 24.068-2.894 34.671-5.345a134.17 134.17 0 0 1 1.386 6.193ZM87.276 214.515c-7.882 2.783-14.16 2.863-17.955.675c-8.075-4.657-11.432-22.636-6.853-46.752a156.923 156.923 0 0 1 1.869-8.499c10.486 2.32 22.093 3.988 34.498 4.994c7.084 9.967 14.501 19.128 21.976 27.15a134.668 134.668 0 0 1-4.877 4.492c-9.933 8.682-19.886 14.842-28.658 17.94ZM50.35 144.747c-12.483-4.267-22.792-9.812-29.858-15.863c-6.35-5.437-9.555-10.836-9.555-15.216c0-9.322 13.897-21.212 37.076-29.293c2.813-.98 5.757-1.905 8.812-2.773c3.204 10.42 7.406 21.315 12.477 32.332c-5.137 11.18-9.399 22.249-12.634 32.792a134.718 134.718 0 0 1-6.318-1.979Zm12.378-84.26c-4.811-24.587-1.616-43.134 6.425-47.789c8.564-4.958 27.502 2.111 47.463 19.835a144.318 144.318 0 0 1 3.841 3.545c-7.438 7.987-14.787 17.08-21.808 26.988c-12.04 1.116-23.565 2.908-34.161 5.309a160.342 160.342 0 0 1-1.76-7.887Zm110.427 27.268a347.8 347.8 0 0 0-7.785-12.803c8.168 1.033 15.994 2.404 23.343 4.08c-2.206 7.072-4.956 14.465-8.193 22.045a381.151 381.151 0 0 0-7.365-13.322Zm-45.032-43.861c5.044 5.465 10.096 11.566 15.065 18.186a322.04 322.04 0 0 0-30.257-.006c4.974-6.559 10.069-12.652 15.192-18.18ZM82.802 87.83a323.167 323.167 0 0 0-7.227 13.238c-3.184-7.553-5.909-14.98-8.134-22.152c7.304-1.634 15.093-2.97 23.209-3.984a321.524 321.524 0 0 0-7.848 12.897Zm8.081 65.352c-8.385-.936-16.291-2.203-23.593-3.793c2.26-7.3 5.045-14.885 8.298-22.6a321.187 321.187 0 0 0 7.257 13.246c2.594 4.48 5.28 8.868 8.038 13.147Zm37.542 31.03c-5.184-5.592-10.354-11.779-15.403-18.433c4.902.192 9.899.29 14.978.29c5.218 0 10.376-.117 15.453-.343c-4.985 6.774-10.018 12.97-15.028 18.486Zm52.198-57.817c3.422 7.8 6.306 15.345 8.596 22.52c-7.422 1.694-15.436 3.058-23.88 4.071a382.417 382.417 0 0 0 7.859-13.026a347.403 347.403 0 0 0 7.425-13.565Zm-16.898 8.101a358.557 358.557 0 0 1-12.281 19.815a329.4 329.4 0 0 1-23.444.823c-7.967 0-15.716-.248-23.178-.732a310.202 310.202 0 0 1-12.513-19.846h.001a307.41 307.41 0 0 1-10.923-20.627a310.278 310.278 0 0 1 10.89-20.637l-.001.001a307.318 307.318 0 0 1 12.413-19.761c7.613-.576 15.42-.876 23.31-.876H128c7.926 0 15.743.303 23.354.883a329.357 329.357 0 0 1 12.335 19.695a358.489 358.489 0 0 1 11.036 20.54a329.472 329.472 0 0 1-11 20.722Zm22.56-122.124c8.572 4.944 11.906 24.881 6.52 51.026c-.344 1.668-.73 3.367-1.15 5.09c-10.622-2.452-22.155-4.275-34.23-5.408c-7.034-10.017-14.323-19.124-21.64-27.008a160.789 160.789 0 0 1 5.888-5.4c18.9-16.447 36.564-22.941 44.612-18.3ZM128 90.808c12.625 0 22.86 10.235 22.86 22.86s-10.235 22.86-22.86 22.86s-22.86-10.235-22.86-22.86s10.235-22.86 22.86-22.86Z"></path></svg>
+</file>
+
+<file path="src/assets/vite.svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="77" height="47" fill="none" aria-labelledby="vite-logo-title" viewBox="0 0 77 47"><title id="vite-logo-title">Vite</title><style>.parenthesis{fill:#000}@media (prefers-color-scheme:dark){.parenthesis{fill:#fff}}</style><path fill="#9135ff" d="M40.151 45.71c-.663.844-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.493c-.92 0-1.457-1.04-.92-1.788l7.479-10.471c1.07-1.498 0-3.578-1.842-3.578H15.443c-.92 0-1.456-1.04-.92-1.788l9.696-13.576c.213-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.472c-1.07 1.497 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.087.89 1.83L40.153 45.712z"/><mask id="a" width="48" height="47" x="14" y="0" maskUnits="userSpaceOnUse" style="mask-type:alpha"><path fill="#000" d="M40.047 45.71c-.663.843-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.389c-.92 0-1.457-1.04-.92-1.788l7.479-10.472c1.07-1.497 0-3.578-1.842-3.578H15.34c-.92 0-1.456-1.04-.92-1.788l9.696-13.575c.213-.297.556-.474.92-.474H53.93c.92 0 1.456 1.04.92 1.788L47.37 13.03c-1.07 1.498 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.088.89 1.831L40.049 45.712z"/></mask><g mask="url(#a)"><g filter="url(#b)"><ellipse cx="5.508" cy="14.704" fill="#eee6ff" rx="5.508" ry="14.704" transform="rotate(269.814 20.96 11.29)scale(-1 1)"/></g><g filter="url(#c)"><ellipse cx="10.399" cy="29.851" fill="#eee6ff" rx="10.399" ry="29.851" transform="rotate(89.814 -16.902 -8.275)scale(1 -1)"/></g><g filter="url(#d)"><ellipse cx="5.508" cy="30.487" fill="#8900ff" rx="5.508" ry="30.487" transform="rotate(89.814 -19.197 -7.127)scale(1 -1)"/></g><g filter="url(#e)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.928 4.177)scale(1 -1)"/></g><g filter="url(#f)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.738 5.52)scale(1 -1)"/></g><g filter="url(#g)"><ellipse cx="14.072" cy="22.078" fill="#eee6ff" rx="14.072" ry="22.078" transform="rotate(93.35 31.245 55.578)scale(-1 1)"/></g><g filter="url(#h)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#i)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#j)"><ellipse cx="14.592" cy="9.743" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(39.51 14.592 9.743)"/></g><g filter="url(#k)"><ellipse cx="61.728" cy="-5.321" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 61.728 -5.32)"/></g><g filter="url(#l)"><ellipse cx="55.618" cy="7.104" fill="#00c2ff" rx="5.971" ry="9.665" transform="rotate(37.892 55.618 7.104)"/></g><g filter="url(#m)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#n)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#o)"><ellipse cx="49.857" cy="30.678" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 49.857 30.678)"/></g><g filter="url(#p)"><ellipse cx="52.623" cy="33.171" fill="#00c2ff" rx="5.971" ry="15.297" transform="rotate(37.892 52.623 33.17)"/></g></g><path d="M6.919 0c-9.198 13.166-9.252 33.575 0 46.789h6.215c-9.25-13.214-9.196-33.623 0-46.789zm62.424 0h-6.215c9.198 13.166 9.252 33.575 0 46.789h6.215c9.25-13.214 9.196-33.623 0-46.789" class="parenthesis"/><defs><filter id="b" width="60.045" height="41.654" x="-5.564" y="16.92" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="c" width="90.34" height="51.437" x="-40.407" y="-6.762" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="d" width="79.355" height="29.4" x="-35.435" y="2.801" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="e" width="79.579" height="29.4" x="-30.84" y="20.8" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="f" width="79.579" height="29.4" x="-29.307" y="21.949" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="g" width="74.749" height="58.852" x="29.961" y="-17.13" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="h" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="i" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="j" width="56.045" height="63.649" x="-13.43" y="-22.082" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="k" width="54.814" height="64.646" x="34.321" y="-37.644" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="l" width="33.541" height="35.313" x="38.847" y="-10.552" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="m" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="n" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="o" width="54.814" height="64.646" x="22.45" y="-1.645" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="p" width="39.409" height="43.623" x="32.919" y="11.36" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter></defs></svg>
+</file>
+
+<file path="src/App.jsx">
+import Mainpage from './components/mainPage/mainPage.jsx'
+import Header from './components/header/header.jsx'
+import Navbar from './components/navbar/navbar.jsx'
+import BirthplacePage from './components/bearthPage/bearthPage.jsx'
+import BirthSetupPage from './components/bearthSetupPage/bearthSetupPage.jsx'
+
+import { useEffect, useState } from 'react'
+
+function App() {
+  const [page, setPage] = useState('home');
+
+  useEffect(() => {
+    if (page !== 'birthplace') return;
+
+    const timer = setTimeout(() => {
+      setPage('birthSetup');
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [page]);
+
+  if (page === 'birthplace') {
+    return <BirthplacePage />;
+  }
+
+  if (page === 'birthSetup') {
+    return (
+      <BirthSetupPage
+        onStartLife={() => setPage('life')}
+        onChangeParameters={() => setPage('home')}
+      />
+    );
+  }
+
+  if (page === 'life') {
+    return <div>Здесь будет экран самой жизни персонажа</div>;
+  }
+
+  return(
+    <div className="app-container">
+      <Header />
+
+      <div className="app-content">
+        {page === 'home' && (
+          <Mainpage onStart={() => setPage('birthplace')} />
+        )}
+
+        {page === 'birthplace' && (
+          <BirthplacePage />
+        )}
+
+        {page === 'birthSetup' && (
+          <BirthSetupPage
+            onStartLife={() => setPage('life')}
+            onChangeParameters={() => setPage('home')}
+          />
+        )}
+
+        {page === 'life' && (
+          <div>Здесь будет экран жизни персонажа</div>
+        )}
+      </div>
+      <Navbar />
+    </div>
+    
+  )
+}
+
+export default App
+</file>
+
+<file path="src/index.css">
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap');
+
+/* Global reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* HTML */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Body */
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background: #e9edf8;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.app-container {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  background: #fcfaff;
+  overflow-x: hidden;
+}
+
+.app-content {
+  width: 100%;
+  min-height: 100dvh;
+}
+
+/* Form elements */
+button,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Focus */
+button:focus-visible,
+a:focus-visible,
+select:focus-visible {
+  outline: 2px solid #c9efb2;
+  outline-offset: 3px;
+}
+</file>
+
+<file path="src/main.jsx">
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import App from './App.jsx'
+import './index.css';
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+</file>
+
+<file path=".gitignore">
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+</file>
+
+<file path="eslint.config.js">
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig, globalIgnores } from 'eslint/config'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{js,jsx}'],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      globals: globals.browser,
+      parserOptions: { ecmaFeatures: { jsx: true } },
+    },
+  },
+])
+</file>
+
+<file path="index.html">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./src/assets/image1.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Жизнь без конца</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+</file>
+
+<file path="package.json">
+{
+  "name": "1in8billioncopy",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "lucide-react": "^1.76.0",
+    "react": "^19.3.1",
+    "react-country-flag": "^3.1.0",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "eslint": "^10.14.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "globals": "^17.13.0",
+    "sass": "^1.108.2",
+    "vite": "^8.3.6"
+  }
+}
+</file>
+
+<file path="README.md">
+# React + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+
+## React Compiler
+
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+</file>
+
+<file path="vite.config.js">
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+
+  server: {
+    host: '127.0.0.1',
+    port: 5173,
+    strictPort: true,
+
+    watch: {
+      usePolling: true,
+      interval: 500,
+    },
+
+    hmr: {
+      overlay: true,
+    },
+  },
+});
+</file>
+
+</files>

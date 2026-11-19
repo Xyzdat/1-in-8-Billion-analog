@@ -1,0 +1,399 @@
+$blue: #668cff;
+$text: #34415f;
+$muted: #71809f;
+$background: #eef1f9;
+$soft: #f2f3fc;
+
+.page {
+  width: 100%;
+  min-height: 100dvh;
+  background: $background;
+  color: $text;
+  font-family: 'Manrope', sans-serif;
+
+  min-height: 100dvh;
+  padding-top: 65px;
+  padding-bottom: 100px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  padding: 10px 20px 24px;
+}
+
+.card {
+  padding: 18px;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 2px 3px rgba(90, 115, 180, 0.12);
+
+  h3 {
+    margin: 0 0 15px;
+    font-size: 19px;
+    font-weight: 800;
+  }
+}
+
+.profileCard {
+  padding: 20px 10px 26px;
+  text-align: center;
+
+  h2 {
+    margin: 20px 0 3px;
+    font-size: 26px;
+    line-height: 1.3;
+    font-weight: 800;
+  }
+}
+
+.flag {
+  font-size: 43px;
+  line-height: 1.4;
+}
+
+.gender {
+  margin-left: 8px;
+  color: #f16bd0;
+}
+
+.location {
+  margin: 0;
+  color: #596987;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.region {
+  margin: 2px 0 18px;
+  font-size: 14px;
+}
+
+.birthStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.stat,
+.countryStat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+
+  min-width: 0;
+  padding: 12px 5px;
+  border-radius: 20px;
+  background: $soft;
+
+  strong {
+    color: $blue;
+    font-size: 15px;
+    line-height: 1.3;
+  }
+
+  > span:last-child {
+    color: #596987;
+    font-size: 11px;
+    line-height: 1.35;
+    font-weight: 700;
+  }
+}
+
+.statIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+  margin-bottom: 3px;
+
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(100, 130, 200, 0.15);
+  font-size: 19px;
+}
+
+.characteristics {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.characteristic {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.characteristicIcon,
+.familyIcon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+
+  width: 33px;
+  height: 33px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(100, 130, 200, 0.2);
+  font-size: 18px;
+}
+
+.characteristicInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.characteristicHeading {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 3px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.progress {
+  height: 9px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #e3e8ff;
+}
+
+.progressValue {
+  height: 100%;
+  border-radius: inherit;
+  background: #7193ff;
+}
+
+.hint {
+  margin: 12px 0 0;
+  color: #8a9ac0;
+  text-align: center;
+  font-size: 11px;
+}
+
+.familyList {
+  display: flex;
+  flex-direction: column;
+}
+
+.familyMember {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 50px;
+
+  &:not(:last-child) .familyInfo {
+    border-bottom: 1px solid #e4e8f4;
+  }
+}
+
+.familyInfo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-self: stretch;
+  min-width: 0;
+  padding: 6px 0;
+
+  strong {
+    color: $blue;
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  span {
+    font-size: 11px;
+    line-height: 1.3;
+  }
+}
+
+.familyDetails,
+.countryDetails {
+  margin-top: 12px;
+  padding: 12px 15px;
+  border-radius: 15px;
+  background: $soft;
+}
+
+.detailRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 28px;
+  font-size: 12px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #e4e8f4;
+  }
+
+  > span {
+    font-weight: 700;
+  }
+
+  > strong {
+    color: $blue;
+    font-size: 11px;
+    text-align: right;
+  }
+}
+
+.map {
+  position: relative;
+  height: 175px;
+  margin: 0 -8px 8px;
+  overflow: hidden;
+
+  // Декоративная точечная карта. Позже можно заменить SVG-картой.
+  background-image: radial-gradient(#8ba4ff 1px, transparent 1.2px);
+  background-size: 4px 4px;
+  opacity: 0.8;
+
+  clip-path: polygon(
+    0 25%, 12% 20%, 19% 8%, 31% 15%, 39% 25%,
+    48% 18%, 57% 26%, 68% 16%, 79% 24%, 100% 20%,
+    100% 75%, 87% 70%, 76% 90%, 65% 72%, 52% 88%,
+    40% 65%, 29% 90%, 18% 70%, 8% 55%, 0 60%
+  );
+}
+
+.mapDot {
+  position: absolute;
+  top: 40%;
+  right: 18%;
+  color: #7193ff;
+  font-size: 17px;
+  filter: drop-shadow(0 0 5px #7193ff);
+}
+
+.countryDetails {
+  margin-top: 0;
+}
+
+.countryLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.countryStats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.countryStat {
+  min-height: 125px;
+  padding: 12px 8px;
+
+  strong {
+    font-size: 15px;
+    font-weight: 600;
+  }
+}
+
+.rules {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: rule;
+
+  li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 38px;
+    padding: 8px 0 8px 36px;
+    border-bottom: 1px solid #e4e8f4;
+    font-size: 11px;
+    font-weight: 700;
+    counter-increment: rule;
+
+    &:last-child {
+      border-bottom: 0;
+    }
+
+    &::before {
+      content: counter(rule);
+      position: absolute;
+      left: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 23px;
+      height: 23px;
+      border-radius: 50%;
+      background: #e8edff;
+      color: $blue;
+      font-size: 13px;
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.startButton,
+.changeButton {
+  width: 100%;
+  min-height: 54px;
+  border: 0;
+  border-radius: 11px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 3px 7px rgba(100, 130, 200, 0.15);
+}
+
+.startButton {
+  color: #fff;
+  background: linear-gradient(105deg, #8299ff, #ff68a8);
+}
+
+.changeButton {
+  color: $blue;
+  background: #fff;
+  border: 1px solid #e3eaff;
+}
+
+@media (max-width: 360px) {
+  .content {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .profileCard h2 {
+    font-size: 22px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  .stat strong {
+    font-size: 13px;
+  }
+}

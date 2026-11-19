@@ -1,0 +1,37 @@
+.scrollbar {
+  position: absolute;
+  z-index: 20;
+  top: 0;
+  right: 3px;
+  bottom: 0;
+
+  width: 5px;
+
+  pointer-events: none;
+}
+
+.scrollbar__thumb {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  width: 4px;
+  min-height: 30px;
+
+  border-radius: 10px;
+  background: rgba(117, 143, 255, 0.55);
+
+  pointer-events: auto;
+  touch-action: none;
+  cursor: grab;
+
+  transition: background 0.2s;
+
+  &:hover {
+    background: rgba(117, 143, 255, 0.9);
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+}
