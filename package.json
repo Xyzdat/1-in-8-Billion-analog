@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "test": "node --test tests/simulation.test.mjs",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
@@ -25,6 +26,7 @@
     "eslint-plugin-react-refresh": "^0.5.7",
     "globals": "^17.13.0",
     "sass": "^1.108.2",
+    "typescript": "^7.0.2",
     "vite": "^8.3.6"
   }
 }

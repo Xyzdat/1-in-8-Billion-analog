@@ -21,7 +21,31 @@
     );
 
   color: #202033;
-  font-family: 'Manrope', Arial, sans-serif;
+  font-family: 'Nunito', Arial, sans-serif;
+
+  &__selection {
+    width: 100%;
+    animation: countrySwap 160ms ease-out both;
+  }
+
+  &--settled &__selection {
+    animation: countryReveal 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  &--settled &__chance {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  &__status {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
 
   &__content {
     display: flex;
@@ -41,6 +65,12 @@
 
     margin-bottom: 18px;
     font-size: 60px;
+
+    img {
+      width: 80px !important;
+      height: 60px !important;
+      object-fit: contain;
+    }
   }
 
   &__label {
@@ -79,10 +109,52 @@
     font-size: 16px;
     font-weight: 500;
     white-space: nowrap;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 300ms ease, transform 300ms ease;
 
     strong {
       color: #6388ff;
       font-weight: 800;
+    }
+  }
+}
+
+@keyframes countrySwap {
+  from {
+    opacity: 0.5;
+    transform: translateY(8px);
+    filter: blur(2px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes countryReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .birthplace {
+    &__selection,
+    &--settled &__selection {
+      animation: none;
+    }
+
+    &__chance {
+      transition: none;
     }
   }
 }

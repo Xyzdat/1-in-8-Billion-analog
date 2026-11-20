@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import styles from './header.module.scss';
 import { CheckCircle2 } from 'lucide-react';
+import menuIcon from '../../assets/figma-menu.svg';
+import shareIcon from '../../assets/figma-share.svg';
 
 function Header({onItemClick}) {
     const [notification, setNotification] = useState('');
@@ -21,7 +23,7 @@ function Header({onItemClick}) {
         try {
         await navigator.clipboard.writeText(window.location.href);
         setNotification('Ссылка скопирована');
-        } catch (error) {
+        } catch {
         setNotification('Не удалось скопировать ссылку');
         }
     };
@@ -33,9 +35,7 @@ function Header({onItemClick}) {
                 className={styles.header__menu}
                 aria-label="Открыть меню"
             >
-                <span />
-                <span />
-                <span />
+                <img src={menuIcon} alt="" />
             </button>
 
             <h1 
@@ -46,7 +46,7 @@ function Header({onItemClick}) {
                 onKeyDown={(event) => {
                     if (event.key === 'Enter' || event.key === ' '  ){
                         event.preventDefault();
-                        onItemClick;
+                        onItemClick();
                     }
                 }}  
             >
@@ -58,17 +58,7 @@ function Header({onItemClick}) {
                 aria-label="Поделиться"
                 onClick={handleShare}
             >
-                <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.7"
-                >
-                <path d="M12 16V3m-5 5 5-5 5 5" />
-                <path d="M5 12v8h14v-8" />
-                </svg>
+                <img src={shareIcon} alt="" />
             </button>
         </div>
 

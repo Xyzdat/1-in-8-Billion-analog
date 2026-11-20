@@ -1,0 +1,365 @@
+$ink: #26314b;
+$text: #56637e;
+$muted: #8994b3;
+$blue: #7098ff;
+$soft: #f3f4fc;
+
+.people {
+  padding: 22px 20px 18px;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(112, 152, 255, 0.07);
+
+  h2 {
+    margin: 0 0 4px;
+    color: $ink;
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  &__subtitle {
+    margin-bottom: 14px !important;
+    color: $muted;
+    font-size: 12px;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__person {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 109px;
+    padding: 12px;
+    border-radius: 18px;
+    background: $soft;
+  }
+
+  &__avatar {
+    display: grid;
+    flex: 0 0 58px;
+    height: 58px;
+    place-items: center;
+    border-radius: 50%;
+    background: #ffffff;
+    font-size: 32px;
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+
+    h3 {
+      margin: 0 0 4px;
+      color: $ink;
+      font-size: 16px;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    p {
+      margin: 0 0 4px;
+      color: $text;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .people__occupation {
+      color: #3d4865;
+      font-size: 13px;
+    }
+  }
+
+  &__closeness {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: $text;
+    font-size: 11px;
+    white-space: nowrap;
+
+    progress {
+      flex: 1;
+      width: 0;
+      min-width: 24px;
+      height: 7px;
+    }
+  }
+
+  &__friendsTitle {
+    margin: 10px 0 14px !important;
+  }
+
+  &__note {
+    margin-top: 12px !important;
+    color: $muted;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  &__empty {
+    padding: 12px;
+    border-radius: 14px;
+    background: $soft;
+    color: $text;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 390px) {
+    padding-right: 14px;
+    padding-left: 14px;
+
+    &__person {
+      gap: 8px;
+      padding: 10px;
+    }
+
+    &__avatar {
+      flex-basis: 42px;
+      height: 42px;
+      font-size: 26px;
+    }
+
+    &__closeness {
+      flex-wrap: wrap;
+      font-size: 10px;
+    }
+  }
+}
+
+.finances {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  h2 {
+    margin: 0;
+    color: $ink;
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  &__summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  &__total,
+  &__card {
+    padding: 18px 20px;
+    border-radius: 23px;
+    background: #ffffff;
+    box-shadow: 0 6px 18px rgba(112, 152, 255, 0.07);
+  }
+
+  &__total {
+    text-align: center;
+
+    strong {
+      display: block;
+      margin: 2px 0 6px;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    p {
+      color: $muted;
+      font-size: 12px;
+    }
+  }
+
+  &__income {
+    color: #2fa354;
+  }
+
+  &__expenses {
+    color: #ed4b25;
+  }
+
+  &__savings {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: $ink;
+    text-align: left;
+
+    > span:first-child {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 22px;
+      font-weight: 800;
+    }
+  }
+
+  &__savingsCaption {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+    color: $text;
+    font-size: 13px;
+  }
+
+  &__details {
+    margin-top: 12px !important;
+    padding-top: 12px;
+    border-top: 1px solid #e1e5fc;
+    color: $text;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  &__notice {
+    padding: 0 6px;
+    color: $muted;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  &__heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    > span {
+      color: $muted;
+      font-size: 11px;
+    }
+  }
+
+  &__description {
+    margin-top: 8px !important;
+    color: $text;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  &__action {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin-top: 10px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: $ink;
+    font-family: inherit;
+    font-size: 15px;
+    text-align: left;
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+
+    &:disabled .finances__actionText {
+      color: #7e89aa;
+    }
+  }
+
+  &__icon {
+    display: grid;
+    flex: 0 0 40px;
+    height: 40px;
+    place-items: center;
+    border-radius: 12px;
+    background: #eef1f5;
+    font-size: 20px;
+  }
+
+  &__actionText {
+    flex: 1;
+    min-width: 0;
+
+    h3,
+    strong {
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.4;
+    }
+
+    p,
+    small {
+      display: block;
+      margin-top: 2px;
+      color: $muted;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+  }
+
+  &__price {
+    flex-shrink: 0;
+    color: $blue;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  &__chevron {
+    color: $muted;
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  &__ledgerEntry {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #e1e5fc;
+    color: $text;
+    font-size: 12px;
+
+    > span:last-child {
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      gap: 4px;
+      text-align: right;
+    }
+  }
+
+  &__historyToggle {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    border: 0;
+    border-radius: 12px;
+    background: $soft;
+    color: $blue;
+    font-weight: 800;
+  }
+
+  @media (max-width: 360px) {
+    &__card,
+    &__total {
+      padding: 16px 14px;
+    }
+
+    &__action {
+      gap: 8px;
+    }
+
+    &__icon {
+      flex-basis: 32px;
+      height: 36px;
+    }
+
+    &__price {
+      font-size: 12px;
+    }
+  }
+}

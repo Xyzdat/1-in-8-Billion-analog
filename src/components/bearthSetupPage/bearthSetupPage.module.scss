@@ -1,25 +1,23 @@
-$blue: #668cff;
-$text: #34415f;
+$blue: #7098ff;
+$text: #3d4865;
 $muted: #71809f;
-$background: #eef1f9;
-$soft: #f2f3fc;
+$background: #eef1f8;
+$soft: #f3f5fc;
 
-.page {
+.birthSetup {
   width: 100%;
   min-height: 100dvh;
   background: $background;
   color: $text;
-  font-family: 'Manrope', sans-serif;
-
-  min-height: 100dvh;
+  font-family: 'Nunito', Arial, sans-serif;
   padding-top: 65px;
   padding-bottom: 100px;
 }
 
-.content {
+.birthSetup__content {
   display: flex;
   flex-direction: column;
-  gap: 17px;
+  gap: 18px;
 
   width: 100%;
   max-width: 430px;
@@ -27,61 +25,66 @@ $soft: #f2f3fc;
   padding: 10px 20px 24px;
 }
 
-.card {
-  padding: 18px;
-  border-radius: 15px;
-  background: #fff;
-  box-shadow: 0 2px 3px rgba(90, 115, 180, 0.12);
+.birthSetup__card {
+  padding: 16px 8px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 1px 4px #cdd6f5;
 
   h3 {
-    margin: 0 0 15px;
-    font-size: 19px;
+    margin: 0 12px 12px;
+    font-size: 20px;
     font-weight: 800;
   }
 }
 
-.profileCard {
-  padding: 20px 10px 26px;
+.birthSetup__profileCard {
+  height: 322px;
+  padding: 12px 9px 8px;
   text-align: center;
 
   h2 {
-    margin: 20px 0 3px;
-    font-size: 26px;
-    line-height: 1.3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 16px 0 2px;
+    font-size: 28px;
+    line-height: 1.2;
     font-weight: 800;
   }
 }
 
-.flag {
-  font-size: 43px;
-  line-height: 1.4;
+.birthSetup__flag {
+  font-size: 60px;
+  line-height: 60px;
 }
 
-.gender {
-  margin-left: 8px;
-  color: #f16bd0;
+.birthSetup__gender {
+  width: 24px;
+  height: 24px;
 }
 
-.location {
+.birthSetup__location {
   margin: 0;
-  color: #596987;
+  color: #56637e;
   font-size: 16px;
   font-weight: 800;
 }
 
-.region {
-  margin: 2px 0 18px;
+.birthSetup__region {
+  margin: 0 0 17px;
   font-size: 14px;
 }
 
-.birthStats {
+.birthSetup__birthStats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 }
 
-.stat,
-.countryStat {
+.birthSetup__stat,
+.birthSetup__countryStat {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -89,7 +92,7 @@ $soft: #f2f3fc;
   gap: 3px;
 
   min-width: 0;
-  padding: 12px 5px;
+  padding: 11px 5px;
   border-radius: 20px;
   background: $soft;
 
@@ -101,60 +104,74 @@ $soft: #f2f3fc;
 
   > span:last-child {
     color: #596987;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.35;
     font-weight: 700;
   }
 }
 
-.statIcon {
+.birthSetup__statIcon {
   display: flex;
   align-items: center;
   justify-content: center;
 
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   margin-bottom: 3px;
 
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 2px 4px rgba(100, 130, 200, 0.15);
   font-size: 19px;
+
+  img {
+    display: block;
+    width: 19px;
+    height: 19px;
+    object-fit: contain;
+  }
 }
 
-.characteristics {
+.birthSetup__characteristics {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
-.characteristic {
+.birthSetup__characteristic {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 11px;
 }
 
-.characteristicIcon,
-.familyIcon {
+.birthSetup__characteristicIcon,
+.birthSetup__familyIcon {
   display: flex;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
 
-  width: 33px;
-  height: 33px;
+  width: 23px;
+  height: 23px;
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 2px 4px rgba(100, 130, 200, 0.2);
   font-size: 18px;
+
+  img {
+    display: block;
+    width: 15px;
+    height: 15px;
+    object-fit: contain;
+  }
 }
 
-.characteristicInfo {
+.birthSetup__characteristicInfo {
   flex: 1;
   min-width: 0;
 }
 
-.characteristicHeading {
+.birthSetup__characteristicHeading {
   display: flex;
   justify-content: space-between;
   gap: 8px;
@@ -163,43 +180,43 @@ $soft: #f2f3fc;
   font-weight: 700;
 }
 
-.progress {
+.birthSetup__progress {
   height: 9px;
   overflow: hidden;
   border-radius: 10px;
   background: #e3e8ff;
 }
 
-.progressValue {
+.birthSetup__progressValue {
   height: 100%;
   border-radius: inherit;
   background: #7193ff;
 }
 
-.hint {
+.birthSetup__hint {
   margin: 12px 0 0;
   color: #8a9ac0;
   text-align: center;
   font-size: 11px;
 }
 
-.familyList {
+.birthSetup__familyList {
   display: flex;
   flex-direction: column;
 }
 
-.familyMember {
+.birthSetup__familyMember {
   display: flex;
   align-items: center;
   gap: 10px;
   min-height: 50px;
 
-  &:not(:last-child) .familyInfo {
+  &:not(:last-child) .birthSetup__familyInfo {
     border-bottom: 1px solid #e4e8f4;
   }
 }
 
-.familyInfo {
+.birthSetup__familyInfo {
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -220,15 +237,15 @@ $soft: #f2f3fc;
   }
 }
 
-.familyDetails,
-.countryDetails {
+.birthSetup__familyDetails,
+.birthSetup__countryDetails {
   margin-top: 12px;
   padding: 12px 15px;
   border-radius: 15px;
   background: $soft;
 }
 
-.detailRow {
+.birthSetup__detailRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -251,53 +268,47 @@ $soft: #f2f3fc;
   }
 }
 
-.map {
+.birthSetup__map {
   position: relative;
-  height: 175px;
-  margin: 0 -8px 8px;
+  width: 100%;
+  height: 177px;
   overflow: hidden;
-
-  // Декоративная точечная карта. Позже можно заменить SVG-картой.
-  background-image: radial-gradient(#8ba4ff 1px, transparent 1.2px);
-  background-size: 4px 4px;
-  opacity: 0.8;
-
-  clip-path: polygon(
-    0 25%, 12% 20%, 19% 8%, 31% 15%, 39% 25%,
-    48% 18%, 57% 26%, 68% 16%, 79% 24%, 100% 20%,
-    100% 75%, 87% 70%, 76% 90%, 65% 72%, 52% 88%,
-    40% 65%, 29% 90%, 18% 70%, 8% 55%, 0 60%
-  );
 }
 
-.mapDot {
+.birthSetup__mapImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.birthSetup__mapDot {
   position: absolute;
-  top: 40%;
-  right: 18%;
-  color: #7193ff;
-  font-size: 17px;
-  filter: drop-shadow(0 0 5px #7193ff);
+  top: 36%;
+  right: 17%;
+  width: 13px;
+  height: 13px;
 }
 
-.countryDetails {
+.birthSetup__countryDetails {
   margin-top: 0;
 }
 
-.countryLabel {
+.birthSetup__countryLabel {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.countryStats {
+.birthSetup__countryStats {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
   margin-top: 18px;
 }
 
-.countryStat {
-  min-height: 125px;
+.birthSetup__countryStat {
+  min-height: 111px;
   padding: 12px 8px;
 
   strong {
@@ -306,7 +317,7 @@ $soft: #f2f3fc;
   }
 }
 
-.rules {
+.birthSetup__rules {
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -349,14 +360,14 @@ $soft: #f2f3fc;
   }
 }
 
-.actions {
+.birthSetup__actions {
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
 
-.startButton,
-.changeButton {
+.birthSetup__startButton,
+.birthSetup__changeButton {
   width: 100%;
   min-height: 54px;
   border: 0;
@@ -368,32 +379,32 @@ $soft: #f2f3fc;
   box-shadow: 0 3px 7px rgba(100, 130, 200, 0.15);
 }
 
-.startButton {
+.birthSetup__startButton {
   color: #fff;
   background: linear-gradient(105deg, #8299ff, #ff68a8);
 }
 
-.changeButton {
+.birthSetup__changeButton {
   color: $blue;
   background: #fff;
   border: 1px solid #e3eaff;
 }
 
 @media (max-width: 360px) {
-  .content {
+  .birthSetup__content {
     padding-right: 12px;
     padding-left: 12px;
   }
 
-  .profileCard h2 {
+  .birthSetup__profileCard h2 {
     font-size: 22px;
   }
 
-  .card {
+  .birthSetup__card {
     padding: 15px;
   }
 
-  .stat strong {
+  .birthSetup__stat strong {
     font-size: 13px;
   }
 }

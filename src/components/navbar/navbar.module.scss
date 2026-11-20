@@ -8,18 +8,17 @@
     justify-content: space-around;
     width: 100%;
     max-width: 430px;
-    height: 90px;
-    padding: 0 8px;
+    height: 96px;
+    padding: 20px 20px 42px;
     transform: translateX(-50%);
-    border-top: 1px solid #f0edf6;
-    background: rgba(255, 255, 255, 0.97);
+    background: #ffffff;
 
   &__item {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 42px;
-    height: 42px;
+    width: 34px;
+    height: 34px;
     padding: 0;
     border: none;
     outline: none;
@@ -35,7 +34,7 @@
 
   &__icon {
     display: block;
-    width: 27px;
-    height: 27px;
+    width: 34px;
+    height: 34px;
   }
 }
