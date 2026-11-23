@@ -7,404 +7,667 @@ $soft: #f3f5fc;
 .birthSetup {
   width: 100%;
   min-height: 100dvh;
+  padding-top: 65px;
+  padding-bottom: 100px;
   background: $background;
   color: $text;
   font-family: 'Nunito', Arial, sans-serif;
-  padding-top: 65px;
-  padding-bottom: 100px;
-}
 
-.birthSetup__content {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-
-  width: 100%;
-  max-width: 430px;
-  margin: 0 auto;
-  padding: 10px 20px 24px;
-}
-
-.birthSetup__card {
-  padding: 16px 8px;
-  border-radius: 13px;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 1px 4px #cdd6f5;
-
-  h3 {
-    margin: 0 12px 12px;
-    font-size: 20px;
-    font-weight: 800;
-  }
-}
-
-.birthSetup__profileCard {
-  height: 322px;
-  padding: 12px 9px 8px;
-  text-align: center;
-
-  h2 {
+  &__content {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin: 16px 0 2px;
-    font-size: 28px;
-    line-height: 1.2;
-    font-weight: 800;
-  }
-}
-
-.birthSetup__flag {
-  font-size: 60px;
-  line-height: 60px;
-}
-
-.birthSetup__gender {
-  width: 24px;
-  height: 24px;
-}
-
-.birthSetup__location {
-  margin: 0;
-  color: #56637e;
-  font-size: 16px;
-  font-weight: 800;
-}
-
-.birthSetup__region {
-  margin: 0 0 17px;
-  font-size: 14px;
-}
-
-.birthSetup__birthStats {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.birthSetup__stat,
-.birthSetup__countryStat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-
-  min-width: 0;
-  padding: 11px 5px;
-  border-radius: 20px;
-  background: $soft;
-
-  strong {
-    color: $blue;
-    font-size: 15px;
-    line-height: 1.3;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 10px 20.5px 13px;
   }
 
-  > span:last-child {
-    color: #596987;
-    font-size: 12px;
-    line-height: 1.35;
-    font-weight: 700;
-  }
-}
+  &__card {
+    padding: 16px 8px;
+    border-radius: 13.293px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 1.329px 3.323px #cdd6f5;
 
-.birthSetup__statIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 32px;
-  height: 32px;
-  margin-bottom: 3px;
-
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 2px 4px rgba(100, 130, 200, 0.15);
-  font-size: 19px;
-
-  img {
-    display: block;
-    width: 19px;
-    height: 19px;
-    object-fit: contain;
-  }
-}
-
-.birthSetup__characteristics {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.birthSetup__characteristic {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-}
-
-.birthSetup__characteristicIcon,
-.birthSetup__familyIcon {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-
-  width: 23px;
-  height: 23px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 2px 4px rgba(100, 130, 200, 0.2);
-  font-size: 18px;
-
-  img {
-    display: block;
-    width: 15px;
-    height: 15px;
-    object-fit: contain;
-  }
-}
-
-.birthSetup__characteristicInfo {
-  flex: 1;
-  min-width: 0;
-}
-
-.birthSetup__characteristicHeading {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 3px;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.birthSetup__progress {
-  height: 9px;
-  overflow: hidden;
-  border-radius: 10px;
-  background: #e3e8ff;
-}
-
-.birthSetup__progressValue {
-  height: 100%;
-  border-radius: inherit;
-  background: #7193ff;
-}
-
-.birthSetup__hint {
-  margin: 12px 0 0;
-  color: #8a9ac0;
-  text-align: center;
-  font-size: 11px;
-}
-
-.birthSetup__familyList {
-  display: flex;
-  flex-direction: column;
-}
-
-.birthSetup__familyMember {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 50px;
-
-  &:not(:last-child) .birthSetup__familyInfo {
-    border-bottom: 1px solid #e4e8f4;
-  }
-}
-
-.birthSetup__familyInfo {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  justify-content: center;
-  align-self: stretch;
-  min-width: 0;
-  padding: 6px 0;
-
-  strong {
-    color: $blue;
-    font-size: 14px;
-    line-height: 1.3;
-  }
-
-  span {
-    font-size: 11px;
-    line-height: 1.3;
-  }
-}
-
-.birthSetup__familyDetails,
-.birthSetup__countryDetails {
-  margin-top: 12px;
-  padding: 12px 15px;
-  border-radius: 15px;
-  background: $soft;
-}
-
-.birthSetup__detailRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  min-height: 28px;
-  font-size: 12px;
-
-  &:not(:last-child) {
-    border-bottom: 1px solid #e4e8f4;
-  }
-
-  > span {
-    font-weight: 700;
-  }
-
-  > strong {
-    color: $blue;
-    font-size: 11px;
-    text-align: right;
-  }
-}
-
-.birthSetup__map {
-  position: relative;
-  width: 100%;
-  height: 177px;
-  overflow: hidden;
-}
-
-.birthSetup__mapImage {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.birthSetup__mapDot {
-  position: absolute;
-  top: 36%;
-  right: 17%;
-  width: 13px;
-  height: 13px;
-}
-
-.birthSetup__countryDetails {
-  margin-top: 0;
-}
-
-.birthSetup__countryLabel {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.birthSetup__countryStats {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  margin-top: 18px;
-}
-
-.birthSetup__countryStat {
-  min-height: 111px;
-  padding: 12px 8px;
-
-  strong {
-    font-size: 15px;
-    font-weight: 600;
-  }
-}
-
-.birthSetup__rules {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  counter-reset: rule;
-
-  li {
-    position: relative;
-    display: flex;
-    align-items: center;
-    min-height: 38px;
-    padding: 8px 0 8px 36px;
-    border-bottom: 1px solid #e4e8f4;
-    font-size: 11px;
-    font-weight: 700;
-    counter-increment: rule;
-
-    &:last-child {
-      border-bottom: 0;
+    h3 {
+      margin: 0 10px 12px;
+      font-size: 20px;
+      line-height: 22px;
+      font-weight: 800;
     }
 
-    &::before {
-      content: counter(rule);
-      position: absolute;
-      left: 0;
+    &--country h3 {
+      margin: 0 16.5px 18px;
+    }
 
+    &--rules {
+      min-height: 190px;
+
+      h3 {
+        margin: 0 19.5px 18px;
+      }
+    }
+  }
+
+  &__profileCard {
+    min-height: 322px;
+    padding: 12px 9.305px 26px;
+    text-align: center;
+
+    h2 {
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 8px;
+      margin: 16px 0 2px;
+      color: #26314b;
+      font-family: 'Century Gothic', 'Nunito', sans-serif;
+      font-size: 28px;
+      line-height: 33.6px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
 
-      width: 23px;
-      height: 23px;
-      border-radius: 50%;
-      background: #e8edff;
-      color: $blue;
-      font-size: 13px;
+      > span:first-child {
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
+    }
+  }
+
+  &__flag {
+    height: 60px;
+    font-size: 60px;
+    line-height: 60px;
+
+    img {
+      vertical-align: middle;
+    }
+  }
+
+  &__gender {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    color: #ff62b3;
+    font-size: 24px;
+    line-height: 24px;
+  }
+
+  &__location {
+    margin: 0;
+    color: #56637e;
+    font-family: 'Century Gothic', 'Nunito', sans-serif;
+    font-size: 16px;
+    line-height: 24.8px;
+    font-weight: 700;
+  }
+
+  &__region {
+    margin: 0;
+    font-size: 14px;
+    line-height: 19px;
+    font-weight: 600;
+  }
+
+  &__birthStats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 17px;
+  }
+
+  &__stat,
+  &__countryStat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    min-height: 111px;
+    padding: 11px 4px 10px;
+    border-radius: 20px;
+    background: $soft;
+
+    strong {
+      color: #7099ff;
+      font-size: 15px;
+      line-height: 18px;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    > span:last-child {
+      max-width: 90px;
+      color: #56637e;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 700;
+    }
+  }
+
+  &__stat {
+    display: grid;
+    grid-template-rows: 32px 1fr auto;
+    align-items: start;
+    justify-items: center;
+    gap: 5px;
+    padding: 12px 8px;
+    text-align: center;
+
+    > strong {
+      width: 100%;
+      font-size: clamp(12px, 3.5vw, 15px);
+    }
+
+    > span:last-child {
+      max-width: 100%;
+    }
+  }
+
+  &__statIcon {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-bottom: 1px;
+    border-radius: 15.85px;
+    background: #fff;
+    box-shadow: 0 1px 2.25px rgba(112, 152, 255, 0.25);
+    font-size: 16px;
+
+    img {
+      display: block;
+      width: 19px;
+      height: 19px;
+      object-fit: contain;
+    }
+  }
+
+  &__characteristics {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0 10px;
+  }
+
+  &__characteristic {
+    display: flex;
+    align-items: center;
+    gap: 11.299px;
+    min-height: 28px;
+    padding-top: 2px;
+
+    &:nth-child(2) {
+      min-height: 27px;
+
+      .birthSetup__progress {
+        height: 8px;
+      }
+    }
+  }
+
+  &__characteristicIcon {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 23px;
+    height: 23px;
+    border-radius: 14.622px;
+    background: #fff;
+    box-shadow: 0 1.329px 1.329px #d2daf7;
+
+    img {
+      display: block;
+      width: 15px;
+      height: 15px;
+      object-fit: contain;
+    }
+  }
+
+  &__characteristicInfo {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__characteristicHeading {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 1.329px;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 700;
+  }
+
+  &__progress {
+    height: 9px;
+    overflow: hidden;
+    border-radius: 6.646px;
+    background: #e1e5fc;
+  }
+
+  &__progressValue {
+    height: 100%;
+    border-radius: inherit;
+    background: $blue;
+  }
+
+  &__hint {
+    margin: 10px 0 0;
+    color: #8a9ac0;
+    text-align: center;
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  &__familyList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0 4.5px;
+  }
+
+  &__familyMember {
+    display: flex;
+    align-items: center;
+    gap: 11.299px;
+    min-height: 37.884px;
+    padding-left: 4.652px;
+  }
+
+  &__familyIcon {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 32.567px;
+    height: 32.567px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1.329px 1.329px #d2daf7;
+    font-size: 21px;
+
+    img {
+      display: block;
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+    }
+
+    .birthSetup__babyIcon {
+      width: 19px;
+      height: 19px;
+    }
+  }
+
+  &__familyInfo {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    align-self: stretch;
+    min-width: 0;
+    padding: 2.659px 0 2.56px;
+    border-bottom: 0.665px solid #e0e4f2;
+
+    strong {
+      color: #6387ff;
+      font-size: 14px;
+      line-height: 16px;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    span {
+      font-size: 11px;
+      line-height: 14px;
+    }
+  }
+
+  &__familyDetails,
+  &__countryDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 12px 4.5px 0;
+    padding: 16px;
+    border-radius: 13.293px;
+    background: #f3f2fc;
+  }
+
+  &__detailRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 21.933px;
+
+    &:not(:last-child) {
+      border-bottom: 0.665px solid #dce1f5;
+    }
+
+    > span {
+      min-width: 0;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 700;
+    }
+
+    > strong {
+      min-width: 0;
+      max-width: 56%;
+      color: #6387ff;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 800;
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__map {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 373 / 176.927;
+    overflow: hidden;
+  }
+
+  &__mapImage {
+    position: absolute;
+    top: -11.03%;
+    left: -10.3%;
+    display: block;
+    width: 116.4%;
+    height: 122.38%;
+  }
+
+  &__mapDot {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 12.7024px;
+    height: 12.7024px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+
+    img {
+      display: block;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $blue;
+      outline-offset: 3px;
+    }
+  }
+
+  &__mapTooltip {
+    position: absolute;
+    z-index: 1;
+    right: 8px;
+    bottom: 20px;
+    left: 8px;
+    display: none;
+    padding: 8px 10px;
+    border: 1px solid #dce1f5;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.96);
+    color: $text;
+    font-size: 11px;
+    line-height: 16px;
+    text-align: center;
+    pointer-events: none;
+
+    &--visible {
+      display: block;
+    }
+  }
+
+  &__mapAttribution {
+    position: absolute;
+    right: 4px;
+    bottom: 0;
+    padding: 1px 4px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.85);
+    color: $muted;
+    font-size: 9px;
+    line-height: 14px;
+  }
+
+  &__countryDetails {
+    gap: 8px;
+    margin: 18px 0 0;
+
+    .birthSetup__detailRow {
+      min-height: 25.256px;
+    }
+  }
+
+  &__countryLabel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__countryIcon {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 23.262px;
+    height: 23.262px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1.329px 1.329px #d2daf7;
+    color: #5d82ff;
+    font-size: 14px;
+  }
+
+  &__countryGlyph {
+    display: block;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    color: currentColor;
+  }
+
+  &__countryStats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-top: 18px;
+  }
+
+  &__countryStat {
+    display: grid;
+    grid-template-rows: 32px 1fr auto;
+    align-items: start;
+    justify-items: center;
+    gap: 5px;
+    padding: 12px 8px;
+    text-align: center;
+
+    .birthSetup__statIcon {
+      margin-bottom: 0;
+    }
+
+    > strong {
+      width: 100%;
+    }
+
+    > span:last-child {
+      max-width: 100%;
+    }
+
+    &:last-child img {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &__rules {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: rule;
+
+    li {
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 4px 8px 4px 46.5px;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+      counter-increment: rule;
+
+      &:not(:last-child) {
+        border-bottom: 0.665px solid #e0e4f2;
+      }
+
+      &::before {
+        position: absolute;
+        left: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 21.933px;
+        height: 21.933px;
+        border-radius: 10.966px;
+        background: #e6ebff;
+        color: #4d7aff;
+        font-size: 12px;
+        content: counter(rule);
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: default;
+    }
+  }
+
+  &__startButton,
+  &__changeButton {
+    width: 100%;
+    min-height: 54px;
+    padding: 16px 20px;
+    border: 0;
+    border-radius: 10px;
+    font-family: 'Century Gothic', 'Nunito', sans-serif;
+    font-size: 16px;
+    line-height: 1.1;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 1px 4.25px rgba(112, 152, 255, 0.25);
+  }
+
+  &__startButton {
+    background: linear-gradient(103.447deg, #8699fa 18.358%, #ff74a8 92.367%);
+    color: #fff;
+  }
+
+  &__changeButton {
+    background: #fff;
+    color: #7099ff;
+  }
+
+  &__startError {
+    display: grid;
+    gap: 8px;
+    color: #92303b;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  &__empty {
+    margin: 0;
+    color: $muted;
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  &__credit {
+    color: $muted;
+    font-size: 11px;
+    line-height: 16px;
+    text-align: center;
+
+    p {
+      margin: 0;
+    }
+
+    a {
+      color: #6387ff;
     }
   }
 }
 
-.birthSetup__actions {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
+@media (max-width: 390px) {
+  .birthSetup {
+    &__content {
+      padding-right: 16px;
+      padding-left: 16px;
+    }
 
-.birthSetup__startButton,
-.birthSetup__changeButton {
-  width: 100%;
-  min-height: 54px;
-  border: 0;
-  border-radius: 11px;
-  font-family: inherit;
-  font-size: 15px;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow: 0 3px 7px rgba(100, 130, 200, 0.15);
-}
+    &__profileCard h2 {
+      font-size: 25px;
+    }
 
-.birthSetup__startButton {
-  color: #fff;
-  background: linear-gradient(105deg, #8299ff, #ff68a8);
-}
+    &__familyDetails,
+    &__countryDetails {
+      padding: 12px;
+    }
 
-.birthSetup__changeButton {
-  color: $blue;
-  background: #fff;
-  border: 1px solid #e3eaff;
-}
+    &__detailRow > span {
+      font-size: 12px;
+    }
 
-@media (max-width: 360px) {
-  .birthSetup__content {
-    padding-right: 12px;
-    padding-left: 12px;
+    &__detailRow > strong {
+      font-size: 11px;
+    }
   }
+}
 
-  .birthSetup__profileCard h2 {
-    font-size: 22px;
-  }
+@media (max-width: 350px) {
+  .birthSetup {
+    &__content {
+      padding-right: 12px;
+      padding-left: 12px;
+    }
 
-  .birthSetup__card {
-    padding: 15px;
-  }
+    &__profileCard h2 {
+      font-size: 23px;
+    }
 
-  .birthSetup__stat strong {
-    font-size: 13px;
+    &__characteristics {
+      margin-right: 4px;
+      margin-left: 4px;
+    }
+
+    &__countryStats {
+      gap: 8px;
+    }
   }
 }

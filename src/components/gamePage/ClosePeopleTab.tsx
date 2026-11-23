@@ -1,11 +1,11 @@
-import type { initialSettings } from '../../mocks/mockData';
+import type { CharacterSettings } from '../../types/character';
 import { childhoodFriend, closePeople, siblingNames } from '../../mocks/gameTabs';
 import type { ClosePerson } from '../../mocks/gameTabs';
 import type { PersonId } from '../../mocks/lifeEconomy';
 import styles from './GameTabs.module.scss';
 
 type Props = {
-  settings: typeof initialSettings;
+  settings: CharacterSettings;
   age: number;
   closeness: Record<PersonId, number>;
 };

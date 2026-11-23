@@ -154,6 +154,10 @@ $background: #eef1f8;
   &:last-child {
     border-bottom: 0;
   }
+
+  &:disabled {
+    cursor: default;
+  }
 }
 
 .parameters__sectionDivider {
@@ -204,6 +208,10 @@ $background: #eef1f8;
     #e0e5ff var(--progress) 100%
   );
   cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+  }
 
   &::-webkit-slider-thumb {
     width: 20px;
@@ -265,6 +273,11 @@ $background: #eef1f8;
   margin-bottom: 11px;
   background: $blue;
   color: #fff;
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: default;
+  }
 }
 
 .parameters__resetButton {

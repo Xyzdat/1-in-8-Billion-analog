@@ -4,6 +4,9 @@ import jacquelineImage from '../assets/figma-jacqueline.png';
 import heartIcon from '../assets/setup-heart.png';
 import brainIcon from '../assets/setup-brain.png';
 import fireIcon from '../assets/setup-fire.png';
+import type { CharacterSettings, CharacterStats } from '../types/character';
+
+export type { SettingKey, StatKey } from '../types/character';
 
 export type Life = {
   id: number;
@@ -41,9 +44,9 @@ export const character = {
   },
 };
 
-export const initialStats = { ...character.stats };
+export const initialStats: CharacterStats = { ...character.stats };
 
-export const initialSettings = {
+export const initialSettings: CharacterSettings = {
   name: character.name,
   gender: character.gender,
   country: character.country,
@@ -60,9 +63,6 @@ export const initialSettings = {
   religion: character.religion,
   language: character.language,
 };
-
-export type StatKey = keyof typeof initialStats;
-export type SettingKey = keyof typeof initialSettings;
 
 export const characteristics = [
   { icon: heartIcon, name: 'Здоровье', value: character.stats.health },

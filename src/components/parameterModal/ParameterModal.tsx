@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { locations, parameterFields } from '../../mocks/parameterOptions';
 import type { ParameterOption } from '../../mocks/parameterOptions';
-import type { SettingKey } from '../../mocks/mockData';
+import type { SettingKey } from '../../types/character';
 import styles from './ParameterModal.module.scss';
 import closeIcon from '../../assets/modal-close.svg';
 import searchIcon from '../../assets/modal-search.svg';
@@ -18,9 +18,18 @@ type ParameterModalProps = {
   region: string;
   onClose: () => void;
   onConfirm: (value: string) => void;
+  showPrice?: boolean;
 };
 
-export default function ParameterModal({ field, value, country, region, onClose, onConfirm }: ParameterModalProps) {
+export default function ParameterModal({
+  field,
+  value,
+  country,
+  region,
+  onClose,
+  onConfirm,
+  showPrice = true,
+}: ParameterModalProps) {
   const config = parameterFields[field];
   const [draft, setDraft] = useState(value);
   const [query, setQuery] = useState('');
@@ -74,16 +83,29 @@ export default function ParameterModal({ field, value, country, region, onClose,
         <div className={styles.parameterModal__handle} aria-hidden="true" />
         <header className={styles.parameterModal__header}>
           <h2 id="parameter-modal-title">{config.title}</h2>
-          <span className={styles.parameterModal__price}>
-            <span className={styles.parameterModal__coin} aria-hidden="true"><img src={coinGlyph} alt="" /><img src={coinLine} alt="" /></span>
-            {config.price}
-          </span>
+          {showPrice && (
+            <span className={styles.parameterModal__price}>
+              <span className={styles.parameterModal__coin} aria-hidden="true">
+                <img src={coinGlyph} alt="" />
+                <img src={coinLine} alt="" />
+              </span>
+              {config.price}
+            </span>
+          )}
           <button type="button" className={styles.parameterModal__close} onClick={onClose} aria-label="Закрыть"><img src={closeIcon} alt="" /></button>
         </header>
         {field === 'name' ? (
           <>
             <label className={styles.parameterModal__label} htmlFor="character-name">Имя и фамилия</label>
-            <input id="character-name" className={styles.parameterModal__input} value={draft} onChange={(event) => setDraft(event.target.value)} maxLength={80} autoComplete="off" required />
+            <input
+              id="character-name"
+              className={styles.parameterModal__input}
+              value={draft}
+              onChange={(event) => setDraft(event.target.value)}
+              maxLength={100}
+              autoComplete="off"
+              required
+            />
             <span className={styles.parameterModal__hint}>Подсказки</span>
             <div className={styles.parameterModal__chips}>
               {config.options.map((option) => <button type="button" key={option.label} onClick={() => setDraft(option.label)}>{option.label}</button>)}

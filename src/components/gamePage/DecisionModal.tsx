@@ -7,15 +7,23 @@ import { Consequences } from './YearFocus';
 import styles from './GamePage.module.scss';
 
 type Props = {
-  decision: Decision;
+  decision: Pick<Decision, 'title' | 'important'> & {
+    text?: string;
+    options: (Pick<Decision['options'][number], 'title' | 'closeness' | 'money' | 'career'> & {
+      id?: string;
+      changes?: Decision['options'][number]['changes'];
+    })[];
+  };
   age: number;
   year: number;
   onChoose: (index: number) => void;
   onAuto: () => void;
-  onDefer: () => void;
+  onDefer?: () => void;
+  busy?: boolean;
+  failure?: { message: string; retry?: () => void } | null;
 };
 
-export default function DecisionModal({ decision, age, year, onChoose, onAuto, onDefer }: Props) {
+export default function DecisionModal({ decision, age, year, onChoose, onAuto, onDefer, busy, failure }: Props) {
   const ref = useRef<HTMLDialogElement>(null);
   const restoreFrame = useRef<number | null>(null);
 
@@ -58,33 +66,34 @@ export default function DecisionModal({ decision, age, year, onChoose, onAuto, o
       ref={ref}
       className={styles.game__decision}
       aria-labelledby="decision-title"
-      aria-describedby="decision-text"
+      aria-describedby={decision.text ? 'decision-text' : undefined}
       onCancel={(event) => event.preventDefault()}
     >
       <div className={styles.game__decisionContent}>
         {decision.important && (
           <div className={styles.game__decisionHeading}>
             <span className={styles.game__important}>Важное решение</span>
-            <button type="button" onClick={onDefer}>Отложить на время</button>
+            {onDefer && <button type="button" onClick={onDefer}>Отложить на время</button>}
           </div>
         )}
         <p className={styles.game__muted}>
           {age} {age === 1 ? 'год' : age >= 2 && age <= 4 ? 'года' : 'лет'} · {year}
         </p>
         <h2 id="decision-title">{decision.title}</h2>
-        <p id="decision-text">{decision.text}</p>
+        {decision.text && <p id="decision-text">{decision.text}</p>}
 
         {decision.options.map((option, index) => (
           <button
             className={styles.game__decisionOption}
             type="button"
-            key={option.title}
+            key={option.id ?? option.title}
             onClick={() => onChoose(index)}
+            disabled={busy || Boolean(failure)}
           >
             <span className={styles.game__decisionNumber}>{index + 1}</span>
             <span>
               <strong>{option.title}</strong>
-              <Consequences changes={option.changes} />
+              {option.changes && <Consequences changes={option.changes} />}
               <span className={styles.game__consequences}>
                 {(Object.keys(option.closeness || {}) as PersonId[]).map((person) => (
                   <span key={person}>
@@ -105,7 +114,23 @@ export default function DecisionModal({ decision, age, year, onChoose, onAuto, o
           </button>
         ))}
 
-        <button type="button" className={styles.game__autoChoice} onClick={onAuto}>
+        {busy && <p role="status">Сохраняем решение…</p>}
+        {failure && (
+          <div>
+            <p role="alert">{failure.message}</p>
+            {failure.retry && (
+              <button type="button" className={styles.game__autoChoice} onClick={failure.retry}>
+                Повторить
+              </button>
+            )}
+          </div>
+        )}
+        <button
+          type="button"
+          className={styles.game__autoChoice}
+          onClick={onAuto}
+          disabled={busy || Boolean(failure)}
+        >
           Включить «Автовыбор»
         </button>
       </div>

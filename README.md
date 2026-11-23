@@ -1,4 +1,34 @@
-# React + Vite
+# Симулятор жизни — frontend
+
+React, TypeScript, Vite и SCSS Modules. «Играть» генерирует новую жизнь через
+backend и показывает анкету. «Начать жизнь» открывает то же сохранение.
+«Продолжить жизнь» загружает последнее сохранение. При ошибке генерации
+доступен повтор или явный выбор мокового режима.
+
+## Запуск и проверка
+
+```text
+npm install
+npm run dev
+npm test
+npm run typecheck
+npm run lint
+npm run build
+```
+
+Настройки API приведены в `.env.example`. Локальные значения можно задать в `.env.local`.
+Для моковой игры backend не нужен. Прокси Vite передаёт `/api/...`
+на `http://127.0.0.1:8081/api/...`.
+
+[Порядок подключения Java backend](docs/backend-integration.md).
+
+Контракт backend 0.2.0 поддержан в `src/api/sessions.ts`: генерация, гостевая cookie,
+сохранения, переход года и ответы на решения. Покупки, фокус и финансы доступны
+в локальной игре.
+
+Ключи API и пароли базы данных хранятся только на backend.
+
+## Исходный шаблон Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

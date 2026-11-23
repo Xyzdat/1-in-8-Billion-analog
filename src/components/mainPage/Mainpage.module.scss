@@ -195,9 +195,32 @@
       transform: scale(0.98);
     }
 
+    &:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
     span:first-child {
       font-size: 22px;
       font-weight: 400;
+    }
+  }
+
+  &__continue {
+    width: 100%;
+    min-height: 48px;
+    margin-top: 10px;
+    padding: 10px 14px;
+    border: 1px solid #dbe3fb;
+    border-radius: 10px;
+    background: #fff;
+    color: #4d7aff;
+    font-size: 16px;
+    font-weight: 800;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: default;
     }
   }
 

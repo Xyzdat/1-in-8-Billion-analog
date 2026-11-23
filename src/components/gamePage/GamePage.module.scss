@@ -76,6 +76,12 @@
     }
   }
 
+  &__pausePlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   &__controls {
     display: flex;
     flex-wrap: wrap;

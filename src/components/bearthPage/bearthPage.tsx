@@ -5,11 +5,22 @@ import styles from './bearthPage.module.scss';
 
 type BirthplacePageProps = {
   onComplete: () => void;
+  result?: { country: string; countryCode: string; birthChance?: string } | null;
+  failure?: { message: string; retry?: () => void } | null;
+  busy?: boolean;
+  onMockStart?: () => void;
 };
 
-function BirthplacePage({ onComplete }: BirthplacePageProps) {
+function BirthplacePage({
+  onComplete,
+  result = character,
+  failure = null,
+  busy = false,
+  onMockStart,
+}: BirthplacePageProps) {
   const [step, setStep] = useState(0);
-  const [settled, setSettled] = useState(false);
+  const [animationDone, setAnimationDone] = useState(false);
+  const settled = animationDone && Boolean(result) && !failure;
 
   useEffect(() => {
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -23,27 +34,40 @@ function BirthplacePage({ onComplete }: BirthplacePageProps) {
         setStep(index);
         timer = setTimeout(advance, birthAnimation.steps[index].duration);
       } else {
-        setSettled(true);
-        timer = setTimeout(onComplete, birthAnimation.resultDuration);
+        setAnimationDone(true);
+        index = 0;
+        setStep(index);
+        timer = setTimeout(advance, birthAnimation.steps[index].duration);
       }
     };
 
     if (motion.matches) {
-      setSettled(true);
-      timer = setTimeout(onComplete, birthAnimation.reducedMotionDuration);
+      setAnimationDone(true);
     } else {
       timer = setTimeout(advance, birthAnimation.steps[0].duration);
     }
 
     return () => clearTimeout(timer);
-  }, [onComplete]);
+  }, []);
 
-  const current = settled ? character : birthAnimation.steps[step];
+  useEffect(() => {
+    if (!settled) {
+      return;
+    }
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const timer = window.setTimeout(
+      onComplete,
+      reducedMotion ? birthAnimation.reducedMotionDuration : birthAnimation.resultDuration,
+    );
+    return () => window.clearTimeout(timer);
+  }, [settled, onComplete]);
+
+  const current = settled && result ? result : birthAnimation.steps[step];
 
   return (
     <main
       className={`${styles.birthplace}${settled ? ` ${styles['birthplace--settled']}` : ''}`}
-      aria-busy={!settled}
+      aria-busy={!settled && !failure}
     >
       <div className={styles.birthplace__content}>
         <p className={styles.birthplace__label}>ОПРЕДЕЛЯЕТСЯ МЕСТО РОЖДЕНИЯ</p>
@@ -53,13 +77,30 @@ function BirthplacePage({ onComplete }: BirthplacePageProps) {
           </div>
           <h1 className={styles.birthplace__country}>{current.country}</h1>
         </div>
-        <div className={styles.birthplace__chance} aria-hidden={!settled}>
-          <span>Шанс родиться:</span>
-          <strong>{settled ? character.birthChance : '…'}</strong>
-        </div>
+        {result?.birthChance && (
+          <div className={styles.birthplace__chance} aria-hidden={!settled}>
+            <span>Шанс родиться:</span>
+            <strong>{settled ? result.birthChance : '…'}</strong>
+          </div>
+        )}
         <p className={styles.birthplace__status} role="status" aria-live="polite">
-          {settled ? `Место рождения: ${character.country}. Шанс родиться: ${character.birthChance}` : 'Выбираем страну рождения…'}
+          {settled && result ? `Место рождения: ${result.country}.` : 'Выбираем страну рождения…'}
         </p>
+        {failure && (
+          <div className={styles.birthplace__error}>
+            <p role="alert">{failure.message}</p>
+            {failure.retry && (
+              <button type="button" onClick={failure.retry} disabled={busy}>
+                Повторить
+              </button>
+            )}
+            {onMockStart && (
+              <button type="button" onClick={onMockStart} disabled={busy}>
+                Играть с моковыми данными
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </main>
   );

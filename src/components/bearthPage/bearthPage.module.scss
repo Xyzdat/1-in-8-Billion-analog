@@ -47,6 +47,32 @@
     white-space: nowrap;
   }
 
+  &__error {
+    display: grid;
+    gap: 10px;
+    width: 100%;
+    max-width: 360px;
+
+    p {
+      margin: 0;
+    }
+
+    button {
+      min-height: 44px;
+      padding: 10px 16px;
+      border: 1px solid #dbe3fb;
+      border-radius: 10px;
+      background: #fff;
+      color: #4d7aff;
+      font-weight: 800;
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: default;
+      }
+    }
+  }
+
   &__content {
     display: flex;
     flex-direction: column;

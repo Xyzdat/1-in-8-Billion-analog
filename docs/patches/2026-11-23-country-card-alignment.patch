@@ -1,0 +1,34 @@
+diff --git a/src/components/bearthSetupPage/bearthSetupPage.module.scss b/src/components/bearthSetupPage/bearthSetupPage.module.scss
+index 0a88ff1..b4ab5ce 100644
+--- a/src/components/bearthSetupPage/bearthSetupPage.module.scss
++++ b/src/components/bearthSetupPage/bearthSetupPage.module.scss
+@@ -469,19 +469,24 @@ $soft: #f3f5fc;
+   }
+ 
+   &__countryStat {
+-    justify-content: center;
++    display: grid;
++    grid-template-rows: 32px 1fr auto;
++    align-items: start;
++    justify-items: center;
+     gap: 5px;
++    padding: 12px 8px;
++    text-align: center;
+ 
+     .birthSetup__statIcon {
+       margin-bottom: 0;
+     }
+ 
+-    > span:last-child {
+-      max-width: 177px;
++    > strong {
++      width: 100%;
+     }
+ 
+-    &:last-child > span:last-child {
+-      max-width: 134px;
++    > span:last-child {
++      max-width: 100%;
+     }
+ 
+     &:last-child img {

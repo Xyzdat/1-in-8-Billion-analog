@@ -12,6 +12,11 @@ import type { Life } from '../../mocks/mockData'
 
 type MainPageProps = {
   onStart: () => void
+  onContinue: () => void
+  onMockStart: () => void
+  busy: boolean
+  failure: { message: string; retry?: () => void } | null
+  resumeMessage: string
 }
 
 function Hero() {
@@ -65,7 +70,7 @@ function ParallelLives() {
   )
 }
 
-function MainPage({ onStart }: MainPageProps) {
+function MainPage({ onStart, onContinue, onMockStart, busy, failure, resumeMessage }: MainPageProps) {
   const scrollContainerRef = useRef<HTMLElement>(null)
 
   return (
@@ -84,10 +89,49 @@ function MainPage({ onStart }: MainPageProps) {
           <div className={styles.mainPage__separator} aria-hidden="true">
             <img src={divider} alt="" />
           </div>
-          <button className={styles.mainPage__start} type="button" onClick={onStart}>
+          <button
+            className={styles.mainPage__start}
+            type="button"
+            onClick={onStart}
+            disabled={busy || Boolean(failure?.retry)}
+            aria-busy={busy}
+          >
             <span aria-hidden="true">🎲</span>
-            <span>Старт</span>
+            <span>{busy ? 'Загрузка…' : 'Играть'}</span>
           </button>
+          <button
+            className={styles.mainPage__continue}
+            type="button"
+            onClick={onContinue}
+            disabled={busy || Boolean(failure?.retry)}
+            aria-busy={busy}
+          >
+            Продолжить жизнь
+          </button>
+          {failure && (
+            <div>
+              <p role="alert">{failure.message}</p>
+              {failure.retry && (
+                <button
+                  className={styles.mainPage__continue}
+                  type="button"
+                  onClick={failure.retry}
+                  disabled={busy}
+                >
+                  Повторить
+                </button>
+              )}
+              <button
+                className={styles.mainPage__continue}
+                type="button"
+                onClick={onMockStart}
+                disabled={busy}
+              >
+                Играть с моковыми данными
+              </button>
+            </div>
+          )}
+          {resumeMessage && <p role="status">{resumeMessage}</p>}
           <ParallelLives />
         </div>
       </main>

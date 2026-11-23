@@ -1,0 +1,17 @@
+Источники координат карты рождения
+
+Natural Earth, Admin 0 Countries — public domain.
+https://www.naturalearthdata.com/
+https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_110m_admin_0_countries.geojson
+
+Google for Developers, countries.csv — CC BY 4.0.
+https://developers.google.com/public-data/docs/canonical/countries_csv
+
+GeoNames, cities15000 — CC BY 4.0.
+https://www.geonames.org/
+https://download.geonames.org/export/dump/
+https://creativecommons.org/licenses/by/4.0/
+
+Данные извлечены и сокращены до кодов, названий и координат 23.11.2026.
+Для городов сохранены варианты названий. Для стран используются географические
+ориентиры. На стилизованной карте положение приблизительное.

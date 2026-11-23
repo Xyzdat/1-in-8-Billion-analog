@@ -1,4 +1,4 @@
-import type { SettingKey } from './mockData';
+import type { SettingKey } from '../types/character';
 import catImage from '../assets/modal-cat.png';
 import dogImage from '../assets/modal-dog.png';
 import pawsImage from '../assets/modal-paws.png';
