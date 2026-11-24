@@ -18,7 +18,7 @@ export type ServerFinancesTabProps = {
 export default function ServerFinancesTab({ session, server, resource, onBlockTime }: ServerFinancesTabProps) {
   const [panel, setPanel] = useState<{ category: SpendingCategoryId; itemId?: string } | null>(null);
   const { data, loading, error, retry } = resource;
-  const blocked = loading || Boolean(error) || server.busy || Boolean(server.failure?.retry) || data?.version !== session.version;
+  const blocked = session.state.status === 'COMPLETE' || loading || Boolean(error) || server.busy || Boolean(server.failure?.retry) || data?.version !== session.version;
 
   return (
     <div className={styles.finances} aria-label="Траты и вложения">

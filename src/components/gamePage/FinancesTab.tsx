@@ -5,6 +5,7 @@ import { getShopItems } from '../../mocks/spendingCatalog';
 import type { ShopSection } from '../../mocks/spendingCatalog';
 import type { Purchase } from '../../game/spending';
 import styles from './GameTabs.module.scss';
+import HistoryScroll from './HistoryScroll';
 
 type Props = {
   age: number;
@@ -64,7 +65,6 @@ function FinanceSummary({ age, finances }: Props) {
 }
 
 export default function FinancesTab({ age, finances, purchases = [], onOpen }: Props) {
-  const [showAll, setShowAll] = useState(false);
   const ledger = [...finances.ledger].reverse();
   return (
     <div className={styles.finances} aria-label="Траты и вложения">
@@ -86,23 +86,25 @@ export default function FinancesTab({ age, finances, purchases = [], onOpen }: P
             Личных операций пока нет. Карманные деньги появятся с 6 лет.
           </p>
         )}
-        {(showAll ? ledger : ledger.slice(0, 8)).map((entry) => (
-          <div className={styles.finances__ledgerEntry} key={entry.id}>
-            <span>{Math.floor(entry.age)} лет · {entry.title}</span>
-            <span>
-              {entry.income > 0 && (
-                <strong className={styles.finances__income}>+{money(entry.income)}</strong>
-              )}
-              {entry.expenses > 0 && (
-                <strong className={styles.finances__expenses}>−{money(entry.expenses)}</strong>
-              )}
-            </span>
-          </div>
-        ))}
-        {ledger.length > 8 && (
-          <button className={styles.finances__historyToggle} type="button" onClick={() => setShowAll(!showAll)}>
-            {showAll ? 'Свернуть' : 'Показать все операции'}
-          </button>
+        <HistoryScroll label="Операции бюджета" visibleRows={12}>
+          {ledger.map((entry) => (
+            <div className={styles.finances__ledgerEntry} key={entry.id}>
+              <span>{Math.floor(entry.age)} лет · {entry.title}</span>
+              <span>
+                {entry.income > 0 && (
+                  <strong className={styles.finances__income}>+{money(entry.income)}</strong>
+                )}
+                {entry.expenses > 0 && (
+                  <strong className={styles.finances__expenses}>−{money(entry.expenses)}</strong>
+                )}
+              </span>
+            </div>
+          ))}
+        </HistoryScroll>
+        {ledger.length > 12 && (
+          <p className={styles.finances__historyHint}>
+            Прокрутите вниз, чтобы увидеть всю историю операций.
+          </p>
         )}
       </section>
 

@@ -4,13 +4,13 @@ import type { GameChoices } from './simulation';
 import type { FocusId } from '../mocks/gameChoices';
 import type { GameStats } from '../mocks/lifeEvents';
 import type { ShopSection } from '../mocks/spendingCatalog';
+import { useAutoDecision } from './useAutoDecision';
 
 export function useLifeSimulation(initial: GameStats, initialAppearance = 64) {
   const [elapsed, setElapsed] = useState(0);
   const [paused, setPaused] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [auto, setAuto] = useState(false);
-  const autoRef = useRef(false);
   const [choices, setChoices] = useState<GameChoices>({ answers: {}, focus: {} });
   const choicesRef = useRef<GameChoices>({ answers: {}, focus: {} });
   const clock = useRef({ elapsed: 0, last: 0, paused: false, speed: 1 });
@@ -20,12 +20,7 @@ export function useLifeSimulation(initial: GameStats, initialAppearance = 64) {
   function sync(now: number) {
     const state = clock.current;
     const result = advanceUntilDecision(state.elapsed, now - state.last, state.speed, state.paused || blocked.current, choicesRef.current);
-    const barrier = result.decision;
     state.elapsed = result.elapsed;
-    if (barrier && autoRef.current && !blocked.current) {
-      choicesRef.current = { ...choicesRef.current, answers: { ...choicesRef.current.answers, [barrier.id]: 0 } };
-      setChoices(choicesRef.current);
-    }
     state.last = now;
     return state.elapsed;
   }
@@ -64,21 +59,22 @@ export function useLifeSimulation(initial: GameStats, initialAppearance = 64) {
   function answerDecision(index: number) {
     const decision = nextDecision(clock.current.elapsed, choicesRef.current.answers, choicesRef.current.deferred);
     if (!decision?.options[index]) return;
+    autoDecision.cancel();
     choicesRef.current = { ...choicesRef.current, answers: { ...choicesRef.current.answers, [decision.id]: index } };
     clock.current.last = performance.now();
     setChoices(choicesRef.current);
   }
 
   function toggleAuto() {
-    autoRef.current = !autoRef.current;
-    setAuto(autoRef.current);
-    if (autoRef.current) answerDecision(0);
+    autoDecision.cancel();
+    setAuto((value) => !value);
   }
 
   function deferDecision() {
     const time = sync(performance.now());
     const decision = nextDecision(time, choicesRef.current.answers, choicesRef.current.deferred);
     if (!decision || !decision.important || time >= END_MS) return;
+    autoDecision.cancel();
     choicesRef.current = { ...choicesRef.current, deferred: { ...choicesRef.current.deferred, [decision.id]: Math.min(END_AGE, time / YEAR_MS + 0.25) } };
     setChoices(choicesRef.current);
     setElapsed(time);
@@ -111,9 +107,17 @@ export function useLifeSimulation(initial: GameStats, initialAppearance = 64) {
     return '';
   }
 
+  const decision = nextDecision(elapsed, choices.answers, choices.deferred);
+  const autoDecision = useAutoDecision({
+    enabled: auto,
+    decisionKey: decision?.id ?? null,
+    blocked: paused || blocked.current || elapsed === END_MS,
+    onChoose: () => answerDecision(0),
+  });
+
   return { ...getSnapshot(elapsed, initial, choices, initialAppearance), elapsed, paused, speed, changeSpeed, togglePause,
     purchases: choices.purchases || [], blockTime, purchase,
     focus: choices.focus[Math.floor(elapsed / YEAR_MS)] || 'balanced', chooseFocus,
-    auto, toggleAuto, deferDecision,
-    decision: nextDecision(elapsed, choices.answers, choices.deferred), answerDecision };
+    auto, autoSeconds: autoDecision.seconds, toggleAuto, deferDecision,
+    decision, answerDecision };
 }

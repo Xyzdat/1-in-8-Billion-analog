@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ApiError, sessionsApi } from '../api';
+import { localEngineErrorMessages } from '../api/errors';
 import { validateUuid } from '../api/sessionDecoders';
 import type { CharacterChanges, Session } from '../api/sessionTypes';
 import type { SessionCommand } from '../api/sessions';
@@ -42,6 +43,7 @@ function canRetryCommand(error: unknown) {
 
 function errorMessage(error: unknown) {
   const engineMessages: Record<string, string> = {
+    ...localEngineErrorMessages,
     ENGINE_RATE_LIMIT: 'Слишком много обращений к движку. Попробуйте немного позже.',
     ENGINE_QUOTA_EXCEEDED: 'Лимит генерации жизней исчерпан.',
     ENGINE_KEY_REJECTED: 'Движок отклонил доступ. Требуется проверить настройки сервера.',
@@ -167,14 +169,14 @@ export function useServerLife() {
     // Команда создаётся один раз и сохраняется в замыкании кнопки повтора.
     let command: SessionCommand | undefined;
     run(async (signal) => {
-      command ??= sessionsApi.prepareGenerateSession();
+      command ??= sessionsApi.prepareGenerateLocalSession();
       acceptSession(await command.execute(signal));
       onSuccess();
     });
   }
 
   function mutate(prepare: (current: Session) => SessionCommand, onSuccess?: () => void) {
-    if (!session || failure?.retry) {
+    if (!session || session.state.status === 'COMPLETE' || failure?.retry) {
       return;
     }
     const current = session;
@@ -185,7 +187,7 @@ export function useServerLife() {
         acceptSession(await command.execute(signal));
         onSuccess?.();
       } catch (error) {
-        if (error instanceof ApiError && error.code === 'VERSION_CONFLICT') {
+        if (error instanceof ApiError && (error.code === 'VERSION_CONFLICT' || error.code === 'SESSION_COMPLETE')) {
           // Если GET тоже завершится ошибкой, кнопка повтора должна выполнить только GET.
           command = undefined;
           const refresh: Task = async (refreshSignal) => {
@@ -218,7 +220,7 @@ export function useServerLife() {
     if (!session || session.state.status === 'COMPLETE' || session.state.pendingDecision) {
       return;
     }
-    mutate((current) => sessionsApi.prepareAdvance(current.id, current.version));
+    mutate((current) => sessionsApi.prepareProgress(current));
   }
 
   function answer(optionId: string) {

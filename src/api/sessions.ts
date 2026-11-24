@@ -1,5 +1,5 @@
 import type { createApiClient } from './client.ts';
-import type { CharacterChanges, CreateSessionRequest, Session } from './sessionTypes.ts';
+import type { CharacterChanges, CreateSessionRequest, GenerateLocalSessionRequest, Session } from './sessionTypes.ts';
 import type { BuySpendingItemRequest } from './financeTypes.ts';
 import {
   decodeEmpty,
@@ -10,6 +10,7 @@ import {
   decodeSpendingShop,
   validatePurchase,
   validateCreateSession,
+  validateGenerateLocalSession,
   validateCharacterChanges,
   validateUuid,
   validateVersion,
@@ -103,6 +104,10 @@ export function createSessionsApi(client: ReturnType<typeof createApiClient>) {
     prepareGenerateSession() {
       return command('/v1/sessions/generated', {});
     },
+    prepareGenerateLocalSession(request: GenerateLocalSessionRequest = {}) {
+      validateGenerateLocalSession(request);
+      return command('/v1/sessions/generated/local', request);
+    },
     prepareEditCharacter(id: string, expectedVersion: number, changes: CharacterChanges) {
       validateVersion(expectedVersion);
       validateCharacterChanges(changes);
@@ -111,6 +116,15 @@ export function createSessionsApi(client: ReturnType<typeof createApiClient>) {
     prepareAdvance(id: string, expectedVersion: number) {
       validateVersion(expectedVersion);
       return command(`${sessionPath(id)}/advance`, { expectedVersion });
+    },
+    prepareStep(id: string, expectedVersion: number) {
+      validateVersion(expectedVersion);
+      return command(`${sessionPath(id)}/step`, { expectedVersion });
+    },
+    prepareProgress(session: Session) {
+      validateVersion(session.version);
+      const action = session.simulation ? 'step' : 'advance';
+      return command(`${sessionPath(session.id)}/${action}`, { expectedVersion: session.version });
     },
     prepareAnswer(id: string, decisionId: string, optionId: string, expectedVersion: number) {
       validateVersion(expectedVersion);

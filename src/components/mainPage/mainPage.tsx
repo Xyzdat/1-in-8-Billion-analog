@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import CustomScrollbar from '../customScrollbar/customScrollbar'
+import CustomScrollbar from '../customScrollbar/customScrollbar.tsx'
 import heroImage from '../../assets/figma-main-hero.png'
 import canadaFlag from '../../assets/figma-canada.png'
 import chanceBackground from '../../assets/figma-chance-bg.svg'

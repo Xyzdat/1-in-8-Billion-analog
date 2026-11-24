@@ -7,8 +7,8 @@ import { Globe, BookOpen } from 'lucide-react';
 
 export default function BirthCountryCard({ model }: { model: BirthCardModel }) {
   const stats = [
-    { icon: clockIcon, value: model.lifeExpectancy, label: 'ожидаемая продолжительность жизни' },
-    { icon: doveIcon, value: model.childMortality, label: 'вероятность смерти в возрасте до 5 лет' },
+    { icon: clockIcon, value: model.lifeExpectancy, label: 'ожидаемая продолжительность жизни', context: model.lifeExpectancyContext },
+    { icon: doveIcon, value: model.childMortality, label: 'вероятность смерти в возрасте до 5 лет', context: model.childMortalityContext },
   ];
   const icons = [
     <BookOpen
@@ -29,25 +29,25 @@ export default function BirthCountryCard({ model }: { model: BirthCardModel }) {
       />
 
       <div className={styles.birthSetup__countryDetails}>
-        {model.countryDetails.map(({ label, value }, index) => (
+        {model.countryDetails.map(({ label, value, context }, index) => (
           <div className={styles.birthSetup__detailRow} key={label}>
             <span className={styles.birthSetup__countryLabel}>
               <span className={styles.birthSetup__countryIcon} aria-hidden="true">{icons[index]}</span>
               {label}
             </span>
-            <strong>{value}</strong>
+            <strong title={context}>{value}</strong>
           </div>
         ))}
       </div>
 
       <div className={styles.birthSetup__countryStats}>
-        {stats.map(({ icon, value, label }) => (
+        {stats.map(({ icon, value, label, context }) => (
           <div className={styles.birthSetup__countryStat} key={label}>
             <span className={styles.birthSetup__statIcon}>
               <img src={icon} alt="" />
             </span>
             <strong>{label}</strong>
-            <span>{value}</span>
+            <span title={context}>{value}</span>
           </div>
         ))}
       </div>

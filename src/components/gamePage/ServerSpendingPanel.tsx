@@ -32,7 +32,7 @@ export default function ServerSpendingPanel({
   const [petName, setPetName] = useState<string | null>(null);
   const selected = shop?.offers.find((offer) => offer.id === selectedId) ?? shop?.offers[0];
   const currentPetName = petName ?? shop?.suggestedPetNames[0] ?? '';
-  const locked = server.busy || Boolean(server.failure?.retry);
+  const locked = session.state.status === 'COMPLETE' || server.busy || Boolean(server.failure?.retry);
   const readOnly = session.provider !== 'local';
   const money = (value: number | null) => formatServerMoney(value, shop?.currency ?? 'RUB');
   const stat = shop && (categoryId === 'health' ? shop.stats.health : categoryId === 'appearance' ? shop.stats.appearance : null);

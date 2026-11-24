@@ -1,22 +1,30 @@
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
-import { YEAR_MS } from './simulation';
 import type { ServerLife } from './useServerLife';
 import type { Session } from '../api/sessionTypes';
-import { getServerClockKey } from './serverClock';
+import { advanceServerClock, getServerClockFrame, getServerYearProgress } from './serverClock';
+import { useAutoDecision } from './useAutoDecision';
 
 export function useServerClock(session: Session, server: ServerLife, externalBlocked = false) {
   const { age, status, pendingDecision } = session.state;
-  const key = getServerClockKey(session);
+  const frame = getServerClockFrame(session);
+  const { key, durationMs } = frame;
   const [speed, changeSpeed] = useState(1);
   const [paused, setPaused] = useState(false);
   const [auto, setAuto] = useState(false);
   const [clock, setClock] = useState({ key, milliseconds: 0, playedMs: 0 });
   const elapsed = useRef({ key, milliseconds: 0, playedMs: 0 });
-  const attemptedDecision = useRef<number | null>(null);
   const complete = status === 'COMPLETE';
   const blocked = server.busy || Boolean(server.failure) || externalBlocked;
   const advance = useEffectEvent(() => server.advance());
-  const answer = useEffectEvent((id: string) => server.answer(id));
+  const autoDecision = useAutoDecision({
+    enabled: auto,
+    decisionKey: pendingDecision ? `${session.id}:${pendingDecision.id}` : null,
+    blocked: blocked || paused || complete,
+    onChoose: () => {
+      const option = pendingDecision?.options[0];
+      if (option) server.answer(option.id);
+    },
+  });
 
   useEffect(() => {
     if (elapsed.current.key !== key) {
@@ -28,39 +36,40 @@ export function useServerClock(session: Session, server: ServerLife, externalBlo
     let lastUpdate = performance.now();
     const timer = window.setInterval(() => {
       const now = performance.now();
-      const milliseconds = Math.min(YEAR_MS, elapsed.current.milliseconds + (now - lastUpdate) * speed);
-      const playedMs = elapsed.current.playedMs + milliseconds - elapsed.current.milliseconds;
+      elapsed.current = advanceServerClock(
+        elapsed.current,
+        { key, durationMs },
+        now - lastUpdate,
+        speed,
+        false,
+      );
       lastUpdate = now;
-      elapsed.current = { key, milliseconds, playedMs };
       setClock(elapsed.current);
 
-      if (milliseconds === YEAR_MS) {
+      if (elapsed.current.milliseconds === durationMs) {
         window.clearInterval(timer);
         advance();
       }
     }, 50);
 
     return () => window.clearInterval(timer);
-  }, [key, speed, paused, complete, blocked, pendingDecision]);
-
-  useEffect(() => {
-    const option = pendingDecision?.options[0];
-    if (auto && option && !complete && !blocked && attemptedDecision.current !== session.version) {
-      attemptedDecision.current = session.version;
-      answer(option.id);
-    }
-  }, [auto, complete, blocked, pendingDecision, session.version]);
+  }, [key, durationMs, speed, paused, complete, blocked, pendingDecision]);
 
   return {
     age,
     complete,
-    progress: complete ? 1 : clock.key === key ? clock.milliseconds / YEAR_MS : 0,
+    progress: getServerYearProgress(clock, frame, complete),
     playedMs: clock.playedMs,
     speed,
     changeSpeed,
     paused,
     togglePause: () => setPaused((value) => !value),
     auto,
-    toggleAuto: () => setAuto((value) => !value),
+    autoSeconds: autoDecision.seconds,
+    cancelAutoDecision: autoDecision.cancel,
+    toggleAuto: () => {
+      autoDecision.cancel();
+      setAuto((value) => !value);
+    },
   };
 }

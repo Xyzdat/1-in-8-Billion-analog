@@ -1,5 +1,14 @@
 export type ApiErrorKind = 'http' | 'network' | 'timeout' | 'invalid-response';
 
+export const localEngineErrorMessages: Readonly<Record<string, string>> = {
+  STEP_REQUIRED: 'Для этой жизни нужны двухмесячные шаги. Обновите сохранение и повторите действие.',
+  STEP_UNSUPPORTED: 'Это сохранение использует прежний движок. Обновите сохранение и повторите действие.',
+  STATISTICS_NOT_READY: 'Статистика рождения ещё не подготовлена на сервере. Попробуйте позже.',
+  CONTENT_UNAVAILABLE: 'События локального движка временно недоступны. Попробуйте позже.',
+  ENGINE_VERSION_UNAVAILABLE: 'Версия движка этого сохранения сейчас недоступна на сервере.',
+  DECISION_REQUIRED: 'Сначала ответьте на ожидающее решение.',
+};
+
 export class ApiError extends Error {
   readonly kind: ApiErrorKind;
   readonly status?: number;

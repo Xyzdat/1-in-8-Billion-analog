@@ -1,10 +1,11 @@
-import type { CreateSessionRequest, Session, SessionSummary } from './sessionTypes.ts';
+import type { CreateSessionRequest, GenerateLocalSessionRequest, Session, SessionSummary } from './sessionTypes.ts';
 import type { BuySpendingItemRequest, Finances, SpendingShop } from './financeTypes.ts';
+import { supportedCountryCodes } from '../data/supportedCountries.ts';
 
 type Validator = (value: unknown) => void;
 
 function fail(): never {
-  throw new Error('Данные не соответствуют Life Backend OpenAPI 0.5.0.');
+  throw new Error('Данные не соответствуют Life Backend OpenAPI 0.7.1.');
 }
 
 function object(fields: Record<string, Validator>): Validator {
@@ -58,6 +59,13 @@ function array(validate: Validator): Validator {
       fail();
     }
     value.forEach(validate);
+  };
+}
+
+function record(validate: Validator): Validator {
+  return (value) => {
+    object({})(value);
+    Object.values(value as Record<string, unknown>).forEach(validate);
   };
 }
 
@@ -146,6 +154,48 @@ const birthDetails = object({
   disabilityCodes: optional(nullable(array(text()))),
 });
 
+const birthMeasure = object({
+  value: number(),
+  unit: enumeration(['probability', 'USD_CURRENT', 'years']),
+  year: integer(Number.MIN_SAFE_INTEGER),
+  source: text(),
+  basis: enumeration(['STATISTIC', 'PROJECTION', 'GAME_SELECTION']),
+  note: text(),
+});
+const birthDescription = object({
+  value: nullable(text()),
+  basis: enumeration(['GAME_ASSUMPTION', 'SAMPLED_PROXY']),
+  source: text(),
+  note: text(),
+});
+const birthFacts = object({
+  countryIso3: enumeration(supportedCountryCodes),
+  sex: enumeration(['MALE', 'FEMALE']),
+  worldBirthProbability: birthMeasure,
+  selectionProbability: birthMeasure,
+  gdpPerCapita: birthMeasure,
+  lifeExpectancy: birthMeasure,
+  underFiveMortality: birthMeasure,
+  currency: (value) => {
+    if (typeof value !== 'string' || !/^[A-Z]{3}$/.test(value)) fail();
+  },
+  countryReligions: array(object({ code: text(), percent: number(0, 100) })),
+  countryLanguages: array(object({ code: text(), percent: number(0, 100), status: nullable(text()) })),
+  wealth: birthDescription,
+  housing: birthDescription,
+  familyRelationships: birthDescription,
+  familyFaith: birthDescription,
+  familyLanguage: birthDescription,
+  sources: record((value) => {
+    text()(value);
+    try {
+      new URL(value as string);
+    } catch {
+      fail();
+    }
+  }),
+});
+
 const character = object({
   name: text(1, 100),
   gender: text(1, 50),
@@ -162,6 +212,7 @@ const character = object({
   }),
   background: optional(nullable(background)),
   birthDetails: optional(nullable(birthDetails)),
+  birthFacts: optional(nullable(birthFacts)),
 });
 
 const startingStats = {
@@ -196,6 +247,34 @@ const session = object({
   version: integer(1),
   savedAt,
   provider: summaryFields.provider,
+  simulation: optional(nullable(object({
+    engineVersion: text(),
+    statisticsRelease: text(),
+    statisticsYear: integer(Number.MIN_SAFE_INTEGER),
+    elapsedMonths: integer(),
+    monthOfYear: integer(0, 11),
+    stepMonths: integer(2, 2),
+    death: optional(nullable(object({
+      elapsedMonths: integer(),
+      age: integer(),
+      cause: enumeration(['UNSPECIFIED']),
+      model: enumeration(['UN_WPP_2024_QX']),
+      note: text(),
+    }))),
+    family: array(object({
+      id: text(),
+      role: text(),
+      name: text(),
+      age: integer(),
+      alive: boolean,
+      closeness: integer(0, 100),
+      trust: integer(0, 100),
+      sex: optional(nullable(enumeration(['MALE', 'FEMALE']))),
+      occupation: optional(nullable(text())),
+    })),
+    skills: record(integer(0, 100)),
+    assumptions: array(text()),
+  }))),
   state: object({
     age: integer(),
     status,
@@ -210,6 +289,10 @@ const session = object({
       age: integer(),
       title: text(),
       text: text(),
+      consequences: optional(nullable(object({
+        aura: integer(-200, 200),
+        closeness: record(integer(-100, 100)),
+      }))),
     })),
   }),
 });
@@ -226,6 +309,13 @@ export function decodeSessionList(data: unknown): SessionSummary[] {
 
 export function validateCreateSession(data: unknown): asserts data is CreateSessionRequest {
   object({ character, startingStats: object(startingStats) })(data);
+}
+
+export function validateGenerateLocalSession(data: unknown): asserts data is GenerateLocalSessionRequest {
+  object({
+    countryIso3: optional(enumeration(supportedCountryCodes)),
+    birthYear: optional(integer(2023, 2026)),
+  })(data);
 }
 
 export function validateCharacterChanges(data: unknown) {
@@ -258,9 +348,9 @@ export function decodeHealth(data: unknown): { status: 'UP' } {
   return data as { status: 'UP' };
 }
 
-function number(min = -Infinity): Validator {
+function number(min = -Infinity, max = Infinity): Validator {
   return (value) => {
-    if (typeof value !== 'number' || !Number.isFinite(value) || value < min) {
+    if (typeof value !== 'number' || !Number.isFinite(value) || value < min || value > max) {
       fail();
     }
   };

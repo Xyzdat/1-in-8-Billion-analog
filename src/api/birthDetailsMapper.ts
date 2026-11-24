@@ -1,5 +1,11 @@
 import type { Background, BirthDetails, Session, SessionCharacter } from './sessionTypes.ts';
 import type { BirthCardMember, BirthCardModel } from '../types/birthCard.ts';
+import {
+  formatBirthDescription,
+  formatBirthMeasure,
+  formatCountryReligions,
+  localizedCurrency,
+} from './birthFactsPresentation.ts';
 
 export type BirthDetailRow = {
   id: string;
@@ -42,7 +48,7 @@ export function birthPlaceTypeLabel(type: BirthDetails['placeType']) {
 }
 
 export function toBirthDetailRows(character: SessionCharacter): BirthDetailRow[] {
-  const { background, birthDetails: details } = character;
+  const { background, birthDetails: details, birthFacts: facts } = character;
   const overrides: Partial<Record<keyof Background, string>> = {};
   if (details?.familyType != null) {
     overrides.family = familyTypes[details.familyType];
@@ -58,6 +64,17 @@ export function toBirthDetailRows(character: SessionCharacter): BirthDetailRow[]
   }
   if (details?.siblings != null) {
     overrides.siblings = details.siblings.length === 0 ? 'Нет' : String(details.siblings.length);
+  }
+  const descriptions = {
+    wealth: facts?.wealth,
+    housing: facts?.housing,
+    relationships: facts?.familyRelationships,
+    religion: facts?.familyFaith,
+    language: facts?.familyLanguage,
+  };
+  for (const key of Object.keys(descriptions) as (keyof typeof descriptions)[]) {
+    const value = formatBirthDescription(descriptions[key], key === 'language');
+    if (value !== null) overrides[key] = value;
   }
   const rows: BirthDetailRow[] = (Object.keys(backgroundLabels) as (keyof Background)[]).map((key) => ({
     id: key,
@@ -122,29 +139,37 @@ export function toBirthDetailRows(character: SessionCharacter): BirthDetailRow[]
 // На карточке остаются только поля из Frame. Полный снимок хранится в Session.
 export function toGeneratedBirthCard(session: Session): BirthCardModel {
   const { character, state } = session;
-  const { background, birthDetails: details, birthplace } = character;
+  const { background, birthDetails: details, birthFacts: facts, birthplace } = character;
   const rows = toBirthDetailRows(character);
   const values = Object.fromEntries(rows.map(({ id, value }) => [id, value]));
   const members: BirthCardMember[] = [];
+  const family = session.simulation?.family ?? [];
   for (const key of ['mother', 'father'] as const) {
     const parent = details?.[key];
-    if (parent == null && background?.[key] == null) {
+    const relative = family.find((person) => person.role === key);
+    if (parent == null && background?.[key] == null && !relative) {
       continue;
     }
     const title = key === 'mother' ? 'Мама' : 'Папа';
     members.push({
-      id: key,
+      id: relative?.id ?? key,
       kind: key,
-      title: [title, ageLabel(parent?.age)].filter((value) => value != null).join(', '),
-      description: values[key],
+      title: [[title, relative?.name].filter(Boolean).join(' '), ageLabel(parent?.age)]
+        .filter((value) => value != null).join(', '),
+      description: [
+        values[key] === 'Нет данных' ? relative?.occupation ?? values[key] : values[key],
+        parent?.alive === false ? 'Не было в живых на момент рождения' : null,
+      ].filter((value) => value != null).join(' · '),
     });
   }
   details?.siblings?.forEach((sibling, index) => {
+    const relative = family.find((person) => person.id === `sibling-${index}`);
     const title = sibling.sex === 'MALE' ? 'Брат' : sibling.sex === 'FEMALE' ? 'Сестра' : 'Брат / сестра';
     members.push({
-      id: `sibling-${index}`,
+      id: relative?.id ?? `sibling-${index}`,
       kind: 'sibling',
-      title: [title, ageLabel(sibling.age)].filter((value) => value != null).join(', '),
+      title: [[title, relative?.name].filter(Boolean).join(' '), ageLabel(sibling.age)]
+        .filter((value) => value != null).join(', '),
       description: 'Нет данных о занятиях',
     });
   });
@@ -157,8 +182,10 @@ export function toGeneratedBirthCard(session: Session): BirthCardModel {
     city: birthplace.city ?? '',
     region: [birthplace.region, birthPlaceTypeLabel(details?.placeType)].filter(Boolean).join(' · '),
     birthYear: String(character.birthYear),
-    wealth: details?.familyIncomeQuintile == null ? background?.wealth ?? 'Нет данных' : `${details.familyIncomeQuintile} из 5`,
-    birthChance: 'Нет данных',
+    wealth: facts?.wealth.value != null
+      ? [values.wealth, details?.familyIncomeQuintile == null ? null : `${details.familyIncomeQuintile} из 5`].filter(Boolean).join(' · ')
+      : details?.familyIncomeQuintile == null ? background?.wealth ?? 'Нет данных' : `${details.familyIncomeQuintile} из 5`,
+    birthChance: formatBirthMeasure(facts?.worldBirthProbability),
     stats: {
       health: state.stats.health,
       intelligence: state.stats.intelligence,
@@ -173,11 +200,11 @@ export function toGeneratedBirthCard(session: Session): BirthCardModel {
       { label: 'Язык в семье', value: values.language },
     ],
     countryDetails: [
-      { label: 'Религии страны', value: 'Нет данных' },
-      { label: 'ВВП на душу населения', value: 'Нет данных' },
-      { label: 'Валюта', value: 'Нет данных' },
+      { label: 'Религии страны', value: facts ? formatCountryReligions(facts.countryReligions) : 'Нет данных' },
+      { label: 'ВВП на душу населения', value: formatBirthMeasure(facts?.gdpPerCapita) },
+      { label: 'Валюта', value: facts ? localizedCurrency(facts.currency) : 'Нет данных' },
     ],
-    lifeExpectancy: 'Нет данных',
-    childMortality: 'Нет данных',
+    lifeExpectancy: formatBirthMeasure(facts?.lifeExpectancy),
+    childMortality: formatBirthMeasure(facts?.underFiveMortality),
   };
 }

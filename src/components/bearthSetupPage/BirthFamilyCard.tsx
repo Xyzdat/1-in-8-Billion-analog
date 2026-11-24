@@ -26,17 +26,17 @@ export default function BirthFamilyCard({ model }: { model: BirthCardModel }) {
 
             <div className={styles.birthSetup__familyInfo}>
               <strong>{member.title}</strong>
-              <span>{member.description}</span>
+              <span title={member.context}>{member.description}</span>
             </div>
           </div>
         ))}
       </div>
 
       <div className={styles.birthSetup__familyDetails}>
-        {model.familyDetails.map(({ label, value }) => (
+        {model.familyDetails.map(({ label, value, context }) => (
           <div className={styles.birthSetup__detailRow} key={label}>
             <span>{label}</span>
-            <strong>{value}</strong>
+            <strong title={context}>{value}</strong>
           </div>
         ))}
       </div>

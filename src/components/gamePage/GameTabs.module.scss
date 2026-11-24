@@ -360,6 +360,14 @@ $soft: #f3f4fc;
     font-weight: 800;
   }
 
+  &__historyHint {
+    margin-top: 12px !important;
+    color: $muted;
+    font-size: 12px;
+    line-height: 1.5;
+    text-align: center;
+  }
+
   @media (max-width: 360px) {
     &__card,
     &__total {

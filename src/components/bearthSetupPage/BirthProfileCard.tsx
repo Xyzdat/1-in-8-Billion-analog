@@ -7,8 +7,8 @@ import {Mars, Venus} from 'lucide-react'
 export default function BirthProfileCard({ model }: { model: BirthCardModel }) {
   const facts = [
     { icon: '📅', value: model.birthYear, label: 'Год рождения' },
-    { icon: '💰', value: model.wealth, label: 'Достаток семьи' },
-    { icon: '🎲', value: model.birthChance, label: 'Шанс родиться' },
+    { icon: '💰', value: model.wealth, label: 'Достаток семьи', context: model.wealthContext },
+    { icon: '🎲', value: model.birthChance, label: 'Шанс родиться', context: model.birthChanceContext },
   ];
 
   return (
@@ -35,11 +35,11 @@ export default function BirthProfileCard({ model }: { model: BirthCardModel }) {
       </p>
 
       <div className={styles.birthSetup__birthStats}>
-        {facts.map(({ icon, value, label }) => (
+        {facts.map(({ icon, value, label, context }) => (
           <div className={styles.birthSetup__stat} key={label}>
             <span className={styles.birthSetup__statIcon} aria-hidden="true">{icon}</span>
             <strong>{label}</strong>
-            <span>{value}</span>
+            <span title={context}>{value}</span>
           </div>
         ))}
       </div>

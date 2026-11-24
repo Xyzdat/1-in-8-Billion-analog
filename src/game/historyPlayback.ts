@@ -1,4 +1,4 @@
-import type { SessionHistoryEvent } from '../api/sessionTypes.ts';
+import type { Session, SessionHistoryEvent } from '../api/sessionTypes.ts';
 
 const YEAR_DURATION_MS = 60_000;
 
@@ -11,6 +11,16 @@ export type HistoryPlayback = {
 export function createHistoryPlayback(version: number, history: SessionHistoryEvent[]): HistoryPlayback {
   // При открытии сохранения уже прожитая история доступна целиком.
   return { version, history, revealAt: new Map() };
+}
+
+export function updateSessionHistory(previous: HistoryPlayback, session: Session, playedMs: number) {
+  return updateHistoryPlayback(
+    previous,
+    session.version,
+    session.state.history,
+    playedMs,
+    Boolean(session.simulation) || session.state.status === 'COMPLETE' || Boolean(session.state.pendingDecision),
+  );
 }
 
 export function updateHistoryPlayback(

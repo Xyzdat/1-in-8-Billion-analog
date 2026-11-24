@@ -1,4 +1,7 @@
-// Life Backend OpenAPI 0.5.0.
+// Life Backend OpenAPI 0.7.1.
+import type { supportedCountries } from '../data/supportedCountries.ts';
+
+export type SupportedCountry = typeof supportedCountries[number]['iso3'];
 export type SessionProvider = 'local' | '1in8b';
 export type Background = {
   family?: string | null;
@@ -25,6 +28,42 @@ export type SessionCharacter = {
   };
   background?: Background | null;
   birthDetails?: BirthDetails | null;
+  birthFacts?: BirthFacts | null;
+};
+
+export type BirthMeasure = {
+  value: number;
+  unit: 'probability' | 'USD_CURRENT' | 'years';
+  year: number;
+  source: string;
+  basis: 'STATISTIC' | 'PROJECTION' | 'GAME_SELECTION';
+  note: string;
+};
+
+export type BirthDescription = {
+  value: string | null;
+  basis: 'GAME_ASSUMPTION' | 'SAMPLED_PROXY';
+  source: string;
+  note: string;
+};
+
+export type BirthFacts = {
+  countryIso3: SupportedCountry;
+  sex: 'MALE' | 'FEMALE';
+  worldBirthProbability: BirthMeasure;
+  selectionProbability: BirthMeasure;
+  gdpPerCapita: BirthMeasure;
+  lifeExpectancy: BirthMeasure;
+  underFiveMortality: BirthMeasure;
+  currency: string;
+  countryReligions: { code: string; percent: number }[];
+  countryLanguages: { code: string; percent: number; status: string | null }[];
+  wealth: BirthDescription;
+  housing: BirthDescription;
+  familyRelationships: BirthDescription;
+  familyFaith: BirthDescription;
+  familyLanguage: BirthDescription;
+  sources: Record<string, string>;
 };
 
 export type ParentAtBirth = {
@@ -99,6 +138,7 @@ export type SessionHistoryEvent = {
   age: number;
   title: string;
   text: string;
+  consequences?: { aura: number; closeness: Record<string, number> } | null;
 };
 
 export type SessionSummary = {
@@ -110,12 +150,46 @@ export type SessionSummary = {
   savedAt: string;
 };
 
+export type SimulationFamilyMember = {
+  id: string;
+  role: string;
+  name: string;
+  age: number;
+  alive: boolean;
+  closeness: number;
+  trust: number;
+  sex?: 'MALE' | 'FEMALE' | null;
+  occupation?: string | null;
+};
+
+export type SimulationDeath = {
+  elapsedMonths: number;
+  age: number;
+  cause: 'UNSPECIFIED';
+  model: 'UN_WPP_2024_QX';
+  note: string;
+};
+
+export type LocalSimulation = {
+  engineVersion: string;
+  statisticsRelease: string;
+  statisticsYear: number;
+  elapsedMonths: number;
+  monthOfYear: number;
+  stepMonths: 2;
+  family: SimulationFamilyMember[];
+  skills: Record<string, number>;
+  assumptions: string[];
+  death?: SimulationDeath | null;
+};
+
 export type Session = {
   provider: SessionProvider;
   id: string;
   character: SessionCharacter;
   version: number;
   savedAt: string;
+  simulation?: LocalSimulation | null;
   state: {
     age: number;
     status: SessionStatus;
@@ -126,11 +200,15 @@ export type Session = {
 };
 
 export type CreateSessionRequest = {
-  character: Omit<SessionCharacter, 'birthDetails'>;
+  character: Omit<SessionCharacter, 'birthDetails' | 'birthFacts'>;
   startingStats: StartingStats;
 };
 
 export type VersionedAction = { expectedVersion: number };
+export type GenerateLocalSessionRequest = {
+  countryIso3?: SupportedCountry;
+  birthYear?: number;
+};
 export type CharacterChanges = {
   name?: string;
   stats?: Partial<StartingStats>;

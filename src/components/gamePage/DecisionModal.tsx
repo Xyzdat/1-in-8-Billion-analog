@@ -18,12 +18,14 @@ type Props = {
   year: number;
   onChoose: (index: number) => void;
   onAuto: () => void;
+  auto?: boolean;
+  autoSeconds?: number | null;
   onDefer?: () => void;
   busy?: boolean;
   failure?: { message: string; retry?: () => void } | null;
 };
 
-export default function DecisionModal({ decision, age, year, onChoose, onAuto, onDefer, busy, failure }: Props) {
+export default function DecisionModal({ decision, age, year, onChoose, onAuto, auto = false, autoSeconds, onDefer, busy, failure }: Props) {
   const ref = useRef<HTMLDialogElement>(null);
   const restoreFrame = useRef<number | null>(null);
 
@@ -67,7 +69,10 @@ export default function DecisionModal({ decision, age, year, onChoose, onAuto, o
       className={styles.game__decision}
       aria-labelledby="decision-title"
       aria-describedby={decision.text ? 'decision-text' : undefined}
-      onCancel={(event) => event.preventDefault()}
+      onCancel={(event) => {
+        event.preventDefault();
+        if (auto && !busy && !failure) onAuto();
+      }}
     >
       <div className={styles.game__decisionContent}>
         {decision.important && (
@@ -125,13 +130,18 @@ export default function DecisionModal({ decision, age, year, onChoose, onAuto, o
             )}
           </div>
         )}
+        {auto && autoSeconds != null && !busy && !failure && (
+          <p className={styles.game__muted} role="status" aria-live="polite">
+            Автовыбор первого варианта через {autoSeconds} с
+          </p>
+        )}
         <button
           type="button"
           className={styles.game__autoChoice}
           onClick={onAuto}
           disabled={busy || Boolean(failure)}
         >
-          Включить «Автовыбор»
+          {auto ? 'Отменить «Автовыбор»' : 'Включить «Автовыбор»'}
         </button>
       </div>
     </dialog>,

@@ -3,21 +3,25 @@ import type { CSSProperties, ReactNode } from 'react';
 import type { CharacterSettings, CharacterStats as InitialCharacterStats } from '../../types/character';
 import { character } from '../../mocks/mockData';
 import { gameDefaults, statLabels } from '../../mocks/lifeEvents';
-import type { GameStats, LifeEvent } from '../../mocks/lifeEvents';
+import type { GameStats } from '../../mocks/lifeEvents';
 import { speeds, YEAR_MS } from '../../game/simulation';
 import { useLifeSimulation } from '../../game/useLifeSimulation';
 import { useServerClock } from '../../game/useServerClock';
 import { useServerHistory } from '../../game/useServerHistory';
 import type { ServerLife } from '../../game/useServerLife';
-import type { Session } from '../../api/sessionTypes';
+import type { Session, SimulationFamilyMember } from '../../api/sessionTypes';
+import { completedLifeMessage, toServerHistory } from '../../game/serverPresentation';
+import type { PresentedLifeEvent } from '../../game/serverPresentation';
 import { sessionsApi } from '../../api';
 import { useSessionResource } from '../../game/useSessionResource';
 import EngineCredit from '../bearthSetupPage/EngineCredit';
 import familyImage from '../../assets/game-family.png';
 import relationshipIcon from '../../assets/game-relationships.png';
 import YearFocus from './YearFocus';
+import YearProgress from './YearProgress';
 import DecisionModal from './DecisionModal';
 import ClosePeopleTab from './ClosePeopleTab';
+import HistoryScroll from './HistoryScroll';
 import FinancesTab from './FinancesTab';
 import ServerFinancesTab from './ServerFinancesTab';
 import type { ServerFinancesTabProps } from './ServerFinancesTab';
@@ -42,9 +46,11 @@ type GameViewProps = {
   settings: Partial<{ [Key in keyof CharacterSettings]: string | null }> & { name: string };
   birthYear: number;
   game: Pick<LocalGame, 'age' | 'progress' | 'speed' | 'changeSpeed' | 'paused' | 'togglePause'
-    | 'auto' | 'toggleAuto' | 'complete' | 'stats' | 'events'> & { aura: number | null };
+    | 'auto' | 'toggleAuto' | 'complete' | 'stats'> & { aura: number | null; events: PresentedLifeEvent[] };
   local?: { game: LocalGame; settings: CharacterSettings };
   serverFinances?: ServerFinancesTabProps & { activate: () => void };
+  serverFamily?: SimulationFamilyMember[];
+  completionMessage?: string;
   decisionDialog?: ReactNode;
   requestStatus?: ReactNode;
   credit?: ReactNode;
@@ -75,7 +81,11 @@ function CharacterStats({ stats }: { stats: GameStats }) {
   );
 }
 
-function LifeHistory({ events, birthText }: { events: LifeEvent[]; birthText?: string }) {
+function LifeHistory({ events, birthText, peopleLabels }: {
+  events: PresentedLifeEvent[];
+  birthText?: string;
+  peopleLabels?: Record<string, string>;
+}) {
   const [favorites, setFavorites] = useState<string[]>([]);
 
   function toggleFavorite(id: string) {
@@ -90,7 +100,7 @@ function LifeHistory({ events, birthText }: { events: LifeEvent[]; birthText?: s
       <p className={styles.game__muted}>
         Сначала новые · нажми на ☆, чтобы запомнить момент
       </p>
-      <div className={styles.game__history}>
+      <HistoryScroll label="События жизни" visibleRows={7} className={styles.game__history}>
         {[...events].reverse().map((event) => (
           <article key={event.id} className={styles.game__event}>
             <span className={styles.game__badge}>
@@ -110,9 +120,9 @@ function LifeHistory({ events, birthText }: { events: LifeEvent[]; birthText?: s
                 {event.aura ? (
                   <span>Аура {event.aura > 0 ? '+' : ''}{event.aura}</span>
                 ) : null}
-                {(Object.keys(event.closeness || {}) as PersonId[]).map((person) => (
+                {Object.keys(event.closeness || {}).map((person) => (
                   <span key={person}>
-                    {personLabels[person]}: близость {Number(event.closeness?.[person]) > 0 ? '+' : ''}{event.closeness?.[person]}
+                    {peopleLabels?.[person] ?? personLabels[person as PersonId] ?? person}: близость {Number(event.closeness?.[person]) > 0 ? '+' : ''}{event.closeness?.[person]}
                   </span>
                 ))}
                 {event.money?.income ? (
@@ -133,12 +143,12 @@ function LifeHistory({ events, birthText }: { events: LifeEvent[]; birthText?: s
             </button>
           </article>
         ))}
-      </div>
+      </HistoryScroll>
     </section>
   );
 }
 
-function GameView({ settings, birthYear, game, local, serverFinances, decisionDialog, requestStatus, credit, onRestart }: GameViewProps) {
+function GameView({ settings, birthYear, game, local, serverFinances, serverFamily, completionMessage, decisionDialog, requestStatus, credit, onRestart }: GameViewProps) {
   const [showFamily, setShowFamily] = useState(false);
   const [tab, setTab] = useState<Tab>('Летопись');
   const [shop, setShop] = useState<{ section: ShopSection; itemId?: string } | null>(null);
@@ -175,7 +185,10 @@ function GameView({ settings, birthYear, game, local, serverFinances, decisionDi
           <span>{birthYear + game.age} · {settings.name}</span>
           <span>1 год = {60 / game.speed} сек.</span>
         </div>
-        <progress max={1} value={game.progress} aria-label="Прогресс текущего года" />
+        <YearProgress
+          value={game.progress}
+          paused={game.paused || game.complete || Boolean(decisionDialog)}
+        />
       </section>
 
       <div className={styles.game__controls}>
@@ -286,7 +299,11 @@ function GameView({ settings, birthYear, game, local, serverFinances, decisionDi
       </nav>
 
       <div hidden={tab !== 'Летопись'}>
-        <LifeHistory events={game.events} birthText={birthText} />
+        <LifeHistory
+          events={game.events}
+          birthText={birthText}
+          peopleLabels={serverFamily && Object.fromEntries(serverFamily.map((person) => [person.id, person.name]))}
+        />
       </div>
 
       <div hidden={tab !== 'Траты и вложения'}>
@@ -311,6 +328,8 @@ function GameView({ settings, birthYear, game, local, serverFinances, decisionDi
             age={game.age}
             closeness={local.game.closeness}
           />
+        ) : serverFamily ? (
+          <ClosePeopleTab family={serverFamily} />
         ) : (
           <UnavailableSection title="Близкие" />
         )
@@ -318,7 +337,7 @@ function GameView({ settings, birthYear, game, local, serverFinances, decisionDi
 
       {game.complete && (
         <section className={styles.game__card} role="status">
-          <p>{local ? 'Демонстрация завершена. Продолжение жизни появится позже' : 'Эта жизнь завершена.'}</p>
+          <p>{local ? 'Демонстрация завершена. Продолжение жизни появится позже' : completionMessage ?? 'Эта жизнь завершена.'}</p>
           <button className={styles.game__restart} type="button" onClick={onRestart}>
             {local ? `Прожить первые ${END_AGE} года снова` : 'Начать новую жизнь'}
           </button>
@@ -382,6 +401,8 @@ function LocalSimulation({ settings, stats, onRestart }: Pick<Props, 'settings' 
           year={birthYear + game.age}
           onChoose={game.answerDecision}
           onAuto={game.toggleAuto}
+          auto={game.auto}
+          autoSeconds={game.autoSeconds}
           onDefer={game.deferDecision}
         />
       )}
@@ -425,8 +446,10 @@ function ServerSimulation({ session, server, onRestart }: {
           relationships: state.stats.relationships,
         },
         aura: state.stats.aura,
-        events: history.map((event) => ({ ...event, changes: {} })),
+        events: toServerHistory(history),
       }}
+      serverFamily={session.simulation?.family}
+      completionMessage={completedLifeMessage(session.simulation?.death)}
       onRestart={onRestart}
       serverFinances={{
         session,
@@ -446,8 +469,13 @@ function ServerSimulation({ session, server, onRestart }: {
           }}
           age={state.age}
           year={birthYear + state.age}
-          onChoose={(index) => server.answer(decision.options[index].id)}
+          onChoose={(index) => {
+            clock.cancelAutoDecision();
+            server.answer(decision.options[index].id);
+          }}
           onAuto={clock.toggleAuto}
+          auto={clock.auto}
+          autoSeconds={clock.autoSeconds}
           busy={server.busy}
           failure={failure}
         />

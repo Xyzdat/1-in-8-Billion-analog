@@ -1,6 +1,7 @@
 export type BirthCardDetail = {
   label: string;
   value: string;
+  context?: string;
 };
 
 export type BirthCardMember = {
@@ -8,6 +9,7 @@ export type BirthCardMember = {
   kind: 'mother' | 'father' | 'sibling';
   title: string;
   description: string;
+  context?: string;
 };
 
 export type BirthCardModel = {
@@ -19,7 +21,9 @@ export type BirthCardModel = {
   region: string;
   birthYear: string;
   wealth: string;
+  wealthContext?: string;
   birthChance: string;
+  birthChanceContext?: string;
   stats: {
     health: number | null;
     intelligence: number | null;
@@ -29,5 +33,7 @@ export type BirthCardModel = {
   familyDetails: BirthCardDetail[];
   countryDetails: BirthCardDetail[];
   lifeExpectancy: string;
+  lifeExpectancyContext?: string;
   childMortality: string;
+  childMortalityContext?: string;
 };

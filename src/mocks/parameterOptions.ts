@@ -1,4 +1,5 @@
 import type { SettingKey } from '../types/character';
+import { supportedCountries } from '../data/supportedCountries';
 import catImage from '../assets/modal-cat.png';
 import dogImage from '../assets/modal-dog.png';
 import pawsImage from '../assets/modal-paws.png';
@@ -44,6 +45,13 @@ export const parameterFields: Record<SettingKey, ParameterField> = {
       { label: 'Южная Корея', icon: '🇰🇷', group: 'Азия' },
       { label: 'Турция', icon: '🇹🇷', group: 'Азия' },
       { label: 'Франция', icon: '🇫🇷', group: 'Европа' },
+      ...supportedCountries
+        .filter(({ name }) => !['Индия', 'Канада', 'Китай', 'Япония', 'Южная Корея'].includes(name))
+        .map(({ name, iso2, group }) => ({
+          label: name,
+          icon: String.fromCodePoint(...[...iso2].map((letter) => letter.charCodeAt(0) + 127397)),
+          group,
+        })),
     ],
   },
   region: {
@@ -117,11 +125,7 @@ export const parameterFields: Record<SettingKey, ParameterField> = {
 };
 
 export const countryCodes: Record<string, string> = {
-  Япония: 'JP',
-  Индия: 'IN',
-  Канада: 'CA',
-  Китай: 'CN',
-  'Южная Корея': 'KR',
+  ...Object.fromEntries(supportedCountries.map(({ name, iso2 }) => [name, iso2])),
   Турция: 'TR',
   Франция: 'FR',
 };

@@ -157,9 +157,9 @@ test('presentation keeps PPP separate from RUB and groups both moves in one sect
   assert.deepEqual(groups.map((group) => group.categories.map((item) => item.id)), [['pets'], ['city', 'country']]);
 });
 
-test('purchases and refreshes do not reset the year; advancing and decisions do', () => {
+test('purchases, decisions and refreshes do not reset the year; advancing does', () => {
   const key = getServerClockKey(session);
   assert.equal(getServerClockKey({ ...session, version: 11 }), key);
   assert.notEqual(getServerClockKey({ ...session, state: { ...session.state, age: 8 } }), key);
-  assert.notEqual(getServerClockKey({ ...session, state: { ...session.state, pendingDecision: { id: 'choice' } } }), key);
+  assert.equal(getServerClockKey({ ...session, state: { ...session.state, pendingDecision: { id: 'choice' } } }), key);
 });
