@@ -22,7 +22,7 @@ export default function ServerFinancesTab({ session, server, resource, onBlockTi
 
   return (
     <div className={styles.finances} aria-label="Траты и вложения">
-      {loading && <p className={styles.finances__notice} role="status">Обновление бюджета…</p>}
+      {/* {loading && <p className={styles.finances__notice} role="status">Обновление бюджета…</p>} */}
       {error && (
         <section className={styles.finances__card}>
           <p role="alert">{error}</p>

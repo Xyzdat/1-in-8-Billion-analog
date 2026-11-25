@@ -6,6 +6,8 @@ import BirthSetupPage from './components/bearthSetupPage/bearthSetupPage.tsx';
 import GeneratedBirthPage from './components/bearthSetupPage/GeneratedBirthPage';
 import ChangeParametersPage from './components/changeParametersPage/changeParametersPage.tsx';
 import GamePage from './components/gamePage/GamePage';
+import CompletedLifePage from './components/completedLifePage/CompletedLifePage';
+import { completedLifeId, completedLifePrefix } from './game/completedLives';
 import { useCallback, useEffect, useState } from 'react';
 import { initialSettings, initialStats } from './mocks/mockData';
 import { useServerLife } from './game/useServerLife';
@@ -16,6 +18,7 @@ const generatedBirthHash = '#server-birth';
 
 function App() {
   const [page, setPage] = useState(() => {
+    if (completedLifeId(window.location.hash)) return 'completedLife';
     if (window.location.hash === generatedBirthHash) {
       return 'generatedBirth';
     }
@@ -24,6 +27,7 @@ function App() {
   const [characterSettings, setCharacterSettings] = useState(initialSettings);
   const [characterStats, setCharacterStats] = useState(initialStats);
   const [resumeMessage, setResumeMessage] = useState('');
+  const [archiveId, setArchiveId] = useState(() => completedLifeId(window.location.hash));
   const serverLife = useServerLife();
   const { connect } = serverLife;
 
@@ -53,7 +57,27 @@ function App() {
   }, [openLife]);
 
   useEffect(() => {
-    if (['changeParameters', 'generatedParameters', 'life', 'serverLife', 'generatedBirth'].includes(page)) {
+    const navigate = () => {
+      const id = completedLifeId(window.location.hash);
+      if (id) {
+        setArchiveId(id);
+        setPage('completedLife');
+      } else if ([serverLifeHash, generatedBirthHash].includes(window.location.hash)) {
+        openLife(true);
+      } else if (!window.location.hash) {
+        setPage('home');
+      }
+    };
+    window.addEventListener('hashchange', navigate);
+    window.addEventListener('popstate', navigate);
+    return () => {
+      window.removeEventListener('hashchange', navigate);
+      window.removeEventListener('popstate', navigate);
+    };
+  }, [openLife]);
+
+  useEffect(() => {
+    if (['changeParameters', 'generatedParameters', 'life', 'serverLife', 'generatedBirth', 'completedLife'].includes(page)) {
       window.scrollTo({
         top: 0,
         left: 0,
@@ -65,6 +89,18 @@ function App() {
   function showServerLife() {
     window.history.replaceState(null, '', serverLifeHash);
     setPage('serverLife');
+  }
+
+  function openCompletedLife(id) {
+    window.history.pushState(null, '', `${completedLifePrefix}${id}`);
+    setArchiveId(id);
+    setPage('completedLife');
+  }
+
+  function finishLifeFilm(id) {
+    window.history.replaceState(null, '', `${completedLifePrefix}${id}`);
+    setArchiveId(id);
+    setPage('completedLife');
   }
 
   function goHome() {
@@ -119,6 +155,16 @@ function App() {
             busy={serverLife.busy}
             failure={serverLife.failure}
             resumeMessage={resumeMessage}
+            onOpenLife={openCompletedLife}
+          />
+        )}
+
+        {page === 'completedLife' && archiveId && (
+          <CompletedLifePage
+            key={archiveId}
+            id={archiveId}
+            onStart={generateLife}
+            onHome={goHome}
           />
         )}
 
@@ -210,6 +256,7 @@ function App() {
             stats={characterStats}
             server={page === 'serverLife' ? serverLife : undefined}
             onRestart={page === 'serverLife' ? generateLife : startSetup}
+            onCompleted={finishLifeFilm}
           />
         )}
       </div>
@@ -220,7 +267,8 @@ function App() {
 }
 
 function clearServerLocation() {
-  if ([serverLifeHash, generatedBirthHash].includes(window.location.hash)) {
+  if ([serverLifeHash, generatedBirthHash].includes(window.location.hash)
+    || window.location.hash.startsWith(completedLifePrefix)) {
     window.history.replaceState(null, '', window.location.pathname + window.location.search);
   }
 }

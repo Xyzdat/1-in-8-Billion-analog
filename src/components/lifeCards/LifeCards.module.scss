@@ -1,0 +1,76 @@
+.lifeCards {
+  min-width: 0;
+  width: 100%;
+
+  &__title {
+    margin: 0 0 8px 4px;
+    color: #26314b;
+    font-family: 'Century Gothic', 'Nunito', Arial, sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 26px;
+  }
+
+  &__list {
+    display: flex;
+    gap: 10px;
+    width: calc(100% + 20px);
+    padding-bottom: 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    scroll-snap-type: x proximity;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &__card {
+    display: block;
+    flex: 0 0 170px;
+    min-width: 0;
+    min-height: 161px;
+    padding: 10px;
+    border-radius: 20px;
+    background: #ffffff;
+    text-decoration: none;
+    scroll-snap-align: start;
+  }
+
+  &__image {
+    display: block;
+    width: 150px;
+    height: 72px;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+
+  &__name {
+    margin: 0;
+    overflow: hidden;
+    color: #26314b;
+    font-family: 'Century Gothic', 'Nunito', Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 25px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__years {
+    display: block;
+    color: #56637e;
+    font-size: 10px;
+  }
+
+  &__description {
+    display: -webkit-box;
+    margin: 3px 0 0;
+    overflow: hidden;
+    color: #26314b;
+    font-size: 10px;
+    line-height: 13px;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}

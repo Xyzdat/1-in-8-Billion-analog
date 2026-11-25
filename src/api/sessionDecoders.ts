@@ -5,7 +5,7 @@ import { supportedCountryCodes } from '../data/supportedCountries.ts';
 type Validator = (value: unknown) => void;
 
 function fail(): never {
-  throw new Error('Данные не соответствуют Life Backend OpenAPI 0.7.1.');
+  throw new Error('Данные не соответствуют Life Backend OpenAPI 0.8.3.');
 }
 
 function object(fields: Record<string, Validator>): Validator {
@@ -53,9 +53,9 @@ function nullable(validate: Validator): Validator {
   };
 }
 
-function array(validate: Validator): Validator {
+function array(validate: Validator, min = 0, max = Infinity): Validator {
   return (value) => {
-    if (!Array.isArray(value)) {
+    if (!Array.isArray(value) || value.length < min || value.length > max) {
       fail();
     }
     value.forEach(validate);
@@ -241,13 +241,129 @@ const summaryFields = {
   },
 };
 
+const adultScore = integer(0, 100);
+const adultInteger = integer(Number.MIN_SAFE_INTEGER);
+const adultTraits = object({
+  diligence: adultScore, sociability: adultScore, openness: adultScore, resilience: adultScore,
+});
+const adult = object({
+  modelVersion: enumeration(['adult-1']),
+  ageStage: enumeration(['EARLY_ADULT', 'MIDDLE_ADULT', 'LATE_CAREER', 'LATER_LIFE']),
+  currency: enumeration(['RUB']),
+  traits: adultTraits,
+  education: object({
+    level: text(), field: nullable(text()), startedMonth: nullable(adultInteger),
+    completesMonth: nullable(adultInteger), status: text(),
+  }),
+  career: object({
+    status: enumeration(['UNEMPLOYED', 'PROBATION', 'EMPLOYED', 'BUSINESS', 'RETIRED']),
+    occupation: nullable(text()), industry: nullable(text()), employer: nullable(text()),
+    position: nullable(text()), monthlyPay: number(), beganMonth: adultInteger,
+    experienceMonths: integer(), qualification: integer(), satisfaction: adultScore,
+    stability: adultScore, risk: adultScore, monthlyPension: number(),
+    history: array(object({
+      id: text(), occupation: text(), employer: text(), beganMonth: adultInteger,
+      endedMonth: nullable(adultInteger), endReason: nullable(text()),
+    })),
+  }),
+  partnership: nullable(object({
+    partnerId: text(), status: enumeration(['DATING', 'COHABITING', 'MARRIED', 'SEPARATED', 'DIVORCED', 'WIDOWED']),
+    beganMonth: adultInteger, cohabiting: boolean, satisfaction: adultScore,
+    conflict: adultScore, milestones: array(text()),
+  })),
+  npcs: record(object({
+    id: text(), traits: adultTraits, education: text(), occupation: nullable(text()),
+    monthlyIncome: number(), health: adultScore, maritalStatus: text(),
+    partnerId: nullable(text()), countryIso2: text(), parentIds: array(text()),
+  })),
+  healthConditions: array(object({
+    id: text(), kind: enumeration(['INJURY', 'HEALTH_CONDITION']), onsetMonth: adultInteger,
+    severity: adultScore, stage: enumeration(['ACTIVE', 'CHRONIC', 'RECOVERED']),
+    treatment: enumeration(['REST', 'SUPERVISED']), reviewMonth: adultInteger,
+    endedMonth: nullable(adultInteger), chronic: boolean, workCapacity: adultScore,
+  })),
+  debts: array(object({
+    id: text(), kind: enumeration(['PERSONAL', 'MORTGAGE']), principal: number(),
+    annualBasisPoints: adultInteger, monthlyPayment: number(), missedPayments: integer(),
+  })),
+  assets: array(object({
+    id: text(), kind: enumeration(['PROPERTY', 'INVESTMENT']), title: text(),
+    value: number(), ownershipPercent: adultScore, purchaseId: nullable(text()),
+  })),
+  stories: array(object({
+    id: text(), template: text(), stage: text(), status: enumeration(['ACTIVE', 'COMPLETED', 'CANCELLED']),
+    beganMonth: adultInteger, endedMonth: nullable(adultInteger), participants: array(text()),
+  })),
+  memories: array(object({
+    id: text(), month: adultInteger, kind: text(), personId: nullable(text()), text: text(),
+  })),
+  housing: text(), assumptions: array(text()),
+});
+
+const highlightOption = object({ id: text(), label: text() });
+const eventLink = object({
+  sourceId: text(),
+  templateId: text(),
+  domain: text(),
+  phase: enumeration(['OFFER', 'DECISION', 'OUTCOME', 'CANCELLED']),
+  month: integer(),
+  decisionId: nullable(text()),
+  optionId: nullable(text()),
+  optionLabel: nullable(text()),
+  action: nullable(text()),
+  offeredOptions: array(highlightOption),
+  participantIds: array(text()),
+  relatedSourceIds: array(text()),
+});
+const highlights = object({
+  modelVersion: enumeration(['life-highlights-1']),
+  status: enumeration(['LIVE', 'FINAL']),
+  currency: enumeration(['RUB']),
+  trackedFromMonth: integer(),
+  partialHistory: boolean,
+  evaluatedThroughMonth: integer(),
+  finalizedAtMonth: nullable(integer()),
+  decisionCount: integer(),
+  candidateCount: integer(),
+  slides: array(object({
+    id: text(),
+    templateId: text(),
+    domain: text(),
+    month: integer(),
+    age: integer(),
+    title: text(),
+    importance: integer(0, 100),
+    reasons: array(object({ code: text(), points: integer(), text: text() })),
+    decisions: array(object({
+      id: text(), month: integer(), age: integer(), title: text(),
+      prompt: nullable(text()), optionId: text(), optionLabel: text(),
+      offeredOptions: array(highlightOption), participantIds: array(text()),
+      historyEventId: text(), result: text(),
+      statChanges: record(integer(Number.MIN_SAFE_INTEGER)),
+      closenessChanges: record(integer(Number.MIN_SAFE_INTEGER)),
+      balanceChange: nullable(number()),
+    }), 1),
+    evidence: array(object({
+      id: text(), month: integer(), kind: text(),
+      relation: enumeration(['DIRECT', 'SAME_STORY', 'EXPLICIT_DEPENDENCY', 'TRACKED_ENTITY']),
+      text: text(), historyEventId: nullable(text()),
+    })),
+    revisions: array(object({
+      month: integer(), previousScore: integer(0, 100), score: integer(0, 100),
+      reasonCodes: array(text()),
+    })),
+  }), 0, 12),
+});
+
 const session = object({
   id: validateUuid,
   character,
   version: integer(1),
   savedAt,
   provider: summaryFields.provider,
+  highlights: optional(nullable(highlights)),
   simulation: optional(nullable(object({
+    adult: optional(nullable(adult)),
     engineVersion: text(),
     statisticsRelease: text(),
     statisticsYear: integer(Number.MIN_SAFE_INTEGER),
@@ -260,6 +376,17 @@ const session = object({
       cause: enumeration(['UNSPECIFIED']),
       model: enumeration(['UN_WPP_2024_QX']),
       note: text(),
+      causeDetails: optional(nullable(object({
+        code: enumeration([
+          'PERINATAL_COMPLICATIONS', 'CONGENITAL_CONDITION', 'RESPIRATORY_INFECTION',
+          'SEVERE_INFECTION', 'ACCIDENT', 'HEART_ATTACK', 'STROKE', 'CANCER',
+          'ACUTE_DISEASE_COMPLICATIONS', 'CHRONIC_DISEASE_COMPLICATIONS', 'INJURY_COMPLICATIONS',
+        ]),
+        label: text(),
+        model: enumeration(['death-causes-1']),
+        basis: enumeration(['GAME_ASSUMPTION']),
+        conditionId: nullable(text()),
+      }))),
     }))),
     family: array(object({
       id: text(),
@@ -271,6 +398,13 @@ const session = object({
       trust: integer(0, 100),
       sex: optional(nullable(enumeration(['MALE', 'FEMALE']))),
       occupation: optional(nullable(text())),
+      contact: optional(nullable(object({
+        status: enumeration(['IN_TOUCH', 'RARE_CONTACT', 'NO_CONTACT']),
+        trackedSinceMonth: integer(),
+        lastContactMonth: nullable(integer()),
+        statusSinceMonth: integer(),
+        reason: enumeration(['INITIALIZED', 'INTERACTION', 'HOUSEHOLD', 'TIME_APART', 'PLAYER_CHOICE', 'RECONNECTED']),
+      }))),
     })),
     skills: record(integer(0, 100)),
     assumptions: array(text()),
@@ -289,6 +423,7 @@ const session = object({
       age: integer(),
       title: text(),
       text: text(),
+      link: optional(nullable(eventLink)),
       consequences: optional(nullable(object({
         aura: integer(-200, 200),
         closeness: record(integer(-100, 100)),
@@ -416,6 +551,7 @@ export function decodeFinances(data: unknown): Finances {
     ledger: nullable(array(object({
       id: text(), month: integer(),
       kind: enumeration(['BUDGET', 'PURCHASE', 'UPKEEP', 'INTEREST']),
+      flow: optional(nullable(enumeration(['OPERATING', 'FINANCING']))),
       title: text(), income: number(0), expense: number(0),
     }))),
     purchases: nullable(array(object({

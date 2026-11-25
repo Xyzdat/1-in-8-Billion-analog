@@ -5,6 +5,7 @@ import { validateUuid } from '../api/sessionDecoders';
 import type { CharacterChanges, Session } from '../api/sessionTypes';
 import type { SessionCommand } from '../api/sessions';
 import type { BuySpendingItemRequest } from '../api/financeTypes';
+import { prepareSessionMutation } from './sessionMutation';
 
 const activeSessionKey = 'life.activeServerSession';
 
@@ -54,7 +55,8 @@ function errorMessage(error: unknown) {
     ENGINE_UNAVAILABLE: 'Генерация сейчас недоступна. Попробуйте позже.',
     CHARACTER_FIELDS_READ_ONLY: 'Эти параметры доступны только для просмотра. Обновите анкету.',
     SPENDING_READ_ONLY: 'Покупки для 1in8b пока доступны только для просмотра.',
-    SPENDING_INSUFFICIENT_FUNDS: 'Недостаточно средств. Обновите бюджет и выберите другой вариант.',
+    SPENDING_INSUFFICIENT_FUNDS: 'Недостаточно средств для этого действия. Выберите другой вариант.',
+    DECISION_CHANGED: 'Условия решения изменились. Проверьте актуальные варианты и выберите ответ.',
     SPENDING_AGE_RESTRICTED: 'Это действие ещё недоступно в текущем возрасте.',
     SPENDING_ALREADY_OWNED: 'Этот предмет уже приобретён.',
     SPENDING_CURRENT_LOCATION: 'Персонаж уже живёт в выбранном месте.',
@@ -89,6 +91,8 @@ export function useServerLife() {
   const [busy, setBusy] = useState(false);
   const [failure, setFailure] = useState<Failure | null>(null);
   const [notice, setNotice] = useState('');
+  const [resourceRevision, setResourceRevision] = useState(0);
+  const [decisionReviewRequired, setDecisionReviewRequired] = useState(false);
   const request = useRef<AbortController | null>(null);
 
   useEffect(() => () => {
@@ -180,32 +184,23 @@ export function useServerLife() {
       return;
     }
     const current = session;
-    let command: SessionCommand | undefined;
+    const execute = prepareSessionMutation(current, prepare, sessionsApi.getSession);
     run(async (signal) => {
       try {
-        command ??= prepare(current);
-        acceptSession(await command.execute(signal));
-        onSuccess?.();
-      } catch (error) {
-        if (error instanceof ApiError && (error.code === 'VERSION_CONFLICT' || error.code === 'SESSION_COMPLETE')) {
-          // Если GET тоже завершится ошибкой, кнопка повтора должна выполнить только GET.
-          command = undefined;
-          const refresh: Task = async (refreshSignal) => {
-            acceptSession(await sessionsApi.getSession(current.id, refreshSignal));
-            setNotice('Сохранение обновлено.');
-          };
-          try {
-            await refresh(signal);
-          } catch (refreshError) {
-            if (!signal.aborted) {
-              setFailure({
-                message: errorMessage(refreshError),
-                retry: () => run(refresh),
-              });
-            }
-          }
-          return;
+        const result = await execute(signal);
+        acceptSession(result.session);
+        if (result.rejectedCode) {
+          const review = ['SPENDING_INSUFFICIENT_FUNDS', 'DECISION_CHANGED'].includes(result.rejectedCode);
+          setDecisionReviewRequired(review);
+          setResourceRevision((previous) => previous + 1);
+          setNotice(review
+            ? `${errorMessage(new ApiError('', 'http', 409, { code: result.rejectedCode }))} Сохранение обновлено.`
+            : 'Сохранение обновлено.');
+        } else {
+          setDecisionReviewRequired(false);
+          onSuccess?.();
         }
+      } catch (error) {
         if (unavailableSave(error)) {
           if (readActiveId() === current.id) {
             localStorage.removeItem(activeSessionKey);
@@ -249,6 +244,7 @@ export function useServerLife() {
     setSession(null);
     setFailure(null);
     setNotice('');
+    setDecisionReviewRequired(false);
     return true;
   }
 
@@ -260,7 +256,7 @@ export function useServerLife() {
     }
   }
 
-  return { session, busy, failure, notice, connect, generate, advance, answer, editCharacter, purchase, reset, refresh };
+  return { session, busy, failure, notice, resourceRevision, decisionReviewRequired, connect, generate, advance, answer, editCharacter, purchase, reset, refresh };
 }
 
 export type ServerLife = ReturnType<typeof useServerLife>;

@@ -19,7 +19,7 @@ export function useServerClock(session: Session, server: ServerLife, externalBlo
   const autoDecision = useAutoDecision({
     enabled: auto,
     decisionKey: pendingDecision ? `${session.id}:${pendingDecision.id}` : null,
-    blocked: blocked || paused || complete,
+    blocked: blocked || paused || complete || server.decisionReviewRequired,
     onChoose: () => {
       const option = pendingDecision?.options[0];
       if (option) server.answer(option.id);

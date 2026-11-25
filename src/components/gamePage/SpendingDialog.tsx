@@ -9,9 +9,17 @@ type Props = {
   onClose: () => void;
   onBlockTime: (blocked: boolean) => void;
   busy?: boolean;
+  closeLabel?: string;
 };
 
-export default function SpendingDialog({ title, children, onClose, onBlockTime, busy = false }: Props) {
+export default function SpendingDialog({
+  title,
+  children,
+  onClose,
+  onBlockTime,
+  busy = false,
+  closeLabel = 'Вернуться в игру',
+}: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
@@ -44,7 +52,12 @@ export default function SpendingDialog({ title, children, onClose, onBlockTime, 
     >
       <div className={styles.spending__content}>
         <header className={styles.spending__header}>
-          <button type="button" onClick={onClose} disabled={busy} aria-label="Вернуться в игру">
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={busy}
+            aria-label={closeLabel}
+          >
             ←
           </button>
           <h1 id={titleId}>{title}</h1>

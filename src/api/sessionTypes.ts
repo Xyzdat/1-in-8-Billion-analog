@@ -1,4 +1,4 @@
-// Life Backend OpenAPI 0.7.1.
+// Life Backend OpenAPI 0.8.1.
 import type { supportedCountries } from '../data/supportedCountries.ts';
 
 export type SupportedCountry = typeof supportedCountries[number]['iso3'];
@@ -138,7 +138,83 @@ export type SessionHistoryEvent = {
   age: number;
   title: string;
   text: string;
+  link?: EventLink | null;
   consequences?: { aura: number; closeness: Record<string, number> } | null;
+};
+
+export type HighlightOption = { id: string; label: string };
+
+export type EventLink = {
+  sourceId: string;
+  templateId: string;
+  domain: string;
+  phase: 'OFFER' | 'DECISION' | 'OUTCOME' | 'CANCELLED';
+  month: number;
+  decisionId: string | null;
+  optionId: string | null;
+  optionLabel: string | null;
+  action: string | null;
+  offeredOptions: HighlightOption[];
+  participantIds: string[];
+  relatedSourceIds: string[];
+};
+
+export type HighlightDecision = {
+  id: string;
+  month: number;
+  age: number;
+  title: string;
+  prompt: string | null;
+  optionId: string;
+  optionLabel: string;
+  offeredOptions: HighlightOption[];
+  participantIds: string[];
+  historyEventId: string;
+  result: string;
+  statChanges: Record<string, number>;
+  closenessChanges: Record<string, number>;
+  balanceChange: number | null;
+};
+
+export type HighlightEvidence = {
+  id: string;
+  month: number;
+  kind: string;
+  relation: 'DIRECT' | 'SAME_STORY' | 'EXPLICIT_DEPENDENCY' | 'TRACKED_ENTITY';
+  text: string;
+  historyEventId: string | null;
+};
+
+export type HighlightSlide = {
+  id: string;
+  templateId: string;
+  domain: string;
+  month: number;
+  age: number;
+  title: string;
+  importance: number;
+  reasons: { code: string; points: number; text: string }[];
+  decisions: HighlightDecision[];
+  evidence: HighlightEvidence[];
+  revisions: {
+    month: number;
+    previousScore: number;
+    score: number;
+    reasonCodes: string[];
+  }[];
+};
+
+export type LifeHighlights = {
+  modelVersion: 'life-highlights-1';
+  status: 'LIVE' | 'FINAL';
+  currency: 'RUB';
+  trackedFromMonth: number;
+  partialHistory: boolean;
+  evaluatedThroughMonth: number;
+  finalizedAtMonth: number | null;
+  decisionCount: number;
+  candidateCount: number;
+  slides: HighlightSlide[];
 };
 
 export type SessionSummary = {
@@ -148,6 +224,14 @@ export type SessionSummary = {
   age: number;
   status: SessionStatus;
   savedAt: string;
+};
+
+export type ContactState = {
+  status: 'IN_TOUCH' | 'RARE_CONTACT' | 'NO_CONTACT';
+  trackedSinceMonth: number;
+  lastContactMonth: number | null;
+  statusSinceMonth: number;
+  reason: 'INITIALIZED' | 'INTERACTION' | 'HOUSEHOLD' | 'TIME_APART' | 'PLAYER_CHOICE' | 'RECONNECTED';
 };
 
 export type SimulationFamilyMember = {
@@ -160,6 +244,7 @@ export type SimulationFamilyMember = {
   trust: number;
   sex?: 'MALE' | 'FEMALE' | null;
   occupation?: string | null;
+  contact?: ContactState | null;
 };
 
 export type SimulationDeath = {
@@ -168,9 +253,19 @@ export type SimulationDeath = {
   cause: 'UNSPECIFIED';
   model: 'UN_WPP_2024_QX';
   note: string;
+  causeDetails?: {
+    code: 'PERINATAL_COMPLICATIONS' | 'CONGENITAL_CONDITION' | 'RESPIRATORY_INFECTION'
+      | 'SEVERE_INFECTION' | 'ACCIDENT' | 'HEART_ATTACK' | 'STROKE' | 'CANCER'
+      | 'ACUTE_DISEASE_COMPLICATIONS' | 'CHRONIC_DISEASE_COMPLICATIONS' | 'INJURY_COMPLICATIONS';
+    label: string;
+    model: 'death-causes-1';
+    basis: 'GAME_ASSUMPTION';
+    conditionId: string | null;
+  } | null;
 };
 
 export type LocalSimulation = {
+  adult?: AdultLife | null;
   engineVersion: string;
   statisticsRelease: string;
   statisticsYear: number;
@@ -183,12 +278,136 @@ export type LocalSimulation = {
   death?: SimulationDeath | null;
 };
 
+export type AdultTraits = {
+  diligence: number;
+  sociability: number;
+  openness: number;
+  resilience: number;
+};
+
+export type AdultCareer = {
+  status: 'UNEMPLOYED' | 'PROBATION' | 'EMPLOYED' | 'BUSINESS' | 'RETIRED';
+  occupation: string | null;
+  industry: string | null;
+  employer: string | null;
+  position: string | null;
+  monthlyPay: number;
+  beganMonth: number;
+  experienceMonths: number;
+  qualification: number;
+  satisfaction: number;
+  stability: number;
+  risk: number;
+  monthlyPension: number;
+  history: {
+    id: string;
+    occupation: string;
+    employer: string;
+    beganMonth: number;
+    endedMonth: number | null;
+    endReason: string | null;
+  }[];
+};
+
+export type AdultPartnership = {
+  partnerId: string;
+  status: 'DATING' | 'COHABITING' | 'MARRIED' | 'SEPARATED' | 'DIVORCED' | 'WIDOWED';
+  beganMonth: number;
+  cohabiting: boolean;
+  satisfaction: number;
+  conflict: number;
+  milestones: string[];
+};
+
+export type AdultNpc = {
+  id: string;
+  traits: AdultTraits;
+  education: string;
+  occupation: string | null;
+  monthlyIncome: number;
+  health: number;
+  maritalStatus: string;
+  partnerId: string | null;
+  countryIso2: string;
+  parentIds: string[];
+};
+
+export type AdultCondition = {
+  id: string;
+  kind: 'INJURY' | 'HEALTH_CONDITION';
+  onsetMonth: number;
+  severity: number;
+  stage: 'ACTIVE' | 'CHRONIC' | 'RECOVERED';
+  treatment: 'REST' | 'SUPERVISED';
+  reviewMonth: number;
+  endedMonth: number | null;
+  chronic: boolean;
+  workCapacity: number;
+};
+
+export type AdultDebt = {
+  id: string;
+  kind: 'PERSONAL' | 'MORTGAGE';
+  principal: number;
+  annualBasisPoints: number;
+  monthlyPayment: number;
+  missedPayments: number;
+};
+
+export type AdultAsset = {
+  id: string;
+  kind: 'PROPERTY' | 'INVESTMENT';
+  title: string;
+  value: number;
+  ownershipPercent: number;
+  purchaseId: string | null;
+};
+
+export type AdultLife = {
+  modelVersion: 'adult-1';
+  ageStage: 'EARLY_ADULT' | 'MIDDLE_ADULT' | 'LATE_CAREER' | 'LATER_LIFE';
+  currency: 'RUB';
+  traits: AdultTraits;
+  education: {
+    level: string;
+    field: string | null;
+    startedMonth: number | null;
+    completesMonth: number | null;
+    status: string;
+  };
+  career: AdultCareer;
+  partnership: AdultPartnership | null;
+  npcs: Record<string, AdultNpc>;
+  healthConditions: AdultCondition[];
+  debts: AdultDebt[];
+  assets: AdultAsset[];
+  stories: {
+    id: string;
+    template: string;
+    stage: string;
+    status: 'ACTIVE' | 'COMPLETED' | 'CANCELLED';
+    beganMonth: number;
+    endedMonth: number | null;
+    participants: string[];
+  }[];
+  memories: {
+    id: string;
+    month: number;
+    kind: string;
+    personId: string | null;
+    text: string;
+  }[];
+  housing: string;
+  assumptions: string[];
+};
+
 export type Session = {
   provider: SessionProvider;
   id: string;
   character: SessionCharacter;
   version: number;
   savedAt: string;
+  highlights?: LifeHighlights | null;
   simulation?: LocalSimulation | null;
   state: {
     age: number;

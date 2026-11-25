@@ -9,11 +9,13 @@ import { useLifeSimulation } from '../../game/useLifeSimulation';
 import { useServerClock } from '../../game/useServerClock';
 import { useServerHistory } from '../../game/useServerHistory';
 import type { ServerLife } from '../../game/useServerLife';
-import type { Session, SimulationFamilyMember } from '../../api/sessionTypes';
+import type { AdultLife, Session, SimulationFamilyMember } from '../../api/sessionTypes';
 import { completedLifeMessage, toServerHistory } from '../../game/serverPresentation';
 import type { PresentedLifeEvent } from '../../game/serverPresentation';
 import { sessionsApi } from '../../api';
 import { useSessionResource } from '../../game/useSessionResource';
+import { useLifeFavorites } from '../../game/useLifeFavorites';
+import LifeSlideshow from '../lifeSlideshow/LifeSlideshow';
 import EngineCredit from '../bearthSetupPage/EngineCredit';
 import familyImage from '../../assets/game-family.png';
 import relationshipIcon from '../../assets/game-relationships.png';
@@ -39,6 +41,7 @@ type Props = {
   stats: InitialCharacterStats;
   server?: ServerLife;
   onRestart: () => void;
+  onCompleted?: (id: string) => void;
 };
 
 type LocalGame = ReturnType<typeof useLifeSimulation>;
@@ -50,6 +53,8 @@ type GameViewProps = {
   local?: { game: LocalGame; settings: CharacterSettings };
   serverFinances?: ServerFinancesTabProps & { activate: () => void };
   serverFamily?: SimulationFamilyMember[];
+  serverAdult?: AdultLife | null;
+  sessionId?: string;
   completionMessage?: string;
   decisionDialog?: ReactNode;
   requestStatus?: ReactNode;
@@ -81,18 +86,13 @@ function CharacterStats({ stats }: { stats: GameStats }) {
   );
 }
 
-function LifeHistory({ events, birthText, peopleLabels }: {
+function LifeHistory({ events, birthText, peopleLabels, sessionId }: {
   events: PresentedLifeEvent[];
   birthText?: string;
   peopleLabels?: Record<string, string>;
+  sessionId?: string;
 }) {
-  const [favorites, setFavorites] = useState<string[]>([]);
-
-  function toggleFavorite(id: string) {
-    setFavorites((previous) => previous.includes(id)
-      ? previous.filter((favorite) => favorite !== id)
-      : [...previous, id]);
-  }
+  const { favorites, toggleFavorite } = useLifeFavorites(sessionId);
 
   return (
     <section className={styles.game__card}>
@@ -148,7 +148,7 @@ function LifeHistory({ events, birthText, peopleLabels }: {
   );
 }
 
-function GameView({ settings, birthYear, game, local, serverFinances, serverFamily, completionMessage, decisionDialog, requestStatus, credit, onRestart }: GameViewProps) {
+function GameView({ settings, birthYear, game, local, serverFinances, serverFamily, serverAdult, sessionId, completionMessage, decisionDialog, requestStatus, credit, onRestart }: GameViewProps) {
   const [showFamily, setShowFamily] = useState(false);
   const [tab, setTab] = useState<Tab>('Летопись');
   const [shop, setShop] = useState<{ section: ShopSection; itemId?: string } | null>(null);
@@ -300,6 +300,8 @@ function GameView({ settings, birthYear, game, local, serverFinances, serverFami
 
       <div hidden={tab !== 'Летопись'}>
         <LifeHistory
+          key={sessionId ?? 'mock'}
+          sessionId={sessionId}
           events={game.events}
           birthText={birthText}
           peopleLabels={serverFamily && Object.fromEntries(serverFamily.map((person) => [person.id, person.name]))}
@@ -329,7 +331,7 @@ function GameView({ settings, birthYear, game, local, serverFinances, serverFami
             closeness={local.game.closeness}
           />
         ) : serverFamily ? (
-          <ClosePeopleTab family={serverFamily} />
+          <ClosePeopleTab family={serverFamily} adult={serverAdult} />
         ) : (
           <UnavailableSection title="Близкие" />
         )
@@ -410,12 +412,13 @@ function LocalSimulation({ settings, stats, onRestart }: Pick<Props, 'settings' 
   );
 }
 
-function ServerSimulation({ session, server, onRestart }: {
+function ServerSimulation({ session, server, onRestart, onCompleted }: {
   session: Session;
   server: ServerLife;
   onRestart: () => void;
+  onCompleted?: (id: string) => void;
 }) {
-  const [financeEnabled, setFinanceEnabled] = useState(false);
+  const [financeEnabled, setFinanceEnabled] = useState(session.provider === 'local');
   const [shopOpen, setShopOpen] = useState(false);
   const financeResource = useSessionResource(
     session,
@@ -431,56 +434,73 @@ function ServerSimulation({ session, server, onRestart }: {
   const decision = state.pendingDecision;
   const failure = server.failure
     ? { ...server.failure, retry: server.failure.retry ?? server.refresh }
-    : null;
+    : decision && server.decisionReviewRequired
+      ? { message: server.notice, recoverable: true }
+      : null;
 
   return (
-    <GameView
-      settings={{ ...background, name, country: birthplace.country, city: birthplace.city }}
-      birthYear={birthYear}
-      game={{
-        ...clock,
-        stats: {
-          health: state.stats.health,
-          happiness: state.stats.happiness,
-          intelligence: state.stats.intelligence,
-          relationships: state.stats.relationships,
-        },
-        aura: state.stats.aura,
-        events: toServerHistory(history),
-      }}
-      serverFamily={session.simulation?.family}
-      completionMessage={completedLifeMessage(session.simulation?.death)}
-      onRestart={onRestart}
-      serverFinances={{
-        session,
-        server,
-        resource: financeResource,
-        activate: () => setFinanceEnabled(true),
-        onBlockTime: setShopOpen,
-      }}
-      credit={session.provider === '1in8b' && <EngineCredit />}
-      requestStatus={!decision && <RequestStatus busy={false} failure={failure} notice={server.notice} />}
-      decisionDialog={decision && !clock.complete && (
-        <DecisionModal
-          key={decision.id}
-          decision={{
-            title: decision.title,
-            options: decision.options.map((option) => ({ id: option.id, title: option.label })),
-          }}
-          age={state.age}
-          year={birthYear + state.age}
-          onChoose={(index) => {
-            clock.cancelAutoDecision();
-            server.answer(decision.options[index].id);
-          }}
-          onAuto={clock.toggleAuto}
-          auto={clock.auto}
-          autoSeconds={clock.autoSeconds}
-          busy={server.busy}
-          failure={failure}
+    <>
+      <GameView
+        settings={{ ...background, name, country: birthplace.country, city: birthplace.city }}
+        birthYear={birthYear}
+        game={{
+          ...clock,
+          stats: {
+            health: state.stats.health,
+            happiness: state.stats.happiness,
+            intelligence: state.stats.intelligence,
+            relationships: state.stats.relationships,
+          },
+          aura: state.stats.aura,
+          events: toServerHistory(history),
+        }}
+        serverFamily={session.simulation?.family}
+        serverAdult={session.simulation?.adult}
+        sessionId={session.id}
+        completionMessage={completedLifeMessage(session.simulation?.death)}
+        onRestart={onRestart}
+        serverFinances={{
+          session,
+          server,
+          resource: financeResource,
+          activate: () => setFinanceEnabled(true),
+          onBlockTime: setShopOpen,
+        }}
+        credit={session.provider === '1in8b' && <EngineCredit />}
+        requestStatus={!decision && (
+          <RequestStatus busy={false} failure={failure} notice={server.notice} />
+        )}
+        decisionDialog={decision && !clock.complete && (
+          <DecisionModal
+            key={decision.id}
+            decision={{
+              title: decision.title,
+              options: decision.options.map((option) => ({ id: option.id, title: option.label })),
+            }}
+            age={state.age}
+            year={birthYear + state.age}
+            onChoose={(index) => {
+              clock.cancelAutoDecision();
+              server.answer(decision.options[index].id);
+            }}
+            onAuto={clock.toggleAuto}
+            auto={clock.auto}
+            autoSeconds={clock.autoSeconds}
+            busy={server.busy}
+            failure={failure}
+          />
+        )}
+      />
+      {state.status === 'COMPLETE' && onCompleted && (
+        <LifeSlideshow
+          key={session.id}
+          session={session}
+          finances={financeResource.data}
+          automatic
+          onFinish={() => onCompleted(session.id)}
         />
       )}
-    />
+    </>
   );
 }
 
@@ -513,6 +533,7 @@ export default function GamePage(props: Props) {
         session={server.session}
         server={server}
         onRestart={props.onRestart}
+        onCompleted={props.onCompleted}
       />
     ) : (
       <main className={styles.game}>

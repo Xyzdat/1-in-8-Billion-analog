@@ -22,7 +22,7 @@ type Props = {
   autoSeconds?: number | null;
   onDefer?: () => void;
   busy?: boolean;
-  failure?: { message: string; retry?: () => void } | null;
+  failure?: { message: string; retry?: () => void; recoverable?: boolean } | null;
 };
 
 export default function DecisionModal({ decision, age, year, onChoose, onAuto, auto = false, autoSeconds, onDefer, busy, failure }: Props) {
@@ -93,7 +93,7 @@ export default function DecisionModal({ decision, age, year, onChoose, onAuto, a
             type="button"
             key={option.id ?? option.title}
             onClick={() => onChoose(index)}
-            disabled={busy || Boolean(failure)}
+            disabled={busy || Boolean(failure && !failure.recoverable)}
           >
             <span className={styles.game__decisionNumber}>{index + 1}</span>
             <span>
@@ -119,7 +119,7 @@ export default function DecisionModal({ decision, age, year, onChoose, onAuto, a
           </button>
         ))}
 
-        {busy && <p role="status">Сохраняем решение…</p>}
+        {/* {busy && <p role="status">Сохраняем решение…</p>} */}
         {failure && (
           <div>
             <p role="alert">{failure.message}</p>

@@ -1,0 +1,290 @@
+.completedLife {
+  min-height: 100dvh;
+  padding-bottom: 96px;
+  background: #eef1f9;
+  color: #26314b;
+  font-family: 'Nunito', Arial, sans-serif;
+
+  &__hero {
+    position: relative;
+    height: clamp(206px, 64.4186vw, 277px);
+    overflow: hidden;
+
+    img {
+      position: absolute;
+      top: 5.05%;
+      display: block;
+      width: 100%;
+      height: 103.61%;
+      object-fit: cover;
+      object-position: center top;
+    }
+
+    &::after {
+      position: absolute;
+      inset: 50.54% 0 0;
+      background: linear-gradient(to bottom, transparent, #eef1f9 87.6%);
+      content: '';
+      pointer-events: none;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 0 20px 18px;
+  }
+
+  &__heading {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-bottom: 6px;
+
+    h1,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 30px;
+      font-weight: 800;
+      line-height: normal;
+    }
+  }
+
+  &__years {
+    color: #7a839e;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 1.6px;
+  }
+
+  &__name {
+    font-size: 24px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  &__birthplace {
+    color: #56637e;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  &__results {
+    padding: 22px 20px 20px;
+    border-radius: 24px;
+    background: #ffffff;
+    box-shadow: 0 4px 8px rgba(77, 120, 245, 0.1);
+
+    h2 {
+      margin: 0 0 11px;
+      font-size: 24px;
+      font-weight: 800;
+    }
+  }
+
+  &__facts {
+    margin: 0 0 17px;
+  }
+
+  &__fact {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 46px;
+    padding: 5px 0;
+    border-bottom: 1px solid #dce1f5;
+
+    dt {
+      flex: 0 0 128px;
+      color: #7a839e;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    dd {
+      flex: 1;
+      min-width: 0;
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__aura {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px 14px 16px;
+    border-radius: 18px;
+    background: #e8ecfb;
+
+    > strong {
+      flex-shrink: 0;
+      max-width: 38%;
+      color: #5b86f6;
+      font-size: 24px;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__auraIcon {
+    flex-shrink: 0;
+    font-size: 29px;
+  }
+
+  &__auraText {
+    flex: 1;
+    min-width: 0;
+
+    h3 {
+      margin: 0 0 2px;
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    p {
+      margin: 0;
+      color: #7a839e;
+      font-size: 13px;
+      font-weight: 500;
+    }
+  }
+
+  &__primary,
+  &__secondary,
+  &__memories,
+  &__companion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    min-height: 56px;
+    padding: 14px 18px;
+    border: 0;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.4;
+  }
+
+  &__primary {
+    background: #7098ff;
+    color: #ffffff;
+  }
+
+  &__secondary,
+  &__memories {
+    border: 2px solid rgba(107, 147, 250, 0.5);
+    background: #ffffff;
+    color: #7098ff;
+  }
+
+  &__secondary,
+  &__companion {
+    min-height: 62px;
+  }
+
+  &__memories {
+    min-height: 62px;
+    box-shadow: 0 4px 8px rgba(77, 120, 245, 0.1);
+    font-weight: 600;
+
+    img {
+      flex-shrink: 0;
+    }
+  }
+
+  &__companion {
+    background: linear-gradient(90deg, #7a9cfa, #f77fae);
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  &__muted {
+    margin: 0;
+    color: #7a839e;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  &__record {
+    padding: 20px;
+    border-radius: 20px;
+    background: #ffffff;
+    overflow-wrap: anywhere;
+
+    > span {
+      display: block;
+      margin-bottom: 12px;
+      color: #7a839e;
+      font-size: 13px;
+    }
+
+    h2 {
+      margin-bottom: 12px;
+      font-size: 23px;
+    }
+
+    p {
+      color: #56637e;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+  }
+
+  &__memoryAction {
+    margin-top: 16px;
+    padding: 6px 0;
+    border: 0;
+    background: transparent;
+    color: #4d7aff;
+    font: inherit;
+  }
+
+  &__recordControls {
+    display: flex;
+    gap: 8px;
+
+    button {
+      flex: 1;
+      padding: 12px 8px;
+      border: 1px solid #dce1f5;
+      border-radius: 12px;
+      background: #ffffff;
+      color: #4d7aff;
+      font: inherit;
+
+      &:disabled {
+        opacity: 0.5;
+      }
+    }
+  }
+
+  &__recordProgress {
+    width: 100%;
+    accent-color: #7098ff;
+  }
+
+  @media (max-width: 390px) {
+    &__heading h1 {
+      font-size: 26px;
+    }
+
+    &__fact dt {
+      flex-basis: 105px;
+    }
+
+    &__aura {
+      gap: 9px;
+      padding-right: 12px;
+      padding-left: 12px;
+    }
+  }
+}

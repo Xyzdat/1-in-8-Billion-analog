@@ -7,8 +7,9 @@ import chanceOutline from '../../assets/figma-chance-outline.svg'
 import chanceHighlight from '../../assets/figma-chance-highlight.svg'
 import divider from '../../assets/figma-divider.svg'
 import styles from './mainPage.module.scss'
-import { birthPreview, lives } from '../../mocks/mockData'
-import type { Life } from '../../mocks/mockData'
+import { birthPreview } from '../../mocks/mockData'
+import LifeCards from '../lifeCards/LifeCards'
+import { useCompletedLives } from '../../game/useCompletedLives'
 
 type MainPageProps = {
   onStart: () => void
@@ -17,6 +18,7 @@ type MainPageProps = {
   busy: boolean
   failure: { message: string; retry?: () => void } | null
   resumeMessage: string
+  onOpenLife: (id: string) => void
 }
 
 function Hero() {
@@ -48,30 +50,9 @@ function BirthChance() {
   )
 }
 
-function LifeCard({ life }: { life: Life }) {
-  return (
-    <article className={styles.lifeCard}>
-      <img className={styles.lifeCard__image} src={life.image} alt="" />
-      <h4 className={styles.lifeCard__title}>{life.name}</h4>
-      <span className={styles.lifeCard__years}>{life.years} &nbsp;{life.country}</span>
-      <p className={styles.lifeCard__description}>{life.description}</p>
-    </article>
-  )
-}
-
-function ParallelLives() {
-  return (
-    <section className={styles.mainPage__lives} aria-labelledby="parallel-lives-title">
-      <h3 className={styles.mainPage__sectionTitle} id="parallel-lives-title">Параллельные жизни</h3>
-      <div className={styles.mainPage__livesList}>
-        {lives.map((life) => <LifeCard key={life.id} life={life} />)}
-      </div>
-    </section>
-  )
-}
-
-function MainPage({ onStart, onContinue, onMockStart, busy, failure, resumeMessage }: MainPageProps) {
+function MainPage({ onStart, onContinue, onMockStart, busy, failure, resumeMessage, onOpenLife }: MainPageProps) {
   const scrollContainerRef = useRef<HTMLElement>(null)
+  const completed = useCompletedLives()
 
   return (
     <div className={styles.mainPageWrapper}>
@@ -132,7 +113,22 @@ function MainPage({ onStart, onContinue, onMockStart, busy, failure, resumeMessa
             </div>
           )}
           {resumeMessage && <p role="status">{resumeMessage}</p>}
-          <ParallelLives />
+          {completed.loading && <p role="status">Загружаем прожитые жизни…</p>}
+          {completed.error && (
+            <div>
+              <p role="alert">{completed.error}</p>
+              <button type="button" className={styles.mainPage__continue} onClick={completed.retry}>
+                Повторить загрузку жизней
+              </button>
+            </div>
+          )}
+          {(completed.entries.length > 0 || !completed.loading) && (
+            <LifeCards
+              className={styles.mainPage__lives}
+              entries={completed.entries}
+              onOpen={onOpenLife}
+            />
+          )}
         </div>
       </main>
       <CustomScrollbar scrollContainerRef={scrollContainerRef} />

@@ -67,6 +67,7 @@ export type FinanceSummary = {
 };
 
 export type FinanceTransaction = {
+  flow?: 'OPERATING' | 'FINANCING' | null;
   id: string;
   month: number;
   kind: 'BUDGET' | 'PURCHASE' | 'UPKEEP' | 'INTEREST';

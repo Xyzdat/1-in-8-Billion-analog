@@ -45,7 +45,7 @@ export function useSessionResource<T extends { version: number }>(
       }
     });
     return () => controller.abort();
-  }, [identity, session.version, attempt, enabled]);
+  }, [identity, session.version, server.resourceRevision, attempt, enabled]);
 
   const data = result.identity === identity ? result.data : null;
   const resourceVersion = data?.version;

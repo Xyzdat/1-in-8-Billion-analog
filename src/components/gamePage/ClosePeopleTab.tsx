@@ -2,7 +2,7 @@ import type { CharacterSettings } from '../../types/character';
 import { childhoodFriend, closePeople, siblingNames } from '../../mocks/gameTabs';
 import type { ClosePerson } from '../../mocks/gameTabs';
 import type { PersonId } from '../../mocks/lifeEconomy';
-import type { SimulationFamilyMember } from '../../api/sessionTypes';
+import type { AdultLife, SimulationFamilyMember } from '../../api/sessionTypes';
 import { toServerFamily } from '../../game/serverPresentation';
 import type { PresentedPerson } from '../../game/serverPresentation';
 import styles from './GameTabs.module.scss';
@@ -13,7 +13,7 @@ type MockProps = {
   closeness: Record<PersonId, number>;
 };
 
-type Props = MockProps | { family: SimulationFamilyMember[] };
+type Props = MockProps | { family: SimulationFamilyMember[]; adult?: AdultLife | null };
 
 function PersonCard({ person }: { person: PresentedPerson }) {
   const personAge = person.age;
@@ -25,13 +25,18 @@ function PersonCard({ person }: { person: PresentedPerson }) {
       : 'лет';
 
   return (
-    <article className={styles.people__person}>
+    <article
+      className={`${styles.people__person}${person.alive ? '' : ` ${styles['people__person--deceased']}`}`}
+    >
       <span className={styles.people__avatar} aria-hidden="true">
         {person.icon}
       </span>
       <div className={styles.people__info}>
         <h3>{person.name}</h3>
-        <p>{person.role} · {personAge} {ageLabel}</p>
+        <p>
+          {person.role} · {personAge} {ageLabel}
+          {person.contactLabel && ` · ${person.contactLabel}`}
+        </p>
         <p className={styles.people__occupation}>{person.occupation}</p>
         <div className={styles.people__closeness}>
           <span>💗 Близость</span>
@@ -44,7 +49,7 @@ function PersonCard({ person }: { person: PresentedPerson }) {
 }
 
 function mockPerson(person: ClosePerson, age: number, closeness: number): PresentedPerson {
-  return { ...person, age: person.ageAtBirth + age, closeness };
+  return { ...person, age: person.ageAtBirth + age, closeness, alive: true };
 }
 
 function mockPeople({ settings, age, closeness }: MockProps) {
@@ -81,22 +86,38 @@ function mockPeople({ settings, age, closeness }: MockProps) {
       closeness[person.id === 'sibling-0' ? 'brother' : person.id as PersonId],
     )),
     emptyFamily: parents.length ? null : `${settings.family}. О тебе заботятся взрослые рядом.`,
-    friend: age >= 7 ? mockPerson(
+    friends: age >= 7 ? [mockPerson(
       { ...childhoodFriend, occupation: age >= 18 ? 'Учится или работает' : childhoodFriend.occupation },
       age,
       closeness.friend,
-    ) : null,
+    )] : [],
     emptyFriends: 'Близкие друзья появятся по мере взросления.',
+    deceased: [] as PresentedPerson[],
+  };
+}
+
+function serverPeople(people: SimulationFamilyMember[], adult?: AdultLife | null) {
+  const living = people.filter((person) => person.alive && (
+    person.role === 'mother'
+    || person.role === 'father'
+    || (person.contact?.status !== 'NO_CONTACT'
+      && (person.role === 'friend' || person.contact?.status !== 'RARE_CONTACT'))
+  ));
+  const family = toServerFamily(living.filter((person) => person.role !== 'friend'), adult);
+
+  return {
+    family,
+    friends: toServerFamily(living.filter((person) => person.role === 'friend'), adult),
+    deceased: toServerFamily(people.filter((person) => !person.alive), adult),
+    emptyFamily: family.length ? null : 'Родственников для отображения пока нет.',
+    emptyFriends: 'Друзей для отображения пока нет.',
   };
 }
 
 export default function ClosePeopleTab(props: Props) {
-  const { family, friend, emptyFamily, emptyFriends } = 'family' in props ? {
-    family: toServerFamily(props.family),
-    friend: null,
-    emptyFamily: props.family.length ? null : 'Нет данных о родственниках.',
-    emptyFriends: 'Сведения о друзьях пока не переданы сервером.',
-  } : mockPeople(props);
+  const { family, friends, deceased, emptyFamily, emptyFriends } = 'family' in props
+    ? serverPeople(props.family, props.adult)
+    : mockPeople(props);
 
   return (
     <section className={styles.people} aria-labelledby="close-people-title">
@@ -116,10 +137,29 @@ export default function ClosePeopleTab(props: Props) {
       </div>
 
       <h2 className={styles.people__friendsTitle}>Друзья</h2>
-      {friend ? (
-        <PersonCard person={friend} />
+      {friends.length > 0 ? (
+        friends.map((person) => (
+          <PersonCard
+            key={person.id}
+            person={person}
+          />
+        ))
       ) : (
         <p className={styles.people__empty}>{emptyFriends}</p>
+      )}
+
+      {deceased.length > 0 && (
+        <>
+          <h2 className={styles.people__deceasedTitle}>Ушли из жизни</h2>
+          <div className={styles.people__list}>
+            {deceased.map((person) => (
+              <PersonCard
+                key={person.id}
+                person={person}
+              />
+            ))}
+          </div>
+        </>
       )}
       <p className={styles.people__note}>На близость влияют ваши решения в игре</p>
     </section>

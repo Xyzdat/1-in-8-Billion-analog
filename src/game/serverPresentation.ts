@@ -1,4 +1,4 @@
-import type { SessionHistoryEvent, SimulationDeath, SimulationFamilyMember } from '../api/sessionTypes.ts';
+import type { AdultLife, ContactState, SessionHistoryEvent, SimulationDeath, SimulationFamilyMember } from '../api/sessionTypes.ts';
 import type { LifeEvent } from '../mocks/lifeEvents.ts';
 
 export type PresentedLifeEvent = Omit<LifeEvent, 'closeness'> & { closeness?: Record<string, number> };
@@ -7,6 +7,8 @@ export type PresentedPerson = {
   name: string;
   role: string;
   age: number;
+  alive: boolean;
+  contactLabel?: string;
   occupation: string;
   icon: string;
   closeness: number;
@@ -14,23 +16,35 @@ export type PresentedPerson = {
 
 const roles: Record<string, string> = {
   mother: 'Мама', father: 'Папа', brother: 'Брат', sister: 'Сестра', sibling: 'Брат / сестра',
+  partner: 'Партнёр', child: 'Ребёнок', grandchild: 'Внук / внучка',
+  'great-grandchild': 'Правнук / правнучка', friend: 'Друг / подруга', 'in-law': 'Родственник по браку',
 };
 
-export function toServerFamily(family: SimulationFamilyMember[]): PresentedPerson[] {
-  return family.map((person) => ({
-    id: person.id,
-    name: person.name,
-    role: [roles[person.role] ?? person.role, person.alive ? null : person.sex === 'FEMALE' ? 'умерла' : person.sex === 'MALE' ? 'умер' : 'нет в живых']
-      .filter(Boolean).join(' · '),
-    age: person.age,
-    occupation: person.occupation == null
-      ? 'Нет данных о занятиях'
-      : `${person.occupation} · занятие при рождении персонажа`,
-    icon: person.role === 'mother' ? '👩' : person.role === 'father' ? '👨'
-      : person.sex === 'FEMALE' ? person.age < 18 ? '👧' : '👩'
-        : person.sex === 'MALE' ? person.age < 18 ? '👦' : '👨' : '👤',
-    closeness: person.closeness,
-  }));
+const contactLabels: Record<ContactState['status'], string> = {
+  IN_TOUCH: 'Общаемся',
+  RARE_CONTACT: 'Редко общаемся',
+  NO_CONTACT: 'Связь прервана',
+};
+
+export function toServerFamily(family: SimulationFamilyMember[], adult?: AdultLife | null): PresentedPerson[] {
+  return family.map((person) => {
+    const npc = adult?.npcs[person.id];
+    const occupation = npc ? npc.occupation : person.occupation;
+    return {
+      id: person.id,
+      name: person.name,
+      role: [roles[person.role] ?? person.role, person.alive ? null : person.sex === 'FEMALE' ? 'умерла' : person.sex === 'MALE' ? 'умер' : 'нет в живых']
+        .filter(Boolean).join(' · '),
+      age: person.age,
+      alive: person.alive,
+      contactLabel: person.alive && person.contact ? contactLabels[person.contact.status] : undefined,
+      occupation: occupation ?? 'Нет данных о занятиях',
+      icon: person.role === 'mother' ? '👩' : person.role === 'father' ? '👨'
+        : person.sex === 'FEMALE' ? person.age < 18 ? '👧' : '👩'
+          : person.sex === 'MALE' ? person.age < 18 ? '👦' : '👨' : '👤',
+      closeness: person.closeness,
+    };
+  });
 }
 
 export function toServerHistory(history: SessionHistoryEvent[]): PresentedLifeEvent[] {
