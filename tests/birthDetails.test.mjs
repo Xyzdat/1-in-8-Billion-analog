@@ -128,7 +128,7 @@ test('birth card preserves zero, false and empty lists without inventing rental 
   assert.equal(rows.housing, 'Нет собственного жилья');
   assert.doesNotMatch(rows.housing, /аренд|съём/i);
   assert.equal(rows.mother, 'Врач');
-  assert.equal(rows.father, 'unknown-job');
+  assert.equal(rows.father, 'Нет данных о профессии');
   assert.equal(rows['mother.age'], '28 лет');
   assert.equal(rows['father.alive'], 'Нет');
   assert.equal(rows.group, 'Название группы');

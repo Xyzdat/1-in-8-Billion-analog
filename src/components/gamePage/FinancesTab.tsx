@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { relationshipExpenses, spendingCategories } from '../../mocks/gameTabs';
 import type { FinanceState } from '../../game/finances';
 import { getShopItems } from '../../mocks/spendingCatalog';
@@ -16,9 +15,7 @@ type Props = {
 
 const money = (value: number) => `${new Intl.NumberFormat('ru-RU').format(value)} ₽`;
 
-function FinanceSummary({ age, finances }: Props) {
-  const [expanded, setExpanded] = useState(false);
-
+function FinanceSummary({ finances }: Pick<Props, 'finances'>) {
   return (
     <>
       <div className={styles.finances__summary}>
@@ -35,30 +32,12 @@ function FinanceSummary({ age, finances }: Props) {
       </div>
 
       <section className={styles.finances__card}>
-        <button
-          type="button"
-          className={styles.finances__savings}
-          aria-expanded={expanded}
-          aria-controls="savings-details"
-          onClick={() => setExpanded(!expanded)}
-        >
+        <div className={styles.finances__savings}>
           <span>
             <strong>Накопления</strong>
             <strong>{money(finances.savings)}</strong>
           </span>
-          <span className={styles.finances__savingsCaption}>
-            Остаток личного бюджета
-            <span aria-hidden="true">{expanded ? '⌃' : '⌄'}</span>
-          </span>
-        </button>
-        {expanded && (
-          <p className={styles.finances__details} id="savings-details">
-            {age < 18
-              ? 'Карманные деньги и подработка пополняют личный бюджет. Основные расходы покрывает семья.'
-              : `Текущий путь: ${finances.career}. Суммы начисляются каждый игровой месяц.`}
-            {finances.debt > 0 && ` Непокрытые расходы: ${money(finances.debt)}.`}
-          </p>
-        )}
+        </div>
       </section>
     </>
   );
@@ -67,8 +46,8 @@ function FinanceSummary({ age, finances }: Props) {
 export default function FinancesTab({ age, finances, purchases = [], onOpen }: Props) {
   const ledger = [...finances.ledger].reverse();
   return (
-    <div className={styles.finances} aria-label="Траты и вложения">
-      <FinanceSummary age={age} finances={finances} />
+    <div className={styles.finances} aria-label="Бюджет">
+      <FinanceSummary finances={finances} />
 
       {age < 18 && (
         <p className={styles.finances__notice}>

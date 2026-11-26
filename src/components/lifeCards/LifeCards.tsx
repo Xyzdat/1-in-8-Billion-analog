@@ -29,12 +29,12 @@ function cardFromSave({ summary, session }: CompletedLifeEntry): Card {
 function CardContent({ life }: { life: Card }) {
   return (
     <>
-      <img
+      {/* <img
         className={styles.lifeCards__image}
         src={life.image}
         alt=""
         style={life.imagePosition ? { objectPosition: life.imagePosition } : undefined}
-      />
+      /> */}
       <h4 className={styles.lifeCards__name}>{life.name}</h4>
       <span className={styles.lifeCards__years}>
         {life.years} &nbsp;{life.country}

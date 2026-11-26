@@ -36,10 +36,11 @@ function App() {
 
   const openLife = useCallback((restoring = false) => {
     const restoreBirth = restoring && window.location.hash === generatedBirthHash;
-    connect((connection) => {
+    connect((connection, saved) => {
       if (connection === 'saved') {
-        window.history.replaceState(null, '', restoreBirth ? generatedBirthHash : serverLifeHash);
-        setPage(restoreBirth ? 'generatedBirth' : 'serverLife');
+        const showBirth = restoreBirth && saved?.state.status !== 'COMPLETE';
+        window.history.replaceState(null, '', showBirth ? generatedBirthHash : serverLifeHash);
+        setPage(showBirth ? 'generatedBirth' : 'serverLife');
         return;
       }
       clearServerLocation();
@@ -236,13 +237,19 @@ function App() {
             values={generatedParameters.settings}
             statValues={generatedParameters.stats}
             server={{
-              provider: serverLife.session.provider,
+              session: serverLife.session,
               busy: serverLife.busy,
               failure: serverLife.failure,
               notice: serverLife.notice,
               onSave: (settings, stats) => {
                 const changes = toCharacterChanges(serverLife.session, settings, stats);
-                serverLife.editCharacter(changes, () => setPage('generatedBirth'));
+                serverLife.editCharacter(changes, (updated) => {
+                  if (updated.state.status === 'COMPLETE') {
+                    showServerLife();
+                  } else {
+                    setPage('generatedBirth');
+                  }
+                });
               },
             }}
             onBack={() => setPage('generatedBirth')}

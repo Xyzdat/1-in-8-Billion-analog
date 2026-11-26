@@ -9,7 +9,10 @@ import styles from './changeParametersPage.module.scss';
 import { initialStats, initialSettings, account } from '../../mocks/mockData';
 import type { CharacterSettings, CharacterStats, StatKey, SettingKey } from '../../types/character';
 import ParameterModal from '../parameterModal/ParameterModal';
-import type { SessionProvider } from '../../api/sessionTypes';
+import type { Session } from '../../api/sessionTypes';
+import { birthFamilyPresets, canCustomizeBirth, canEditCharacterField } from '../../api/characterCustomization';
+import { supportedCountries } from '../../data/supportedCountries';
+import { parameterFields } from '../../mocks/parameterOptions';
 
 type ChangeParametersPageProps = {
   onBack: () => void;
@@ -18,7 +21,7 @@ type ChangeParametersPageProps = {
   statValues?: Partial<CharacterStats>;
   onSave?: (settings: CharacterSettings, stats: CharacterStats) => void;
   server?: {
-    provider: SessionProvider;
+    session: Session;
     busy: boolean;
     failure: { message: string; retry?: () => void } | null;
     notice: string;
@@ -38,9 +41,21 @@ function ChangeParametersPage({
   const [stats, setStats] = useState(statValues);
   const [settings, setSettings] = useState(values);
   const [activeField, setActiveField] = useState<SettingKey | null>(null);
-  const locked = Boolean(server?.busy || server?.failure?.retry);
-  const canEditField = (key: SettingKey) => !server || key === 'name';
-  const canEditStat = (key: StatKey) => !server || server.provider === 'local' || key === 'appearance';
+  const locked = Boolean(server?.busy || server?.failure?.retry || server?.session.state.status === 'COMPLETE');
+  const birthEditable = server ? canCustomizeBirth(server.session) : false;
+  const canEditField = (key: SettingKey) => !server || canEditCharacterField(server.session, key, settings);
+  const canEditStat = (key: StatKey) => !server || server.session.provider === 'local' || key === 'appearance';
+  const modalOptions = activeField === 'country' && server
+    ? supportedCountries.map(({ name, iso2, group }) => ({
+      label: name,
+      icon: String.fromCodePoint(...[...iso2].map((letter) => letter.charCodeAt(0) + 127397)),
+      group,
+    }))
+    : activeField === 'family' && server
+      ? Object.keys(birthFamilyPresets).map((label) => ({ label }))
+      : activeField === 'father' && server
+        ? parameterFields.father.options.filter(({ label }) => label !== 'Случайно')
+        : undefined;
 
   const changedCount =
     (Object.keys(stats) as StatKey[]).filter(key => stats[key] !== statValues[key]).length +
@@ -134,9 +149,11 @@ function ChangeParametersPage({
           </span>
           <p>
             {server
-              ? server.provider === '1in8b'
+              ? server.session.provider === '1in8b'
                 ? 'Можно изменить имя и внешность. Остальные параметры доступны только для просмотра.'
-                : 'Можно изменить имя, здоровье, интеллект и внешность. Остальные параметры доступны только для просмотра.'
+                : birthEditable
+                  ? 'До начала жизни можно изменить персонажа, место рождения и семью. Домашние животные доступны только для просмотра.'
+                  : 'Можно изменить имя, здоровье, интеллект и внешность. Настройки рождения заблокированы после начала жизни.'
               : 'Измени любой параметр рождения — каждый стоит токены. Всё, что не трогаешь, останется случайным.'}
           </p>
         </div>
@@ -251,6 +268,8 @@ function ChangeParametersPage({
           country={settings.country}
           region={settings.region}
           showPrice={!server}
+          options={modalOptions}
+          allowCustomValue={Boolean(server) && (activeField === 'region' || activeField === 'city')}
           onClose={() => setActiveField(null)}
           onConfirm={(value) => {
             setSettings((previous) => ({

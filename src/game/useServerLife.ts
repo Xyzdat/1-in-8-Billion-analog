@@ -133,7 +133,7 @@ export function useServerLife() {
     });
   }, []);
 
-  const connect = useCallback((onResult: (connection: Connection) => void, { latest = false } = {}) => {
+  const connect = useCallback((onResult: (connection: Connection, saved?: Session) => void, { latest = false } = {}) => {
     run(async (signal) => {
       if (!await checkConnection(signal)) {
         onResult('offline');
@@ -143,8 +143,9 @@ export function useServerLife() {
         const id = latest ? null : readActiveId();
         if (id) {
           try {
-            acceptSession(await sessionsApi.getSession(id, signal));
-            onResult('saved');
+            const saved = await sessionsApi.getSession(id, signal);
+            acceptSession(saved);
+            onResult('saved', saved);
             return;
           } catch (error) {
             if (!unavailableSave(error)) {
@@ -155,8 +156,9 @@ export function useServerLife() {
         }
         const [latestSave] = await sessionsApi.listSessions(signal);
         if (latestSave) {
-          acceptSession(await sessionsApi.getSession(latestSave.id, signal));
-          onResult('saved');
+          const saved = await sessionsApi.getSession(latestSave.id, signal);
+          acceptSession(saved);
+          onResult('saved', saved);
           return;
         }
         onResult('ready');
@@ -179,7 +181,7 @@ export function useServerLife() {
     });
   }
 
-  function mutate(prepare: (current: Session) => SessionCommand, onSuccess?: () => void) {
+  function mutate(prepare: (current: Session) => SessionCommand, onSuccess?: (updated: Session) => void) {
     if (!session || session.state.status === 'COMPLETE' || failure?.retry) {
       return;
     }
@@ -195,10 +197,13 @@ export function useServerLife() {
           setResourceRevision((previous) => previous + 1);
           setNotice(review
             ? `${errorMessage(new ApiError('', 'http', 409, { code: result.rejectedCode }))} Сохранение обновлено.`
-            : 'Сохранение обновлено.');
+            : ['BIRTH_CONFIGURATION_LOCKED', 'BIRTH_CUSTOMIZATION_UNSUPPORTED', 'CHARACTER_FIELDS_READ_ONLY'].includes(result.rejectedCode)
+              ? `${errorMessage(new ApiError('', 'http', 409, { code: result.rejectedCode }))} Сохранение обновлено.`
+              : 'Сохранение обновлено.');
+          if (result.session.state.status === 'COMPLETE') onSuccess?.(result.session);
         } else {
           setDecisionReviewRequired(false);
-          onSuccess?.();
+          onSuccess?.(result.session);
         }
       } catch (error) {
         if (unavailableSave(error)) {
@@ -226,7 +231,7 @@ export function useServerLife() {
     mutate((current) => sessionsApi.prepareAnswer(current.id, decision.id, optionId, current.version));
   }
 
-  function editCharacter(changes: CharacterChanges, onSuccess: () => void) {
+  function editCharacter(changes: CharacterChanges, onSuccess: (updated: Session) => void) {
     mutate((current) => sessionsApi.prepareEditCharacter(current.id, current.version, changes), onSuccess);
   }
 

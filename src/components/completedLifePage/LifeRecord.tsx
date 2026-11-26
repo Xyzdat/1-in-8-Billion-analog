@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { Session } from '../../api/sessionTypes';
 import { ageText } from '../../game/completedLives';
 import { useLifeFavorites } from '../../game/useLifeFavorites';
-import { LIFE_SLIDE_MS } from '../../game/lifeFilm';
+import { firstTwoSentences, LIFE_SLIDE_MS } from '../../game/lifeFilm';
 import SpendingDialog from '../gamePage/SpendingDialog';
 import styles from './CompletedLifePage.module.scss';
 
@@ -64,7 +64,7 @@ export default function LifeRecord({ session, mode, onClose }: Props) {
               {ageText(current.age)} · {session.character.birthYear + current.age}
             </span>
             <h2>{current.title}</h2>
-            <p>{current.text}</p>
+            <p>{firstTwoSentences(current.text)}</p>
             <button
               className={styles.completedLife__memoryAction}
               type="button"

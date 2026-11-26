@@ -1,4 +1,4 @@
-import type { BirthDescription, BirthMeasure } from './sessionTypes.ts';
+import type { BirthDescription, BirthMeasure, ParentAtBirth, SessionCharacter } from './sessionTypes.ts';
 
 const numbers = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 });
 const yearsPlural = new Intl.PluralRules('ru');
@@ -50,6 +50,22 @@ export function formatBirthMeasure(measure: BirthMeasure | null | undefined) {
 export function formatBirthDescription(fact: BirthDescription | null | undefined, language = false) {
   if (fact?.value == null) return null;
   return language ? localizedLanguage(fact.value) : fact.value;
+}
+
+export function birthWealthValue(character: SessionCharacter) {
+  return character.birthFacts?.wealth.value ?? character.background?.wealth ?? null;
+}
+
+export function formatOccupationLabel(value: string) {
+  return value.replace(/\s*·\s*игровая специализация\s*$/iu, '');
+}
+
+export function parentOccupationLabel(occupation: ParentAtBirth['occupation'], fallback?: string | null) {
+  if (occupation?.label != null) return formatOccupationLabel(occupation.label);
+  if (occupation?.code === 'UNSPECIFIED') return 'Нет данных о профессии';
+  return fallback == null
+    ? occupation == null ? null : 'Нет данных о профессии'
+    : formatOccupationLabel(fallback);
 }
 
 export function formatCountryReligions(religions: { code: string; percent: number }[]) {

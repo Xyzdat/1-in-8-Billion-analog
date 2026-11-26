@@ -359,7 +359,7 @@ test('invalid character changes fail before HTTP', () => {
   for (const changes of [
     {}, { stats: {} }, { name: '' }, { name: '   ' }, { name: 'x'.repeat(101) },
     { stats: { health: 101 } }, { stats: { appearance: null } },
-    { stats: { intelligence: 1.5 } }, { stats: { aura: 1 } }, { gender: 'Женщина' },
+    { stats: { intelligence: 1.5 } }, { stats: { aura: 101 } }, { gender: 'Женщина' },
   ]) {
     assert.throws(() => api.prepareEditCharacter(sessionId, 1, changes));
   }

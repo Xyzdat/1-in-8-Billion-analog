@@ -13,6 +13,7 @@ before(async () => {
   vite = await createServer({
     cacheDir: 'node_modules/.vite-tests',
     optimizeDeps: { noDiscovery: true, include: [] },
+    ssr: { noExternal: ['react-country-flag'] },
     server: { middlewareMode: true, hmr: false, ws: false, watch: null },
     appType: 'custom',
   });
@@ -184,6 +185,23 @@ test('existing country and family cards render compact values without source or 
   assert.doesNotMatch(html, /Вероятность выбора страны в текущей игре/);
 });
 
+test('existing birth cards display full wealth estimates and broad parent profession names without changing layout', async () => {
+  const { default: Profile } = await vite.ssrLoadModule('/src/components/bearthSetupPage/BirthProfileCard.tsx');
+  const { default: Family } = await vite.ssrLoadModule('/src/components/bearthSetupPage/BirthFamilyCard.tsx');
+  const session = birthAndLifeSession();
+  session.character.birthFacts.wealth.value = 'Низкий достаток · 0,39 среднего по стране';
+  session.character.birthDetails.mother.occupation = { code: 'OCU_ISCO08_3', label: 'Специалист среднего уровня квалификации' };
+  const model = toGeneratedBirthCard(session);
+  const html = renderToStaticMarkup(createElement(Profile, { model }))
+    + renderToStaticMarkup(createElement(Family, { model }));
+  assert.equal((html.match(/Низкий достаток · 0,39 среднего по стране/g) ?? []).length, 2);
+  assert.match(html, /Специалист среднего уровня квалификации/);
+  assert.doesNotMatch(html, /из 5/);
+  session.character.birthFacts.wealth.value = 'Ниже среднего · игровая оценка';
+  const estimated = toGeneratedBirthCard(session);
+  assert.match(renderToStaticMarkup(createElement(Profile, { model: estimated })), /Ниже среднего · игровая оценка/);
+});
+
 test('existing close-people template renders actual ages, arbitrary family IDs and deceased members', async () => {
   const { default: Component } = await vite.ssrLoadModule('/src/components/gamePage/ClosePeopleTab.tsx');
   const html = renderToStaticMarkup(createElement(Component, { family: birthAndLifeSession().simulation.family }));
@@ -230,6 +248,133 @@ test('life chronicle keeps older events inside its keyboard-accessible scroll re
   assert.match(html, /role="region" aria-label="События жизни" tabindex="0"/);
   assert.equal((html.match(/<article/g) ?? []).length, 20);
   assert(html.indexOf('Момент 19') < html.indexOf('Момент 0'));
+});
+
+test('game retains the full server name next to the year and lists actual family members after the residence', async () => {
+  const { default: Component } = await vite.ssrLoadModule('/src/components/gamePage/GamePage.tsx');
+  const session = birthAndLifeSession();
+  session.character.name = 'Арав Кумар Шарма';
+  session.character.birthplace = { countryCode: 'IN', country: 'Индия', city: null };
+  session.character.background.family = 'Мать и отец';
+  session.character.background.housing = 'Дом в сельской местности';
+  session.simulation.family.find((person) => person.role === 'father').alive = true;
+  const brother = session.simulation.family.find((person) => person.role === 'brother');
+  session.simulation.family.push({ ...brother, id: 'second-brother' });
+  const original = structuredClone(session);
+  const render = () => renderToStaticMarkup(createElement(Component, {
+    server: { session, busy: false, failure: null, notice: '' }, onRestart() {},
+  }));
+  const html = render();
+  assert.match(html, /<span title="Арав Кумар Шарма">2029.*?Арав Кумар Шарма<\/span>/);
+  assert.match(html, />Индия · Дом в сельской местности · Мама, Папа, два брата, сестра<svg/);
+  assert.doesNotMatch(html, />Индия · Дом в сельской местности · Мать и отец/);
+  assert.deepEqual(session, original);
+  session.character.name = 'Арав';
+  session.simulation.family = [session.simulation.family[0]];
+  const oneParent = render();
+  assert.match(oneParent, /<span title="Арав">2029.*?Арав<\/span>/);
+  assert.doesNotMatch(oneParent, /Кумар|Шарма/);
+  assert.match(oneParent, />Индия · Дом в сельской местности · Мама<svg/);
+});
+
+test('chronicle displays stat changes below the correct event text using the existing appearance', async () => {
+  const { default: Component } = await vite.ssrLoadModule('/src/components/gamePage/GamePage.tsx');
+  const session = birthAndLifeSession();
+  session.state.history = [
+    { id: 'toy', age: 0, title: 'Игрушка', text: 'Папа повесил игрушку.', consequences: {
+      aura: 0, closeness: {}, stats: { intelligence: 1 },
+    } },
+    { id: 'voice', age: 0, title: 'Знакомый голос', text: 'Мама стала говорить потише.', consequences: {
+      aura: 0, closeness: {}, stats: { happiness: 1, relationships: 1, health: 0 },
+    } },
+  ];
+  const before = structuredClone(session);
+  const html = renderToStaticMarkup(createElement(Component, {
+    server: { session, busy: false, failure: null, notice: '' }, onRestart() {},
+  }));
+  const articles = html.match(/<article[\s\S]*?<\/article>/g);
+  assert.equal(articles.length, 2);
+  assert.match(articles[0], /Мама стала говорить потише\.<\/p><div[^>]*><span>Счастье \+1<\/span><span>Отношения \+1<\/span>/);
+  assert.match(articles[1], /Папа повесил игрушку\.<\/p><div[^>]*><span>Интеллект \+1<\/span>/);
+  assert.doesNotMatch(articles[0], /Здоровье 0|Аура 0|Интеллект \+1/);
+  assert.deepEqual(session, before);
+});
+
+test('event labels include negative stats, appearance and closeness while hiding zero changes', async () => {
+  const { default: Component } = await vite.ssrLoadModule('/src/components/gamePage/EventConsequences.tsx');
+  const html = renderToStaticMarkup(createElement(Component, {
+    event: {
+      changes: { health: -2, happiness: 0 }, appearance: 1, aura: -1,
+      closeness: { 'same-name-1': 2, 'same-name-2': 0 }, money: { income: 100, expenses: 20 },
+    },
+    peopleLabels: { 'same-name-1': 'Аня', 'same-name-2': 'Аня' },
+  }));
+  for (const label of ['Здоровье -2', 'Внешность +1', 'Аура -1', 'Аня: близость +2', 'Доход +100 ₽', 'Расход −20 ₽']) {
+    assert(html.includes(label), label);
+  }
+  assert.doesNotMatch(html, /Счастье 0|близость 0/);
+  assert.equal(renderToStaticMarkup(createElement(Component, {
+    event: { changes: { health: 0 }, aura: 0, closeness: { mother: 0 } },
+  })), '');
+});
+
+test('decision heading renders the importance badge and description below the title using existing styles', async () => {
+  const { default: Heading } = await vite.ssrLoadModule('/src/components/gamePage/DecisionHeading.tsx');
+  const html = renderToStaticMarkup(createElement(Heading, {
+    title: 'Продолжить учёбу?', text: 'Ты окончил базовое образование.',
+    important: true, age: 18, year: 2044,
+  }));
+  assert.match(html, /Важное решение/);
+  assert.match(html, /<h2 id="decision-title">Продолжить учёбу\?<\/h2><p id="decision-text">Ты окончил базовое образование\.<\/p>/);
+  assert.doesNotMatch(html, /Отложить на время/, 'No unsupported server defer action');
+  const ordinary = renderToStaticMarkup(createElement(Heading, {
+    title: 'Чем заняться после школы?', important: false, age: 9, year: 2035,
+  }));
+  assert.doesNotMatch(ordinary, /Важное решение|decision-text/);
+  assert.match(ordinary, /Чем заняться после школы\?/);
+});
+
+test('decision options show only received nonzero stat directions and keep mock aura previews', async () => {
+  const { default: Effects } = await vite.ssrLoadModule('/src/components/gamePage/DecisionEffects.tsx');
+  const effects = { health: 0, happiness: 1, intelligence: 3, relationships: -1, appearance: null, aura: -5 };
+  const before = structuredClone(effects);
+  const html = renderToStaticMarkup(createElement(Effects, { effects }));
+  for (const label of ['Счастье ↑', 'Интеллект ↑', 'Отношения ↓', 'Аура ↓']) {
+    assert(html.includes(label), label);
+  }
+  assert.doesNotMatch(html, /Здоровье|Внешность|undefined/);
+  assert.match(html, /title="Интеллект \+3"/);
+  assert.match(html, /title="Аура -5"/);
+  assert.deepEqual(effects, before);
+  for (const value of [undefined, null, {}, { health: 0, happiness: null }]) {
+    assert.equal(renderToStaticMarkup(createElement(Effects, { effects: value })), '');
+  }
+  const mock = renderToStaticMarkup(createElement(Effects, { effects: { relationships: 2 }, aura: 3 }));
+  assert.match(mock, /Отношения ↑/);
+  assert.match(mock, /Аура ↑/);
+});
+
+test('chronicle uses exact server importance in existing event tooltips without changing stars or chronological order', async () => {
+  const { default: Game } = await vite.ssrLoadModule('/src/components/gamePage/GamePage.tsx');
+  const session = birthAndLifeSession();
+  session.state.history = [
+    { id: 'zero', age: 0, title: 'Нулевая оценка', text: 'Событие', importance: 0, importanceSource: 'EVENT_RULE' },
+    { id: 'story', age: 1, title: 'Сюжет', text: 'Событие', importance: 21, importanceSource: 'LIFE_STORY' },
+    { id: 'unknown', age: 2, title: 'Неизвестная оценка', text: 'Событие', importance: null, importanceSource: null },
+  ];
+  const render = () => renderToStaticMarkup(createElement(Game, {
+    server: { session, busy: false, failure: null, notice: '' }, onRestart: () => {},
+  }));
+  const first = render();
+  assert.match(first, /title="Важность события: 0 из 100"/);
+  assert.match(first, /title="Важность события: 21 из 100"/);
+  assert.equal((first.match(/title="Важность события:/g) ?? []).length, 2);
+  assert(first.indexOf('Неизвестная оценка') < first.indexOf('Нулевая оценка'));
+  assert.equal((first.match(/aria-pressed="false">☆/g) ?? []).length, 3);
+  session.state.history[1].importance = 8;
+  const refreshed = render();
+  assert.match(refreshed, /title="Важность события: 8 из 100"/);
+  assert.doesNotMatch(refreshed, /Важность события: 21/);
 });
 
 test('server and mock budget histories retain every operation and replace expansion with a scroll hint', async () => {

@@ -1,4 +1,4 @@
-// Life Backend OpenAPI 0.8.1.
+// Life Backend OpenAPI 0.9.1.
 import type { supportedCountries } from '../data/supportedCountries.ts';
 
 export type SupportedCountry = typeof supportedCountries[number]['iso3'];
@@ -127,10 +127,29 @@ export type SessionStats = Omit<StartingStats, 'appearance'> & {
 
 export type SessionStatus = 'ACTIVE' | 'COMPLETE';
 
+export type DecisionStatEffects = Partial<Record<keyof SessionStats, number | null>>;
+
+export type SessionOptionEffects = {
+  scope: 'IMMEDIATE';
+  stats: Partial<Record<keyof SessionStats, number>>;
+  closeness: Record<string, number>;
+};
+
+export type SessionDecisionOption = {
+  id: string;
+  label: string;
+  description?: string | null;
+  // Optional preview metadata; effects are applied only by the server after an answer.
+  effects?: SessionOptionEffects | null;
+};
+
 export type SessionDecision = {
   id: string;
   title: string;
-  options: { id: string; label: string }[];
+  // Optional display metadata; the current backend may omit these fields.
+  important?: boolean | null;
+  description?: string | null;
+  options: SessionDecisionOption[];
 };
 
 export type SessionHistoryEvent = {
@@ -138,8 +157,15 @@ export type SessionHistoryEvent = {
   age: number;
   title: string;
   text: string;
+  importance?: number | null;
+  importanceSource?: 'LIFE_STORY' | 'EVENT_RULE' | null;
   link?: EventLink | null;
-  consequences?: { aura: number; closeness: Record<string, number> } | null;
+  consequences?: {
+    aura: number;
+    closeness: Record<string, number>;
+    // Prepared for per-event deltas; the current 0.9.0 backend omits this block.
+    stats?: Partial<Record<keyof SessionStats, number>> | null;
+  } | null;
 };
 
 export type HighlightOption = { id: string; label: string };
@@ -429,8 +455,38 @@ export type GenerateLocalSessionRequest = {
   birthYear?: number;
 };
 export type CharacterChanges = {
-  name?: string;
-  stats?: Partial<StartingStats>;
+  name?: string | null;
+  sex?: 'FEMALE' | 'MALE' | null;
+  birthYear?: number | null;
+  birthplace?: BirthplaceChanges | null;
+  family?: BirthFamilyChanges | null;
+  stats?: { [Key in keyof SessionStats]?: number | null } | null;
+};
+
+export type BirthplaceChanges = {
+  countryCode?: typeof supportedCountries[number]['iso2'] | null;
+  region?: string | null;
+  city?: string | null;
+  placeType?: 'URBAN' | 'RURAL' | null;
+};
+
+export type BirthFamilyMemberInput = {
+  id?: string | null;
+  role: 'mother' | 'father' | 'brother' | 'sister';
+  name: string;
+  ageAtBirth: number;
+  occupation?: string | null;
+  closeness?: number | null;
+  trust?: number | null;
+};
+
+export type BirthFamilyChanges = {
+  incomeQuintile?: number | null;
+  housing?: string | null;
+  relationships?: string | null;
+  religion?: string | null;
+  language?: string | null;
+  members?: BirthFamilyMemberInput[] | null;
 };
 export type EditCharacterRequest = VersionedAction & { changes: CharacterChanges };
 export type AnswerDecisionRequest = VersionedAction & { optionId: string };

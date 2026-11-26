@@ -1,13 +1,9 @@
 import { useRef } from 'react'
 import CustomScrollbar from '../customScrollbar/customScrollbar.tsx'
-import heroImage from '../../assets/figma-main-hero.png'
-import canadaFlag from '../../assets/figma-canada.png'
-import chanceBackground from '../../assets/figma-chance-bg.svg'
-import chanceOutline from '../../assets/figma-chance-outline.svg'
-import chanceHighlight from '../../assets/figma-chance-highlight.svg'
+import HeroSlideshow from './HeroSlideshow'
 import divider from '../../assets/figma-divider.svg'
 import styles from './mainPage.module.scss'
-import { birthPreview } from '../../mocks/mockData'
+import BirthChance from './BirthChance'
 import LifeCards from '../lifeCards/LifeCards'
 import { useCompletedLives } from '../../game/useCompletedLives'
 
@@ -21,35 +17,6 @@ type MainPageProps = {
   onOpenLife: (id: string) => void
 }
 
-function Hero() {
-  return (
-    <section className={styles.mainPage__hero} aria-label="Зимняя улица Оттавы">
-      <img className={styles.mainPage__heroImage} src={heroImage} alt="Человек идёт по заснеженной улице на закате" />
-    </section>
-  )
-}
-
-function BirthChance() {
-  return (
-    <section className={styles.mainPage__chance} aria-label="Шанс места рождения">
-      <img className={styles.mainPage__chanceBackground} src={chanceBackground} alt="" />
-      <div className={styles.mainPage__chanceInfo}>
-        <span className={styles.mainPage__chanceLabel}>ШАНС РОДИТЬСЯ В</span>
-        <div className={styles.mainPage__country}>
-          <img className={styles.mainPage__flag} src={canadaFlag} alt="Флаг Канады" />
-          <span>{birthPreview.country}, {birthPreview.city}</span>
-        </div>
-      </div>
-      <div className={styles.mainPage__chanceValue}>
-        <img src={chanceOutline} alt="" />
-        <img src={chanceHighlight} alt="" />
-        <span>ШАНС</span>
-        <strong>{birthPreview.birthChance.toUpperCase()}</strong>
-      </div>
-    </section>
-  )
-}
-
 function MainPage({ onStart, onContinue, onMockStart, busy, failure, resumeMessage, onOpenLife }: MainPageProps) {
   const scrollContainerRef = useRef<HTMLElement>(null)
   const completed = useCompletedLives()
@@ -57,7 +24,7 @@ function MainPage({ onStart, onContinue, onMockStart, busy, failure, resumeMessa
   return (
     <div className={styles.mainPageWrapper}>
       <main className={styles.mainPage} ref={scrollContainerRef}>
-        <Hero />
+        <HeroSlideshow />
         <div className={styles.mainPage__content}>
           <section className={styles.mainPage__intro}>
             <h2 className={styles.mainPage__title}>Жизнь без конца</h2>

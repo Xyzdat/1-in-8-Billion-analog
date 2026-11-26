@@ -208,16 +208,6 @@ $soft: #f3f4fc;
     }
   }
 
-  &__savingsCaption {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-top: 8px;
-    color: $text;
-    font-size: 13px;
-  }
-
   &__details {
     margin-top: 12px !important;
     padding-top: 12px;

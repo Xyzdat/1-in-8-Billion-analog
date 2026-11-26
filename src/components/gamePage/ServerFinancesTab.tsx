@@ -21,7 +21,7 @@ export default function ServerFinancesTab({ session, server, resource, onBlockTi
   const blocked = session.state.status === 'COMPLETE' || loading || Boolean(error) || server.busy || Boolean(server.failure?.retry) || data?.version !== session.version;
 
   return (
-    <div className={styles.finances} aria-label="Траты и вложения">
+    <div className={styles.finances} aria-label="Бюджет">
       {/* {loading && <p className={styles.finances__notice} role="status">Обновление бюджета…</p>} */}
       {error && (
         <section className={styles.finances__card}>

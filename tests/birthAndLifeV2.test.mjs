@@ -60,7 +60,7 @@ test('birth card rounds values and omits metadata while preserving the full serv
   assert.doesNotMatch(details['ВВП на душу населения'], /₽|ППС/);
   assert.match(details['Валюта'], /JPY/);
   assert.equal(details['Религии страны'], 'Буддизм — 37%');
-  assert.equal(card.wealth, 'Средний достаток · 3 из 5');
+  assert.equal(card.wealth, 'Средний достаток');
   assert.equal(card.familyDetails.find(({ label }) => label === 'Жильё').value, 'Квартира');
   assert.equal(card.familyDetails.find(({ label }) => label === 'Язык в семье').value, 'японский');
   assert.doesNotMatch(JSON.stringify(card), /игровая модель|игровая выборка|Источник измерения|family-model-2|Примечание к измерению/);
@@ -87,7 +87,7 @@ test('null descriptions, zero measures and unknown language codes remain explici
   const card = toGeneratedBirthCard(saved);
   assert.match(card.birthChance, /^0%/);
   assert.match(card.childMortality, /^0%/);
-  assert.equal(card.wealth, '3 из 5');
+  assert.equal(card.wealth, 'Средний');
   assert.equal(card.countryDetails[0].value, 'Нет данных');
   assert.equal(localizedLanguage('not_a_language'), 'not_a_language');
   assert.match(card.familyDetails[4].value, /zz-invalid-language/);

@@ -7,6 +7,12 @@ export const localEngineErrorMessages: Readonly<Record<string, string>> = {
   CONTENT_UNAVAILABLE: 'События локального движка временно недоступны. Попробуйте позже.',
   ENGINE_VERSION_UNAVAILABLE: 'Версия движка этого сохранения сейчас недоступна на сервере.',
   DECISION_REQUIRED: 'Сначала ответьте на ожидающее решение.',
+  BIRTH_CONFIGURATION_LOCKED: 'Жизнь уже началась. Место рождения, пол и семью больше нельзя менять.',
+  BIRTH_CUSTOMIZATION_UNSUPPORTED: 'В этом старом сохранении можно изменить только имя и характеристики.',
+  INVALID_COUNTRY: 'Выберите одну из поддерживаемых стран.',
+  INVALID_FAMILY: 'Не удалось сохранить состав семьи. Проверьте родственников и их возраст.',
+  INVALID_REQUEST: 'Проверьте введённые параметры: сервер отклонил изменение.',
+  IDEMPOTENCY_CONFLICT: 'Эта команда уже использована с другими данными. Отправьте изменения заново.',
 };
 
 export class ApiError extends Error {

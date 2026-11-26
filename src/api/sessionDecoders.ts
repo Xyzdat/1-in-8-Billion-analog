@@ -1,11 +1,11 @@
 import type { CreateSessionRequest, GenerateLocalSessionRequest, Session, SessionSummary } from './sessionTypes.ts';
 import type { BuySpendingItemRequest, Finances, SpendingShop } from './financeTypes.ts';
-import { supportedCountryCodes } from '../data/supportedCountries.ts';
+import { supportedCountries, supportedCountryCodes } from '../data/supportedCountries.ts';
 
 type Validator = (value: unknown) => void;
 
 function fail(): never {
-  throw new Error('Данные не соответствуют Life Backend OpenAPI 0.8.3.');
+  throw new Error('Данные не соответствуют Life Backend OpenAPI 0.9.1.');
 }
 
 function object(fields: Record<string, Validator>): Validator {
@@ -355,6 +355,23 @@ const highlights = object({
   }), 0, 12),
 });
 
+const optionEffects = object({
+  scope: enumeration(['IMMEDIATE']),
+  stats: (value) => {
+    const fields = {
+      health: optional(integer(-100, 100)),
+      happiness: optional(integer(-100, 100)),
+      intelligence: optional(integer(-100, 100)),
+      relationships: optional(integer(-100, 100)),
+      appearance: optional(integer(-100, 100)),
+      aura: optional(integer(-200, 200)),
+    };
+    object(fields)(value);
+    if (Object.keys(value as Record<string, unknown>).some((key) => !Object.hasOwn(fields, key))) fail();
+  },
+  closeness: record(integer(-100, 100)),
+});
+
 const session = object({
   id: validateUuid,
   character,
@@ -416,17 +433,34 @@ const session = object({
     pendingDecision: nullable(object({
       id: text(),
       title: text(),
-      options: array(object({ id: text(0, 80), label: text() })),
+      important: optional(nullable(boolean)),
+      description: optional(nullable(text())),
+      options: array(object({
+        id: text(0, 80),
+        label: text(),
+        description: optional(nullable(text())),
+        effects: optional(nullable(optionEffects)),
+      })),
     })),
     history: array(object({
       id: text(),
       age: integer(),
       title: text(),
       text: text(),
+      importance: optional(nullable(integer(0, 100))),
+      importanceSource: optional(nullable(enumeration(['LIFE_STORY', 'EVENT_RULE']))),
       link: optional(nullable(eventLink)),
       consequences: optional(nullable(object({
         aura: integer(-200, 200),
         closeness: record(integer(-100, 100)),
+        stats: optional(nullable(object({
+          health: optional(integer(-100, 100)),
+          happiness: optional(integer(-100, 100)),
+          intelligence: optional(integer(-100, 100)),
+          relationships: optional(integer(-100, 100)),
+          appearance: optional(integer(-100, 100)),
+          aura: optional(integer(-200, 200)),
+        }))),
       }))),
     })),
   }),
@@ -454,18 +488,60 @@ export function validateGenerateLocalSession(data: unknown): asserts data is Gen
 }
 
 export function validateCharacterChanges(data: unknown) {
-  object({ name: optional(text(1, 100)), stats: optional(object({
-    health: optional(integer(0, 100)),
-    intelligence: optional(integer(0, 100)),
-    appearance: optional(integer(0, 100)),
-  })) })(data);
-  const changes = data as { name?: string; stats?: Record<string, unknown> };
-  if (Object.keys(changes).some((key) => key !== 'name' && key !== 'stats')
-    || Object.keys(changes.stats ?? {}).some((key) => !(key in startingStats))
-    || (changes.name !== undefined && !changes.name.trim())
-    || (changes.name === undefined && !Object.values(changes.stats ?? {}).some((value) => value !== undefined))) {
-    fail();
-  }
+  const score = optional(nullable(integer(0, 100)));
+  const label = (max: number) => (value: unknown) => {
+    text(1, max)(value);
+    if (!(value as string).trim()) fail();
+  };
+  const member = strictObject({
+    id: optional(nullable(label(80))),
+    role: enumeration(['mother', 'father', 'brother', 'sister']),
+    name: label(100),
+    ageAtBirth: integer(0, 80),
+    occupation: optional(nullable(text(0, 100))),
+    closeness: score,
+    trust: score,
+  });
+  strictObject({
+    name: optional(nullable(label(100))),
+    sex: optional(nullable(enumeration(['FEMALE', 'MALE']))),
+    birthYear: optional(nullable(integer(2023, 2026))),
+    stats: optional(nullable(strictObject({
+      health: score,
+      intelligence: score,
+      appearance: score,
+      happiness: score,
+      relationships: score,
+      aura: optional(nullable(integer(-100, 100))),
+    }))),
+    birthplace: optional(nullable(strictObject({
+      countryCode: optional(nullable(enumeration(supportedCountries.map(({ iso2 }) => iso2)))),
+      region: optional(nullable(text(0, 100))),
+      city: optional(nullable(text(0, 100))),
+      placeType: optional(nullable(enumeration(['URBAN', 'RURAL']))),
+    }))),
+    family: optional(nullable(strictObject({
+      incomeQuintile: optional(nullable(integer(1, 5))),
+      housing: optional(nullable(label(120))),
+      relationships: optional(nullable(label(120))),
+      religion: optional(nullable(label(120))),
+      language: optional(nullable(label(120))),
+      members: optional(nullable(array(member, 0, 12))),
+    }))),
+  })(data);
+  // Empty strings clear city/region; an empty members array clears the family.
+  const hasValue = (value: unknown): boolean => value != null && (
+    typeof value !== 'object' || Array.isArray(value)
+    || Object.values(value).some(hasValue)
+  );
+  if (!hasValue(data)) fail();
+}
+
+function strictObject(fields: Record<string, Validator>): Validator {
+  return (value) => {
+    object(fields)(value);
+    if (Object.keys(value as object).some((key) => !Object.hasOwn(fields, key))) fail();
+  };
 }
 
 export function decodeEmpty(data: unknown): void {

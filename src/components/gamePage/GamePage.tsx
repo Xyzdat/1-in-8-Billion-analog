@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, MouseEvent, ReactNode } from 'react';
 import type { CharacterSettings, CharacterStats as InitialCharacterStats } from '../../types/character';
 import { character } from '../../mocks/mockData';
 import { gameDefaults, statLabels } from '../../mocks/lifeEvents';
@@ -9,13 +9,15 @@ import { useLifeSimulation } from '../../game/useLifeSimulation';
 import { useServerClock } from '../../game/useServerClock';
 import { useServerHistory } from '../../game/useServerHistory';
 import type { ServerLife } from '../../game/useServerLife';
-import type { AdultLife, Session, SimulationFamilyMember } from '../../api/sessionTypes';
-import { completedLifeMessage, toServerHistory } from '../../game/serverPresentation';
+import type { AdultLife, BirthDetails, Session, SimulationFamilyMember } from '../../api/sessionTypes';
+import { completedLifeMessage, gameFamilyFacts, gameFamilySummary, toServerDecision, toServerHistory } from '../../game/serverPresentation';
 import type { PresentedLifeEvent } from '../../game/serverPresentation';
 import { sessionsApi } from '../../api';
 import { useSessionResource } from '../../game/useSessionResource';
 import { useLifeFavorites } from '../../game/useLifeFavorites';
 import LifeSlideshow from '../lifeSlideshow/LifeSlideshow';
+import RollingNumber from '../rollingNumber/RollingNumber';
+import EventConsequences from './EventConsequences';
 import EngineCredit from '../bearthSetupPage/EngineCredit';
 import familyImage from '../../assets/game-family.png';
 import relationshipIcon from '../../assets/game-relationships.png';
@@ -29,12 +31,11 @@ import ServerFinancesTab from './ServerFinancesTab';
 import type { ServerFinancesTabProps } from './ServerFinancesTab';
 import styles from './GamePage.module.scss';
 import { END_AGE } from '../../game/simulation';
-import { personLabels } from '../../mocks/lifeEconomy';
-import type { PersonId } from '../../mocks/lifeEconomy';
+import { closePeople, siblingNames } from '../../mocks/gameTabs';
 import SpendingPanel from './SpendingPanel';
 import { getShopItems } from '../../mocks/spendingCatalog';
 import type { ShopSection } from '../../mocks/spendingCatalog';
-import {Pause, Play} from 'lucide-react'
+import { ChevronDown, Pause, Play } from 'lucide-react';
 
 type Props = {
   settings: CharacterSettings;
@@ -53,6 +54,7 @@ type GameViewProps = {
   local?: { game: LocalGame; settings: CharacterSettings };
   serverFinances?: ServerFinancesTabProps & { activate: () => void };
   serverFamily?: SimulationFamilyMember[];
+  serverBirthDetails?: BirthDetails | null;
   serverAdult?: AdultLife | null;
   sessionId?: string;
   completionMessage?: string;
@@ -62,8 +64,29 @@ type GameViewProps = {
   onRestart: () => void;
 };
 
-const tabs = ['Летопись', 'Траты и вложения', 'Близкие'] as const;
+const tabs = ['Летопись', 'Бюджет', 'Близкие'] as const;
 type Tab = typeof tabs[number];
+
+function animateControl(event: MouseEvent<HTMLDivElement>) {
+  const button = event.target instanceof Element ? event.target.closest('button') : null;
+  if (!button || button.disabled || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const currentTransform = window.getComputedStyle(button).transform;
+  for (const animation of button.getAnimations()) {
+    if (animation.id === 'game-control-bounce') animation.cancel();
+  }
+  const bounce = button.animate([
+    { transform: currentTransform === 'none' ? 'translateY(0)' : currentTransform },
+    { transform: 'translateY(-4px)', offset: 0.4 },
+    { transform: 'translateY(0)', offset: 0.75 },
+    { transform: 'translateY(-1px)', offset: 0.9 },
+    { transform: 'translateY(0)' },
+  ], {
+    duration: 380,
+    easing: 'ease-in-out',
+  });
+  bounce.id = 'game-control-bounce';
+}
 
 function CharacterStats({ stats }: { stats: GameStats }) {
   return (
@@ -78,7 +101,7 @@ function CharacterStats({ stats }: { stats: GameStats }) {
             )}
             {' '}{statLabels[key]}
           </span>
-          <strong>{stats[key]}</strong>
+          <RollingNumber value={stats[key]} />
           <progress max={100} value={stats[key]} aria-label={statLabels[key]} />
         </div>
       ))}
@@ -102,7 +125,11 @@ function LifeHistory({ events, birthText, peopleLabels, sessionId }: {
       </p>
       <HistoryScroll label="События жизни" visibleRows={7} className={styles.game__history}>
         {[...events].reverse().map((event) => (
-          <article key={event.id} className={styles.game__event}>
+          <article
+            key={event.id}
+            className={styles.game__event}
+            title={event.importance == null ? undefined : `Важность события: ${event.importance} из 100`}
+          >
             <span className={styles.game__badge}>
               {event.age < 1
                 ? '0 лет'
@@ -111,27 +138,7 @@ function LifeHistory({ events, birthText, peopleLabels, sessionId }: {
             <div>
               <h3>{event.title}</h3>
               <p>{event.id === 'birth' && birthText ? birthText : event.text}</p>
-              <div className={styles.game__changes}>
-                {(Object.keys(event.changes) as (keyof GameStats)[]).map((key) => (
-                  <span key={key}>
-                    {statLabels[key]} {Number(event.changes[key]) > 0 ? '+' : ''}{event.changes[key]}
-                  </span>
-                ))}
-                {event.aura ? (
-                  <span>Аура {event.aura > 0 ? '+' : ''}{event.aura}</span>
-                ) : null}
-                {Object.keys(event.closeness || {}).map((person) => (
-                  <span key={person}>
-                    {peopleLabels?.[person] ?? personLabels[person as PersonId] ?? person}: близость {Number(event.closeness?.[person]) > 0 ? '+' : ''}{event.closeness?.[person]}
-                  </span>
-                ))}
-                {event.money?.income ? (
-                  <span>Доход +{event.money.income.toLocaleString('ru-RU')} ₽</span>
-                ) : null}
-                {event.money?.expenses ? (
-                  <span>Расход −{event.money.expenses.toLocaleString('ru-RU')} ₽</span>
-                ) : null}
-              </div>
+              <EventConsequences event={event} peopleLabels={peopleLabels} />
             </div>
             <button
               type="button"
@@ -148,7 +155,7 @@ function LifeHistory({ events, birthText, peopleLabels, sessionId }: {
   );
 }
 
-function GameView({ settings, birthYear, game, local, serverFinances, serverFamily, serverAdult, sessionId, completionMessage, decisionDialog, requestStatus, credit, onRestart }: GameViewProps) {
+function GameView({ settings, birthYear, game, local, serverFinances, serverFamily, serverBirthDetails, serverAdult, sessionId, completionMessage, decisionDialog, requestStatus, credit, onRestart }: GameViewProps) {
   const [showFamily, setShowFamily] = useState(false);
   const [tab, setTab] = useState<Tab>('Летопись');
   const [shop, setShop] = useState<{ section: ShopSection; itemId?: string } | null>(null);
@@ -169,20 +176,26 @@ function GameView({ settings, birthYear, game, local, serverFinances, serverFami
     ? `${settings.name}: рождение в ${[settings.city, settings.country].filter(Boolean).join(', ')} в ${birthYear} году. ${settings.family}. Достаток семьи: ${local.settings.wealth.toLowerCase()}. Язык в семье: ${local.settings.language.toLowerCase()}.`
     : undefined;
   const petNames = purchases.filter((purchase) => purchase.section === 'pets').map((purchase) => purchase.petName);
+  const mockParents = local ? Object.fromEntries(closePeople
+    .filter((person) => person.id === 'mother'
+      ? ['Полная семья', 'Только мама', 'Две мамы'].includes(settings.family ?? '')
+      : person.id === 'father' && ['Полная семья', 'Только папа', 'Два папы'].includes(settings.family ?? ''))
+    .map((person) => [person.id, person.name])) : undefined;
   const familyDetails = [
-    settings.mother && `Профессия матери: ${settings.mother}.`,
-    settings.father && `Профессия отца: ${settings.father}.`,
-    settings.siblings && `Братья и сёстры: ${settings.siblings}.`,
-    settings.relationships && `${settings.relationships}.`,
-    (petNames.length > 0 || settings.pets) && `Домашние животные: ${petNames.join(', ') || settings.pets}.`,
-  ].filter(Boolean);
+    ...gameFamilyFacts(settings, serverFamily, serverBirthDetails, local ? siblingNames : undefined, mockParents),
+    ...(petNames.length > 0 || settings.pets ? [{
+      id: 'pets', label: 'Домашние животные', value: petNames.join(', ') || settings.pets,
+    }] : []),
+  ];
+  const familySummary = gameFamilySummary(settings, serverFamily, serverBirthDetails);
+  const housingLabel = currentSettings.housing?.split(/\s*·\s*(?=электричество|без электричества)/iu)[0];
 
   return (
     <main className={styles.game}>
       <section className={styles.game__age}>
         <h1>Возраст <strong>{game.age}</strong></h1>
         <div className={styles.game__meta}>
-          <span>{birthYear + game.age} · {settings.name}</span>
+          <span title={settings.name}>{birthYear + game.age} · {settings.name}</span>
           <span>1 год = {60 / game.speed} сек.</span>
         </div>
         <YearProgress
@@ -191,7 +204,7 @@ function GameView({ settings, birthYear, game, local, serverFinances, serverFami
         />
       </section>
 
-      <div className={styles.game__controls}>
+      <div className={styles.game__controls} onClick={animateControl}>
         <button
           type="button"
           onClick={game.togglePause}
@@ -199,7 +212,11 @@ function GameView({ settings, birthYear, game, local, serverFinances, serverFami
           aria-label={game.paused ? 'Продолжить' : 'Пауза'}
           className={styles.game__pausePlay}
         >
-          {game.paused ? <Play/> : <Pause/>}
+          {game.paused ? (
+            <Play size={18} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />
+          ) : (
+            <Pause size={18} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />
+          )}
         </button>
         {speeds.map((speed) => (
           <button
@@ -231,10 +248,27 @@ function GameView({ settings, birthYear, game, local, serverFinances, serverFami
           aria-expanded={showFamily}
           onClick={() => setShowFamily(!showFamily)}
         >
-          {[currentSettings.city, currentSettings.country, currentSettings.housing, settings.family].filter(Boolean).join(' · ')}
-          <span>⌄</span>
+          {[currentSettings.city, currentSettings.country, housingLabel, familySummary].filter(Boolean).join(' · ')}
+          <ChevronDown
+            className={styles.game__familyChevron}
+            size={14}
+            strokeWidth={2.25}
+            aria-hidden="true"
+          />
         </button>
-        {showFamily && <p>{familyDetails.join(' ') || 'Сведения о семье пока недоступны.'}</p>}
+        {showFamily && (
+          <div className={styles.game__familyDetails}>
+            {familyDetails.length > 0 ? familyDetails.map((fact) => (
+              <p key={fact.id}>
+                <strong>{fact.label}</strong>
+                {fact.label === 'Мама' || fact.label === 'Папа' ? ' ' : ': '}
+                {fact.value}
+              </p>
+            )) : (
+              <p>Сведения о семье пока недоступны.</p>
+            )}
+          </div>
+        )}
       </section>
 
       <CharacterStats stats={game.stats} />
@@ -288,7 +322,7 @@ function GameView({ settings, birthYear, game, local, serverFinances, serverFami
             key={item}
             onClick={() => {
               setTab(item);
-              if (item === 'Траты и вложения') {
+              if (item === 'Бюджет') {
                 serverFinances?.activate();
               }
             }}
@@ -308,7 +342,7 @@ function GameView({ settings, birthYear, game, local, serverFinances, serverFami
         />
       </div>
 
-      <div hidden={tab !== 'Траты и вложения'}>
+      <div hidden={tab !== 'Бюджет'}>
         {local ? (
           <FinancesTab
             age={local.game.elapsed / YEAR_MS}
@@ -318,7 +352,7 @@ function GameView({ settings, birthYear, game, local, serverFinances, serverFami
               if (local.game.blockTime(true)) setShop({ section, itemId });
             }}
           />
-        ) : serverFinances && tab === 'Траты и вложения' ? (
+        ) : serverFinances && tab === 'Бюджет' ? (
           <ServerFinancesTab {...serverFinances} />
         ) : null}
       </div>
@@ -452,9 +486,10 @@ function ServerSimulation({ session, server, onRestart, onCompleted }: {
             relationships: state.stats.relationships,
           },
           aura: state.stats.aura,
-          events: toServerHistory(history),
+          events: toServerHistory(history, session.highlights),
         }}
         serverFamily={session.simulation?.family}
+        serverBirthDetails={session.character.birthDetails}
         serverAdult={session.simulation?.adult}
         sessionId={session.id}
         completionMessage={completedLifeMessage(session.simulation?.death)}
@@ -473,10 +508,8 @@ function ServerSimulation({ session, server, onRestart, onCompleted }: {
         decisionDialog={decision && !clock.complete && (
           <DecisionModal
             key={decision.id}
-            decision={{
-              title: decision.title,
-              options: decision.options.map((option) => ({ id: option.id, title: option.label })),
-            }}
+            decision={toServerDecision(decision, state.history)}
+            peopleLabels={Object.fromEntries((session.simulation?.family ?? []).map((person) => [person.id, person.name]))}
             age={state.age}
             year={birthYear + state.age}
             onChoose={(index) => {

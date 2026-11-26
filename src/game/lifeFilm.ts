@@ -60,6 +60,22 @@ export function lifeSlideParagraphs(slide: HighlightSlide) {
     .filter((paragraph) => paragraph.text.trim());
 }
 
+export function firstTwoSentences(text: string) {
+  const sentences = new Intl.Segmenter('ru', { granularity: 'sentence' }).segment(text.trim());
+  return Array.from(sentences, ({ segment }) => segment.trim())
+    .filter(Boolean)
+    .slice(0, 2)
+    .join(' ');
+}
+
+export function lifeSlideSummary(slide: HighlightSlide) {
+  const description = lifeSlideParagraphs(slide)
+    .filter((paragraph) => !paragraph.choice)
+    .map((paragraph) => paragraph.text)
+    .join(' ');
+  return firstTwoSentences(description);
+}
+
 export type LifeFilmSnapshot = {
   position: LifeFilmPosition;
   index: number;

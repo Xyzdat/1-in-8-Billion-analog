@@ -1,11 +1,8 @@
-import { useId, useState } from 'react';
 import type { Finances } from '../../api/financeTypes';
 import { formatServerMoney } from '../../game/financePresentation';
 import styles from './GameTabs.module.scss';
 
 export default function ServerFinanceSummary({ data }: { data: Finances }) {
-  const [expanded, setExpanded] = useState(false);
-  const detailsId = useId();
   const { summary, currency } = data;
   const money = (value: number | null) => formatServerMoney(value, currency);
   const period = summary.periodMonths === null
@@ -29,31 +26,12 @@ export default function ServerFinanceSummary({ data }: { data: Finances }) {
       </div>
 
       <section className={styles.finances__card}>
-        <button
-          type="button"
-          className={styles.finances__savings}
-          aria-expanded={expanded}
-          aria-controls={detailsId}
-          onClick={() => setExpanded((previous) => !previous)}
-        >
+        <div className={styles.finances__savings}>
           <span>
             <strong>Накопления</strong>
             <strong>{money(summary.savings)}</strong>
           </span>
-          <span className={styles.finances__savingsCaption}>
-            {summary.depositRateBasisPoints === null
-              ? 'Остаток личного бюджета'
-              : `Вклад · ${summary.depositRateBasisPoints / 100}% игровых годовых`}
-            <span aria-hidden="true">{expanded ? '⌃' : '⌄'}</span>
-          </span>
-        </button>
-        {expanded && (
-          <div className={styles.finances__details} id={detailsId}>
-            <p>Доступно для покупок: {money(summary.availableBalance)}</p>
-            <p>Долг: {money(summary.debt)}</p>
-            {summary.occupation !== null && <p>Занятие: {summary.occupation}</p>}
-          </div>
-        )}
+        </div>
       </section>
 
       {currency === 'PPP_USD' && (

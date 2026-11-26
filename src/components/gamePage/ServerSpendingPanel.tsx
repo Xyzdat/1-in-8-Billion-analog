@@ -59,7 +59,7 @@ export default function ServerSpendingPanel({
 
   return (
     <SpendingDialog
-      title={shop?.category.title ?? 'Траты и вложения'}
+      title={shop?.category.title ?? 'Бюджет'}
       onClose={onClose}
       onBlockTime={onBlockTime}
       busy={server.busy}

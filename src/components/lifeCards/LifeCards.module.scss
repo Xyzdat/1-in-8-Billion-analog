@@ -1,6 +1,7 @@
 .lifeCards {
   min-width: 0;
   width: 100%;
+  height: auto;
 
   &__title {
     margin: 0 0 8px 4px;
@@ -29,7 +30,7 @@
     display: block;
     flex: 0 0 170px;
     min-width: 0;
-    min-height: 161px;
+    min-height: auto;
     padding: 10px;
     border-radius: 20px;
     background: #ffffff;

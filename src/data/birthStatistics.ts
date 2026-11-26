@@ -1,0 +1,52 @@
+import type { SupportedCountry } from '../api/sessionTypes.ts';
+
+// Same published snapshot as the backend's country birth facts.
+// Refresh alongside the backend statistics release, not when a life is created.
+export const birthStatisticsSource = {
+  release: 'birth-context-2026-v2',
+  source: 'UN WPP 2024, medium projection',
+  year: 2026,
+  retrievedAt: '2026-11-24T12:49:00.952Z',
+  file: 'statistics/expanded-v2/countries.json',
+  sha256: '7de5baf79af445db9cee48e787d5e9571d90db3e5a9992d228a4a9988ba5c8e3',
+  worldBirths: 132503469.00000001,
+} as const;
+
+export const countryBirths: Readonly<Record<SupportedCountry, number>> = {
+  ARG: 510178,
+  AUS: 303345,
+  BGD: 3407860,
+  BRA: 2492914,
+  CAN: 361315,
+  CHL: 169096,
+  CHN: 8625232,
+  COD: 4634979,
+  COL: 684798,
+  EGY: 2459317,
+  ETH: 4213081,
+  GHA: 903735,
+  IDN: 4419970,
+  IND: 22988461,
+  IRN: 1101751,
+  JPN: 745943,
+  KAZ: 390247,
+  KEN: 1558303,
+  KOR: 249556,
+  MAR: 613838,
+  MEX: 1989217,
+  MYS: 440401,
+  NGA: 7711752,
+  NZL: 57999,
+  PAK: 6935665,
+  PER: 532846,
+  PHL: 1853794,
+  RUS: 1213374,
+  SAU: 567889,
+  THA: 566113,
+  TZA: 2459538,
+  UGA: 1746979,
+  USA: 3673260,
+  UZB: 894379,
+  VNM: 1307471,
+  ZAF: 1167803,
+};

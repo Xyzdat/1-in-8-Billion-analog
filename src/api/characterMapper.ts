@@ -1,6 +1,9 @@
 import type { CharacterSettings, CharacterStats } from '../types/character.ts';
 import type { CharacterChanges, CreateSessionRequest, Session } from './sessionTypes.ts';
 import { validateCreateSession } from './sessionDecoders.ts';
+import { supportedCountries } from '../data/supportedCountries.ts';
+import { birthFamilySettings, canCustomizeBirth, toBirthFamilyChanges } from './characterCustomization.ts';
+import { birthWealthValue, parentOccupationLabel } from './birthFactsPresentation.ts';
 
 export function toCreateSessionRequest(
   settings: CharacterSettings,
@@ -40,11 +43,12 @@ export function toCharacterParameters(session: Session): {
       pets: background?.pets ?? '',
       housing: background?.housing ?? '',
       relationships: background?.relationships ?? '',
-      father: background?.father ?? '',
-      mother: background?.mother ?? '',
-      wealth: background?.wealth ?? '',
+      father: parentOccupationLabel(character.birthDetails?.father?.occupation, background?.father) ?? '',
+      mother: parentOccupationLabel(character.birthDetails?.mother?.occupation, background?.mother) ?? '',
+      wealth: birthWealthValue(character) ?? '',
       religion: background?.religion ?? '',
       language: background?.language ?? '',
+      ...birthFamilySettings(session),
     },
     stats: {
       health: state.stats.health,
@@ -60,6 +64,7 @@ export function toCharacterChanges(
   stats: Partial<CharacterStats>,
 ): CharacterChanges {
   const changes: CharacterChanges = {};
+  if (session.state.status !== 'ACTIVE') return changes;
   const name = settings.name.trim();
   if (name !== session.character.name) {
     changes.name = name;
@@ -72,6 +77,25 @@ export function toCharacterChanges(
       changes.stats ??= {};
       changes.stats[key] = stats[key];
     }
+  }
+  if (canCustomizeBirth(session)) {
+    const { settings: before } = toCharacterParameters(session);
+    if (settings.gender !== before.gender) {
+      changes.sex = settings.gender === 'Женщина' ? 'FEMALE' : 'MALE';
+    }
+    if (settings.country !== before.country) {
+      const country = supportedCountries.find(({ name }) => name === settings.country);
+      if (!country) throw new Error('Выберите поддерживаемую страну из списка.');
+      changes.birthplace = { countryCode: country.iso2 };
+    }
+    for (const key of ['region', 'city'] as const) {
+      if (settings[key] !== before[key]) {
+        changes.birthplace ??= {};
+        changes.birthplace[key] = settings[key].trim();
+      }
+    }
+    const family = toBirthFamilyChanges(session, before, settings);
+    if (family) changes.family = family;
   }
   return changes;
 }

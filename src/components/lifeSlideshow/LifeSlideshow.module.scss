@@ -155,13 +155,8 @@
     animation: life-film-reveal 850ms ease var(--text-delay, 0ms) both;
   }
 
-  &__story &__choice {
-    color: #26314b;
-    font-weight: 800;
-
-    span {
-      color: #7098ff;
-    }
+  &__summary {
+    --text-delay: 120ms;
   }
 
   &__progress {

@@ -3,17 +3,23 @@ import { createPortal } from 'react-dom';
 import type { Decision } from '../../mocks/gameChoices';
 import { personLabels } from '../../mocks/lifeEconomy';
 import type { PersonId } from '../../mocks/lifeEconomy';
-import { Consequences } from './YearFocus';
+import type { DecisionStatEffects } from '../../api/sessionTypes';
+import DecisionEffects from './DecisionEffects';
+import DecisionHeading from './DecisionHeading';
 import styles from './GamePage.module.scss';
 
 type Props = {
   decision: Pick<Decision, 'title' | 'important'> & {
     text?: string;
-    options: (Pick<Decision['options'][number], 'title' | 'closeness' | 'money' | 'career'> & {
+    options: (Pick<Decision['options'][number], 'title' | 'money' | 'career'> & {
       id?: string;
-      changes?: Decision['options'][number]['changes'];
+      description?: string;
+      changes?: DecisionStatEffects;
+      aura?: number | null;
+      closeness?: Record<string, number>;
     })[];
   };
+  peopleLabels?: Record<string, string>;
   age: number;
   year: number;
   onChoose: (index: number) => void;
@@ -25,7 +31,7 @@ type Props = {
   failure?: { message: string; retry?: () => void; recoverable?: boolean } | null;
 };
 
-export default function DecisionModal({ decision, age, year, onChoose, onAuto, auto = false, autoSeconds, onDefer, busy, failure }: Props) {
+export default function DecisionModal({ decision, peopleLabels, age, year, onChoose, onAuto, auto = false, autoSeconds, onDefer, busy, failure }: Props) {
   const ref = useRef<HTMLDialogElement>(null);
   const restoreFrame = useRef<number | null>(null);
 
@@ -75,17 +81,14 @@ export default function DecisionModal({ decision, age, year, onChoose, onAuto, a
       }}
     >
       <div className={styles.game__decisionContent}>
-        {decision.important && (
-          <div className={styles.game__decisionHeading}>
-            <span className={styles.game__important}>Важное решение</span>
-            {onDefer && <button type="button" onClick={onDefer}>Отложить на время</button>}
-          </div>
-        )}
-        <p className={styles.game__muted}>
-          {age} {age === 1 ? 'год' : age >= 2 && age <= 4 ? 'года' : 'лет'} · {year}
-        </p>
-        <h2 id="decision-title">{decision.title}</h2>
-        {decision.text && <p id="decision-text">{decision.text}</p>}
+        <DecisionHeading
+          title={decision.title}
+          text={decision.text}
+          important={decision.important}
+          age={age}
+          year={year}
+          onDefer={onDefer}
+        />
 
         {decision.options.map((option, index) => (
           <button
@@ -98,13 +101,21 @@ export default function DecisionModal({ decision, age, year, onChoose, onAuto, a
             <span className={styles.game__decisionNumber}>{index + 1}</span>
             <span>
               <strong>{option.title}</strong>
-              {option.changes && <Consequences changes={option.changes} />}
+              {option.description && (
+                <span className={styles.game__consequences}>{option.description}</span>
+              )}
+              <DecisionEffects effects={option.changes} aura={option.aura} />
               <span className={styles.game__consequences}>
-                {(Object.keys(option.closeness || {}) as PersonId[]).map((person) => (
-                  <span key={person}>
-                    {personLabels[person]} {Number(option.closeness?.[person]) > 0 ? '↑' : '↓'}
-                  </span>
-                ))}
+                {Object.entries(option.closeness ?? {}).filter(([, value]) => value !== 0).map(([person, value]) => {
+                  const name = peopleLabels
+                    ? peopleLabels[person] ?? 'Близкий'
+                    : personLabels[person as PersonId] ?? 'Близкий';
+                  return (
+                    <span key={person} title={`${name}: близость ${value > 0 ? '+' : ''}${value}`}>
+                      {name}: близость {value > 0 ? '↑' : '↓'}
+                    </span>
+                  );
+                })}
                 {option.money?.income ? (
                   <span>Доход +{option.money.income.toLocaleString('ru-RU')} ₽</span>
                 ) : null}

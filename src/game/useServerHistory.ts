@@ -7,9 +7,9 @@ export function useServerHistory(session: Session, playedMs: number) {
     createHistoryPlayback(session.version, session.state.history));
   let current = playback;
 
-  if (playback.version !== session.version) {
+  if (playback.version !== session.version || playback.history !== session.state.history) {
     current = updateSessionHistory(playback, session, playedMs);
-    // Обновляем буфер при новом снимке до отображения, исключая вспышку всей пачки.
+    // GET может пересмотреть важность старых событий без смены версии сессии.
     setPlayback(current);
   }
 

@@ -2,6 +2,7 @@ import type { Finances } from '../api/financeTypes.ts';
 import type { Session, SessionSummary } from '../api/sessionTypes.ts';
 import type { createSessionsApi } from '../api/sessions.ts';
 import { validateUuid } from '../api/sessionDecoders.ts';
+import { formatOccupationLabel } from '../api/birthFactsPresentation.ts';
 
 export const completedLifePrefix = '#completed-life/';
 
@@ -67,7 +68,7 @@ export function completedLifeSummary(session: Session, finances: Finances | null
     birthplace: `Место рождения: ${birthplace}.`,
     family: familySummary(session),
     home,
-    occupation: lifeOccupation(session, finances),
+    occupation: formatOccupationLabel(lifeOccupation(session, finances)),
     aura: aura === null ? 'Нет данных' : `${aura > 0 ? '+' : ''}${aura}`,
     auraText: aura === null ? 'Итоговая аура недоступна.' : aura > 0
       ? 'Добрые поступки оставили след.' : aura < 0 ? 'Не все поступки были добрыми.' : 'У каждой жизни свой след.',

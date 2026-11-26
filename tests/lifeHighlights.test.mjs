@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { decodeSession } from '../src/api/sessionDecoders.ts';
 import { createApiClient } from '../src/api/client.ts';
 import { createSessionsApi } from '../src/api/sessions.ts';
-import { finalLifeSlides, lifeSlideParagraphs, restoreLifeFilmPosition } from '../src/game/lifeFilm.ts';
+import { finalLifeSlides, firstTwoSentences, lifeSlideParagraphs, lifeSlideSummary, restoreLifeFilmPosition } from '../src/game/lifeFilm.ts';
 import { highlightsSession } from './fixtures/highlightsSession.mjs';
 
 test('0.8.3 preserves FINAL, merged choices, evidence, score decreases, nulls, zero and incomplete history', () => {
@@ -65,7 +65,7 @@ test('malformed highlight values, links, cause details and over 12 slides fail v
   for (const change of invalid) {
     const session = highlightsSession();
     change(session);
-    assert.throws(() => decodeSession(session), /0\.8\.3/);
+    assert.throws(() => decodeSession(session), /Данные не соответствуют Life Backend OpenAPI/);
   }
 });
 
@@ -77,6 +77,22 @@ test('slides use recorded labels/results and neutral evidence, without duplicati
   assert.deepEqual(paragraphs.map((part) => part.text), [
     'Реальный ответ 0 — 1 500 ₽', 'Подтверждённый результат 0', 'Дальнейшая судьба этой главы 0',
   ]);
+  assert.deepEqual(slide, before);
+});
+
+test('short slide text keeps whole sentences, decimal amounts and punctuation', () => {
+  assert.equal(firstTwoSentences('Ты заработал 1 836.52 ₽. Получены знания! Дальше начинается новая глава.'),
+    'Ты заработал 1 836.52 ₽. Получены знания!');
+  assert.equal(firstTwoSentences('Одна фраза без точки'), 'Одна фраза без точки');
+  assert.equal(firstTwoSentences('  '), '');
+});
+
+test('short slideshow description takes two narrative sentences across results and evidence', () => {
+  const slide = highlightsSession().highlights.slides[0];
+  slide.decisions[0].result = 'Ты выбираешь учёбу.';
+  slide.evidence[0].text = 'Обучение завершено. Позднее ты нашёл работу.';
+  const before = structuredClone(slide);
+  assert.equal(lifeSlideSummary(slide), 'Ты выбираешь учёбу. Обучение завершено.');
   assert.deepEqual(slide, before);
 });
 

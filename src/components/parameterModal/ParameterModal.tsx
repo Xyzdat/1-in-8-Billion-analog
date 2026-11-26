@@ -19,6 +19,8 @@ type ParameterModalProps = {
   onClose: () => void;
   onConfirm: (value: string) => void;
   showPrice?: boolean;
+  options?: ParameterOption[];
+  allowCustomValue?: boolean;
 };
 
 export default function ParameterModal({
@@ -29,10 +31,12 @@ export default function ParameterModal({
   onClose,
   onConfirm,
   showPrice = true,
+  options: suppliedOptions,
+  allowCustomValue = false,
 }: ParameterModalProps) {
   const config = parameterFields[field];
   const [draft, setDraft] = useState(value);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(allowCustomValue ? value : '');
   const [filter, setFilter] = useState('Все');
   const dialog = useRef<HTMLDialogElement>(null);
 
@@ -50,11 +54,11 @@ export default function ParameterModal({
     };
   }, []);
 
-  const availableOptions: ParameterOption[] = field === 'region'
+  const availableOptions: ParameterOption[] = suppliedOptions ?? (field === 'region'
     ? Object.keys(locations[country] || {}).map((label) => ({ label }))
     : field === 'city'
       ? (locations[country]?.[region] || []).map((label) => ({ label }))
-      : config.options;
+      : config.options);
   const options = availableOptions.filter((option) =>
     option.label.toLocaleLowerCase('ru').includes(query.trim().toLocaleLowerCase('ru')) &&
     (filter === 'Все' || ('group' in option && option.group === filter)),
@@ -77,7 +81,7 @@ export default function ParameterModal({
         className={styles.parameterModal__panel}
         onSubmit={(event) => {
           event.preventDefault();
-          if (draft.trim()) onConfirm(draft.trim());
+          if (draft.trim() || allowCustomValue) onConfirm(draft.trim());
         }}
       >
         <div className={styles.parameterModal__handle} aria-hidden="true" />
@@ -92,11 +96,20 @@ export default function ParameterModal({
               {config.price}
             </span>
           )}
-          <button type="button" className={styles.parameterModal__close} onClick={onClose} aria-label="Закрыть"><img src={closeIcon} alt="" /></button>
+          <button
+            type="button"
+            className={styles.parameterModal__close}
+            onClick={onClose}
+            aria-label="Закрыть"
+          >
+            <img src={closeIcon} alt="" />
+          </button>
         </header>
         {field === 'name' ? (
           <>
-            <label className={styles.parameterModal__label} htmlFor="character-name">Имя и фамилия</label>
+            <label className={styles.parameterModal__label} htmlFor="character-name">
+              Имя и фамилия
+            </label>
             <input
               id="character-name"
               className={styles.parameterModal__input}
@@ -108,34 +121,100 @@ export default function ParameterModal({
             />
             <span className={styles.parameterModal__hint}>Подсказки</span>
             <div className={styles.parameterModal__chips}>
-              {config.options.map((option) => <button type="button" key={option.label} onClick={() => setDraft(option.label)}>{option.label}</button>)}
+              {config.options.map((option) => (
+                <button
+                  type="button"
+                  key={option.label}
+                  onClick={() => setDraft(option.label)}
+                >
+                  {option.label}
+                </button>
+              ))}
             </div>
-            <button type="button" className={styles.parameterModal__random} onClick={() => {
-              const others = config.options.filter((option) => option.label !== draft);
-              setDraft(others[Math.floor(Math.random() * others.length)].label);
-            }}>🎲 Случайное имя</button>
+            <button
+              type="button"
+              className={styles.parameterModal__random}
+              onClick={() => {
+                const others = config.options.filter((option) => option.label !== draft);
+                setDraft(others[Math.floor(Math.random() * others.length)].label);
+              }}
+            >
+              🎲 Случайное имя
+            </button>
           </>
         ) : (
           <>
-            {config.search && <label className={styles.parameterModal__searchBox}><img src={searchIcon} alt="" /><input type="search" className={styles.parameterModal__search} aria-label={config.search} placeholder={config.search} value={query} onChange={(event) => setQuery(event.target.value)} /></label>}
-            {field === 'country' && <div className={styles.parameterModal__chips}>
-              {['Все', 'Азия', 'Европа', 'Америка'].map((group) => <button type="button" aria-pressed={filter === group} key={group} onClick={() => setFilter(group)}>{group}</button>)}
-            </div>}
-            <div className={`${styles.parameterModal__options}${field === 'gender' ? ` ${styles['parameterModal__options--gender']}` : ''}`} role="radiogroup" aria-label={config.title}>
-              {!options.length && <p className={styles.parameterModal__hint}>Ничего не найдено</p>}
+            {config.search && (
+              <label className={styles.parameterModal__searchBox}>
+                <img src={searchIcon} alt="" />
+                <input
+                  type="search"
+                  className={styles.parameterModal__search}
+                  aria-label={config.search}
+                  placeholder={config.search}
+                  value={query}
+                  maxLength={allowCustomValue ? 100 : undefined}
+                  onChange={(event) => {
+                    setQuery(event.target.value);
+                    if (allowCustomValue) setDraft(event.target.value);
+                  }}
+                />
+              </label>
+            )}
+            {field === 'country' && (
+              <div className={styles.parameterModal__chips}>
+                {['Все', 'Азия', 'Европа', 'Америка'].map((group) => (
+                  <button
+                    type="button"
+                    aria-pressed={filter === group}
+                    key={group}
+                    onClick={() => setFilter(group)}
+                  >
+                    {group}
+                  </button>
+                ))}
+              </div>
+            )}
+            <div
+              className={`${styles.parameterModal__options}${field === 'gender' ? ` ${styles['parameterModal__options--gender']}` : ''}`}
+              role="radiogroup"
+              aria-label={config.title}
+            >
+              {!options.length && (
+                <p className={styles.parameterModal__hint}>Ничего не найдено</p>
+              )}
               {options.map((option) => (
                 <label key={option.label} className={`${styles.parameterModal__option}${draft === option.label ? ` ${styles['parameterModal__option--selected']}` : ''}`}>
-                  {'image' in option && option.image ? <img className={styles.parameterModal__optionImage} src={option.image} alt="" /> : 'icon' in option && option.icon && <span aria-hidden="true">{option.icon}</span>}
+                  {option.image ? (
+                    <img className={styles.parameterModal__optionImage} src={option.image} alt="" />
+                  ) : option.icon && (
+                    <span aria-hidden="true">{option.icon}</span>
+                  )}
                   <span>{option.label}</span>
-                  <input type="radio" name="parameter" checked={draft === option.label} onChange={() => setDraft(option.label)} />
-                  <img className={styles.parameterModal__radio} src={draft === option.label ? selectedIcon : radioIcon} alt="" />
+                  <input
+                    type="radio"
+                    name="parameter"
+                    checked={draft === option.label}
+                    onChange={() => setDraft(option.label)}
+                  />
+                  <img
+                    className={styles.parameterModal__radio}
+                    src={draft === option.label ? selectedIcon : radioIcon}
+                    alt=""
+                  />
                 </label>
               ))}
             </div>
             {config.hint && <p className={styles.parameterModal__hint}>{config.hint}</p>}
           </>
         )}
-        <button type="submit" className={styles.parameterModal__confirm} disabled={!draft.trim()}>Выбрать</button>
+        <button
+          type="submit"
+          className={styles.parameterModal__confirm}
+          disabled={!draft.trim() && !allowCustomValue}
+        >
+          Выбрать
+        </button>
       </form>
     </dialog>,
     document.body,

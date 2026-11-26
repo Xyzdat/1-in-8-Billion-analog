@@ -32,16 +32,16 @@ test('death introduction uses actual death cause and current home, without inven
   assert.doesNotMatch(stale, /Тбилиси|Япония/);
 });
 
-test('slide renders server decisions and evidence as text, without mock images, scores or assumed causality', async () => {
+test('slide renders only the first two narrative sentences and retains the complete saved chapter', async () => {
   const { default: Slide } = await vite.ssrLoadModule('/src/components/lifeSlideshow/HighlightSlide.tsx');
   const session = highlightsSession();
+  session.highlights.slides[0].decisions[0].result = 'Ты поступаешь на программу. Учёбу предстоит совмещать с работой. Третье предложение не показывается.';
   const before = structuredClone(session);
   const html = renderToStaticMarkup(createElement(Slide, { slide: session.highlights.slides[0] }));
   assert.match(html, /6 лет/);
   assert.match(html, /Сохранённая глава 6/);
-  assert.match(html, /Реальный ответ 0 — 1 500 ₽/);
-  assert.match(html, /Подтверждённый результат 0/);
-  assert.match(html, /Дальнейшая судьба этой главы 0/);
+  assert.match(html, /Ты поступаешь на программу\. Учёбу предстоит совмещать с работой\./);
+  assert.doesNotMatch(html, /Третье предложение|Твой выбор|Реальный ответ|Дальнейшая судьба/);
   assert.doesNotMatch(html, /<img|importance|TRACKED_ENTITY|баллов|привело к/);
   assert.deepEqual(session, before);
 });
