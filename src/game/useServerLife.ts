@@ -5,6 +5,7 @@ import { validateUuid } from '../api/sessionDecoders';
 import type { CharacterChanges, Session, YearFocusId } from '../api/sessionTypes';
 import type { SessionCommand } from '../api/sessions';
 import type { BuySpendingItemRequest } from '../api/financeTypes';
+import type { BudgetActionRequest, BudgetOutcome } from '../api/budgetTypes';
 import { prepareSessionMutation } from './sessionMutation';
 
 const activeSessionKey = 'life.activeServerSession';
@@ -200,7 +201,7 @@ export function useServerLife() {
             : ['BIRTH_CONFIGURATION_LOCKED', 'BIRTH_CUSTOMIZATION_UNSUPPORTED', 'CHARACTER_FIELDS_READ_ONLY',
               'FOCUS_UNSUPPORTED', 'FOCUS_UNAVAILABLE', 'IDEMPOTENCY_CONFLICT'].includes(result.rejectedCode)
               ? `${errorMessage(new ApiError('', 'http', 409, { code: result.rejectedCode }))} Сохранение обновлено.`
-              : 'Сохранение обновлено.');
+              : `${errorMessage(new ApiError('Сохранение обновлено.', 'http', 409, { code: result.rejectedCode }))} Проверьте актуальные данные перед подтверждением.`);
           if (result.session.state.status === 'COMPLETE') onSuccess?.(result.session);
         } else {
           setDecisionReviewRequired(false);
@@ -250,6 +251,17 @@ export function useServerLife() {
     mutate((current) => sessionsApi.preparePurchase(current.id, payload), onSuccess);
   }
 
+  function manageBudget(payload: BudgetActionRequest, onResult?: (outcome: BudgetOutcome | null) => void) {
+    if (session?.provider !== 'local' || session.state.status !== 'ACTIVE'
+      || session.state.pendingDecision || session.state.age < 18) return;
+    mutate((current) => sessionsApi.prepareBudgetAction(current.id, payload), (updated) => {
+      // DECLINED keeps the version, but catalogs and the recorded outcome still need refreshing.
+      setResourceRevision((previous) => previous + 1);
+      setNotice(updated.budgetAction?.message ?? 'Данные бюджета обновлены.');
+      onResult?.(updated.budgetAction ?? null);
+    });
+  }
+
   function reset() {
     if (request.current) {
       return false;
@@ -269,7 +281,7 @@ export function useServerLife() {
     }
   }
 
-  return { session, busy, failure, notice, resourceRevision, decisionReviewRequired, connect, generate, advance, answer, editCharacter, changeFocus, purchase, reset, refresh };
+  return { session, busy, failure, notice, resourceRevision, decisionReviewRequired, connect, generate, advance, answer, editCharacter, changeFocus, purchase, manageBudget, reset, refresh };
 }
 
 export type ServerLife = ReturnType<typeof useServerLife>;

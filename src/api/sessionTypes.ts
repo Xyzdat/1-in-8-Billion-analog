@@ -1,4 +1,5 @@
-// Life Backend OpenAPI 0.10.0.
+// Life Backend OpenAPI 0.11.0.
+import type { BudgetOutcome } from './budgetTypes.ts';
 import type { supportedCountries } from '../data/supportedCountries.ts';
 
 export type SupportedCountry = typeof supportedCountries[number]['iso3'];
@@ -457,6 +458,7 @@ export type AdultLife = {
 };
 
 export type Session = {
+  budgetAction?: BudgetOutcome | null;
   provider: SessionProvider;
   id: string;
   character: SessionCharacter;

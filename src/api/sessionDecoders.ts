@@ -1,11 +1,12 @@
 import type { CreateSessionRequest, GenerateLocalSessionRequest, Session, SessionSummary } from './sessionTypes.ts';
 import type { BuySpendingItemRequest, Finances, SpendingShop } from './financeTypes.ts';
+import type { BudgetActionRequest, BudgetDataMap, BudgetPage, BudgetSalePreview, BudgetSection } from './budgetTypes.ts';
 import { supportedCountries, supportedCountryCodes } from '../data/supportedCountries.ts';
 
 type Validator = (value: unknown) => void;
 
 function fail(): never {
-  throw new Error('Данные не соответствуют Life Backend OpenAPI 0.10.0.');
+  throw new Error('Данные не соответствуют Life Backend OpenAPI 0.11.0.');
 }
 
 function object(fields: Record<string, Validator>): Validator {
@@ -397,6 +398,11 @@ const yearlyFocus = object({
 });
 
 const session = object({
+  budgetAction: optional(nullable(object({
+    status: enumeration(['APPLIED', 'DECLINED']),
+    code: text(), message: text(), month: integer(), currency: enumeration(['RUB']),
+    periodMonths: nullable(integer()), amounts: record(number()),
+  }))),
   id: validateUuid,
   character,
   version: integer(1),
@@ -653,13 +659,16 @@ export function decodeFinances(data: unknown): Finances {
       id: text(), month: integer(),
       kind: enumeration(['BUDGET', 'PURCHASE', 'UPKEEP', 'INTEREST']),
       flow: optional(nullable(enumeration(['OPERATING', 'FINANCING']))),
+      sourceId: optional(nullable(text())),
+      categoryId: optional(nullable(text())),
+      relatedId: optional(nullable(text())),
       title: text(), income: number(0), expense: number(0),
     }))),
     purchases: nullable(array(object({
       id: validateUuid, month: integer(), categoryId: text(), itemId: text(),
       title: text(), icon: nullable(text()), price: number(0), yearlyCost: nullable(number(0)),
       durationMonths: nullable(integer(1)), petName: nullable(text()),
-      status: enumeration(['PURCHASED', 'IN_PROGRESS', 'COMPLETED']),
+      status: enumeration(['PURCHASED', 'IN_PROGRESS', 'COMPLETED', 'SOLD']),
       location: nullable(spendingLocation),
     }))),
     categories: array(spendingCategory),
@@ -693,4 +702,110 @@ export function validatePurchase(data: unknown): asserts data is BuySpendingItem
     || (request.petName != null && /\p{Cc}/u.test(request.petName))) {
     fail();
   }
+}
+
+const budgetAvailability = { available: boolean, reason: nullable(text()) };
+const budgetLine = object({ id: text(), title: text(), amount: number() });
+const budgetEmployment = object({
+  id: text(), title: text(), status: text(), basePay: number(), periodMonths: integer(1, 1),
+  hoursPerWeek: nullable(integer()), schedule: nullable(text()), currentTenureMonths: integer(),
+  totalExperienceMonths: integer(), workCapacityPercent: integer(0, 100), expectedPay: nullable(number()),
+  actualIncome: nullable(number()), actualPeriodMonths: integer(12, 12),
+});
+const budgetBusinessResult = object({
+  id: text(), title: text(), revenue: nullable(number()), costs: nullable(number()),
+  net: nullable(number()), grossBreakdownKnown: boolean,
+});
+const budgetStorage = object({
+  selectedId: text(), amount: number(), actualReturn: number(), basis: text(),
+});
+const budgetForecast = object({
+  months: integer(2, 2), balance: number(), available: number(), expectedIncome: number(),
+  requiredPayments: number(), projectedBalance: number(), deficit: number(), assumption: text(),
+});
+const budgetJobs = object({
+  offers: array(object({
+    id: text(), title: text(), basePay: number(), periodMonths: integer(1, 1), hoursPerWeek: integer(),
+    schedule: text(), education: text(), minQualification: integer(), minExperienceMonths: integer(),
+    noExperience: boolean, experienceMatch: boolean, ...budgetAvailability,
+  })),
+  raiseGrounds: array(object({
+    id: enumeration(['results', 'tenure', 'responsibility']), currentPay: number(), proposedPay: number(),
+    extraHours: integer(), guaranteed: (value) => { if (value !== false) fail(); }, ...budgetAvailability,
+  })),
+  current: nullable(budgetEmployment), canQuit: boolean, quitReason: nullable(text()),
+});
+const budgetPages: Record<BudgetSection, Validator> = {
+  income: object({
+    total: number(), monthlyAverage: number(), sources: array(budgetLine),
+    primary: nullable(budgetEmployment), secondary: nullable(budgetEmployment),
+    business: nullable(budgetBusinessResult), storage: budgetStorage,
+  }),
+  expenses: object({
+    total: number(), monthlyAverage: number(), categories: array(budgetLine), forecast: budgetForecast,
+    obligations: array(object({
+      id: text(), title: text(), type: text(), principal: number(), annualBasisPoints: integer(),
+      nextMonthlyInterest: number(), plannedPrincipalPayment: number(),
+      scheduledMonthsRemaining: nullable(integer()), assetId: nullable(text()),
+    })),
+  }),
+  jobs: budgetJobs,
+  'side-jobs': budgetJobs,
+  businesses: object({
+    current: nullable(budgetBusinessResult), compatibility: text(),
+    offers: array(object({
+      id: text(), title: text(), investment: number(), currentNetTarget: number(),
+      periodMonths: integer(1, 1), risk: integer(0, 100), expectation: text(), ...budgetAvailability,
+    })),
+  }),
+  strategies: object({
+    selectedId: text(), current: budgetStorage,
+    options: array(object({
+      id: enumeration(['cash', 'deposit', 'bonds', 'balanced-fund', 'equity-fund', 'world-index', 'trading']),
+      title: text(), description: text(), risk: text(), annualBasisPoints: nullable(integer()),
+      ...budgetAvailability,
+    })),
+  }),
+  assets: object({
+    assets: array(object({
+      id: text(), title: text(), kind: text(), ownershipPercent: integer(0, 100), salePrice: number(),
+      debtIds: array(text()), ...budgetAvailability,
+    })),
+    sales: array(object({
+      assetId: text(), title: text(), month: integer(), proceeds: number(), debtRepaid: number(), net: number(),
+    })),
+  }),
+};
+
+function validateBudgetPage(data: unknown, validate: Validator) {
+  object({
+    version: integer(1), currency: nullable(enumeration(['RUB'])),
+    periodMonths: nullable(integer(12, 12)), ...budgetAvailability, data: nullable(validate),
+  })(data);
+}
+
+export function decodeBudgetPage<K extends BudgetSection>(data: unknown, section: K): BudgetPage<BudgetDataMap[K]> {
+  if (!Object.hasOwn(budgetPages, section)) fail();
+  validateBudgetPage(data, budgetPages[section]);
+  return data as BudgetPage<BudgetDataMap[K]>;
+}
+
+export function decodeBudgetSalePreview(data: unknown): BudgetPage<BudgetSalePreview> {
+  validateBudgetPage(data, object({
+    assetId: text(), title: text(), salePrice: number(), debtPayoff: number(), net: number(),
+    balanceAfterSale: number(), obligationIds: array(text()), yearlyUpkeepStopped: number(),
+    rentalIncomeStopped: nullable(number()), rentalModelled: boolean, forecast: nullable(budgetForecast),
+    priceRule: text(), ...budgetAvailability,
+  }));
+  return data as BudgetPage<BudgetSalePreview>;
+}
+
+export function validateBudgetAction(data: unknown): asserts data is BudgetActionRequest {
+  strictObject({
+    expectedVersion: integer(1),
+    action: enumeration(['APPLY_JOB', 'REQUEST_RAISE', 'QUIT_JOB', 'TAKE_SIDE_JOB',
+      'QUIT_SIDE_JOB', 'OPEN_BUSINESS', 'SET_STRATEGY', 'SELL_ASSET']),
+    optionId: text(1, 100),
+  })(data);
+  if (!(data as BudgetActionRequest).optionId.trim()) fail();
 }

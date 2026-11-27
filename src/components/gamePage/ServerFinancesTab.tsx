@@ -6,6 +6,7 @@ import { formatServerMoney, formatSpendingEffects, groupSpendingCategories } fro
 import ServerFinanceSummary from './ServerFinanceSummary';
 import ServerFinanceHistory from './ServerFinanceHistory';
 import ServerSpendingPanel from './ServerSpendingPanel';
+import BudgetManager from './budget/BudgetManager';
 import styles from './GameTabs.module.scss';
 
 export type ServerFinancesTabProps = {
@@ -17,6 +18,7 @@ export type ServerFinancesTabProps = {
 
 export default function ServerFinancesTab({ session, server, resource, onBlockTime }: ServerFinancesTabProps) {
   const [panel, setPanel] = useState<{ category: SpendingCategoryId; itemId?: string } | null>(null);
+  const [budgetPage, setBudgetPage] = useState<'income' | 'expenses' | null>(null);
   const { data, loading, error, retry } = resource;
   const blocked = session.state.status === 'COMPLETE' || loading || Boolean(error) || server.busy || Boolean(server.failure?.retry) || data?.version !== session.version;
 
@@ -34,7 +36,7 @@ export default function ServerFinancesTab({ session, server, resource, onBlockTi
 
       {data && (
         <>
-          <ServerFinanceSummary data={data} />
+          <ServerFinanceSummary data={data} onOpen={setBudgetPage} />
           {session.provider === '1in8b' && (
             <p className={styles.finances__notice}>
               Суммы в международных долларах по ППС. Предложения доступны для просмотра.
@@ -108,6 +110,16 @@ export default function ServerFinancesTab({ session, server, resource, onBlockTi
           categoryId={panel.category}
           initialItemId={panel.itemId}
           onClose={() => setPanel(null)}
+          onBlockTime={onBlockTime}
+        />
+      )}
+      {budgetPage && data && (
+        <BudgetManager
+          initialPage={budgetPage}
+          session={session}
+          server={server}
+          finances={data}
+          onClose={() => setBudgetPage(null)}
           onBlockTime={onBlockTime}
         />
       )}

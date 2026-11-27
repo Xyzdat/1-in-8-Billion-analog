@@ -6,7 +6,7 @@ import HistoryScroll from './HistoryScroll';
 export default function ServerFinanceHistory({ data }: { data: Finances }) {
   const { ledger, purchases, currency } = data;
   const money = (value: number | null) => formatServerMoney(value, currency);
-  const statuses = { PURCHASED: 'Приобретено', IN_PROGRESS: 'Обучение идёт', COMPLETED: 'Обучение завершено' };
+  const statuses = { PURCHASED: 'Приобретено', IN_PROGRESS: 'Обучение идёт', COMPLETED: 'Обучение завершено', SOLD: 'Продано' };
 
   return (
     <>
@@ -58,7 +58,7 @@ export default function ServerFinanceHistory({ data }: { data: Finances }) {
             </span>
             <span>
               {money(purchase.price)}
-              {purchase.yearlyCost !== null && <small>{money(purchase.yearlyCost)} в год</small>}
+              {purchase.status !== 'SOLD' && purchase.yearlyCost !== null && <small>{money(purchase.yearlyCost)} в год</small>}
             </span>
           </div>
         ))}

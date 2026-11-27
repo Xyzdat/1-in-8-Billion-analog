@@ -1,6 +1,7 @@
 import type { createApiClient } from './client.ts';
 import type { CharacterChanges, CreateSessionRequest, GenerateLocalSessionRequest, Session, YearFocusId } from './sessionTypes.ts';
 import type { BuySpendingItemRequest } from './financeTypes.ts';
+import type { BudgetActionRequest, BudgetSection } from './budgetTypes.ts';
 import {
   decodeEmpty,
   decodeHealth,
@@ -8,6 +9,9 @@ import {
   decodeSessionList,
   decodeFinances,
   decodeSpendingShop,
+  decodeBudgetPage,
+  decodeBudgetSalePreview,
+  validateBudgetAction,
   validatePurchase,
   validateCreateSession,
   validateGenerateLocalSession,
@@ -101,6 +105,26 @@ export function createSessionsApi(client: ReturnType<typeof createApiClient>) {
     preparePurchase(id: string, request: BuySpendingItemRequest) {
       validatePurchase(request);
       return command(`${sessionPath(id)}/purchases`, request);
+    },
+    async getBudgetPage<K extends BudgetSection>(id: string, section: K, signal?: AbortSignal) {
+      if (!['income', 'expenses', 'jobs', 'side-jobs', 'businesses', 'strategies', 'assets'].includes(section)) {
+        throw new Error('Неизвестный раздел бюджета.');
+      }
+      const path = `${sessionPath(id)}/budget/${section}`;
+      signal?.throwIfAborted();
+      await ensureGuest();
+      return client.request(path, { signal, decode: (data) => decodeBudgetPage(data, section) });
+    },
+    async getBudgetSalePreview(id: string, assetId: string, signal?: AbortSignal) {
+      if (!/^[a-zA-Z0-9_-]{1,100}$/.test(assetId)) throw new Error('Некорректный ID имущества.');
+      const path = `${sessionPath(id)}/budget/assets/${encodeURIComponent(assetId)}/sale-preview`;
+      signal?.throwIfAborted();
+      await ensureGuest();
+      return client.request(path, { signal, decode: decodeBudgetSalePreview });
+    },
+    prepareBudgetAction(id: string, request: BudgetActionRequest) {
+      validateBudgetAction(request);
+      return command(`${sessionPath(id)}/budget/actions`, request);
     },
     prepareGenerateSession() {
       return command('/v1/sessions/generated', {});

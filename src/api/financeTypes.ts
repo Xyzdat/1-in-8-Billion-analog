@@ -67,6 +67,9 @@ export type FinanceSummary = {
 };
 
 export type FinanceTransaction = {
+  sourceId?: string | null;
+  categoryId?: string | null;
+  relatedId?: string | null;
   flow?: 'OPERATING' | 'FINANCING' | null;
   id: string;
   month: number;
@@ -87,7 +90,7 @@ export type PurchasedItem = {
   yearlyCost: number | null;
   durationMonths: number | null;
   petName: string | null;
-  status: 'PURCHASED' | 'IN_PROGRESS' | 'COMPLETED';
+  status: 'PURCHASED' | 'IN_PROGRESS' | 'COMPLETED' | 'SOLD';
   location: SpendingLocation | null;
 };
 
