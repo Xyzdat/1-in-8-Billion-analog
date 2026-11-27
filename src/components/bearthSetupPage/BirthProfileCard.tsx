@@ -23,7 +23,7 @@ export default function BirthProfileCard({ model }: { model: BirthCardModel }) {
           // <img className={styles.birthSetup__gender} src={femaleIcon} alt="Женский пол" />
           <span className={styles.birthSetup__gender} aria-label="Женский пол"> <Venus/> </span>
         ) : model.gender === 'Мужчина' ? (
-          <span className={styles.birthSetup__gender} aria-label="Мужской пол"> <Mars/> </span>
+          <span className={styles.birthSetup__genderMan} aria-label="Мужской пол"> <Mars/> </span>
         ) : null}
       </h2>
 

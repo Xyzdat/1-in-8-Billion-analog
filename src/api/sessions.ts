@@ -1,5 +1,5 @@
 import type { createApiClient } from './client.ts';
-import type { CharacterChanges, CreateSessionRequest, GenerateLocalSessionRequest, Session } from './sessionTypes.ts';
+import type { CharacterChanges, CreateSessionRequest, GenerateLocalSessionRequest, Session, YearFocusId } from './sessionTypes.ts';
 import type { BuySpendingItemRequest } from './financeTypes.ts';
 import {
   decodeEmpty,
@@ -14,6 +14,7 @@ import {
   validateCharacterChanges,
   validateUuid,
   validateVersion,
+  validateFocusId,
 } from './sessionDecoders.ts';
 
 export type SessionCommand = {
@@ -112,6 +113,11 @@ export function createSessionsApi(client: ReturnType<typeof createApiClient>) {
       validateVersion(expectedVersion);
       validateCharacterChanges(changes);
       return command(`${sessionPath(id)}/character`, { expectedVersion, changes }, 'PATCH');
+    },
+    prepareFocus(id: string, expectedVersion: number, focusId: YearFocusId) {
+      validateVersion(expectedVersion);
+      validateFocusId(focusId);
+      return command(`${sessionPath(id)}/focus`, { expectedVersion, focusId }, 'PATCH');
     },
     prepareAdvance(id: string, expectedVersion: number) {
       validateVersion(expectedVersion);

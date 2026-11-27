@@ -9,7 +9,7 @@ import { useLifeSimulation } from '../../game/useLifeSimulation';
 import { useServerClock } from '../../game/useServerClock';
 import { useServerHistory } from '../../game/useServerHistory';
 import type { ServerLife } from '../../game/useServerLife';
-import type { AdultLife, BirthDetails, Session, SimulationFamilyMember } from '../../api/sessionTypes';
+import type { AdultLife, BirthDetails, Session, SessionYearFocus, SimulationFamilyMember, YearFocusId } from '../../api/sessionTypes';
 import { completedLifeMessage, gameFamilyFacts, gameFamilySummary, toServerDecision, toServerHistory } from '../../game/serverPresentation';
 import type { PresentedLifeEvent } from '../../game/serverPresentation';
 import { sessionsApi } from '../../api';
@@ -19,9 +19,9 @@ import LifeSlideshow from '../lifeSlideshow/LifeSlideshow';
 import RollingNumber from '../rollingNumber/RollingNumber';
 import EventConsequences from './EventConsequences';
 import EngineCredit from '../bearthSetupPage/EngineCredit';
-import familyImage from '../../assets/game-family.png';
+import FamilyScene from './FamilyScene';
 import relationshipIcon from '../../assets/game-relationships.png';
-import YearFocus from './YearFocus';
+import YearFocus, { ServerYearFocus } from './YearFocus';
 import YearProgress from './YearProgress';
 import DecisionModal from './DecisionModal';
 import ClosePeopleTab from './ClosePeopleTab';
@@ -55,7 +55,9 @@ type GameViewProps = {
   serverFinances?: ServerFinancesTabProps & { activate: () => void };
   serverFamily?: SimulationFamilyMember[];
   serverBirthDetails?: BirthDetails | null;
+  birthCountryCode?: string | null;
   serverAdult?: AdultLife | null;
+  serverFocus?: { focus: SessionYearFocus; disabled: boolean; onChange: (id: YearFocusId) => void };
   sessionId?: string;
   completionMessage?: string;
   decisionDialog?: ReactNode;
@@ -155,7 +157,7 @@ function LifeHistory({ events, birthText, peopleLabels, sessionId }: {
   );
 }
 
-function GameView({ settings, birthYear, game, local, serverFinances, serverFamily, serverBirthDetails, serverAdult, sessionId, completionMessage, decisionDialog, requestStatus, credit, onRestart }: GameViewProps) {
+function GameView({ settings, birthYear, game, local, serverFinances, serverFamily, serverBirthDetails, birthCountryCode, serverAdult, serverFocus, sessionId, completionMessage, decisionDialog, requestStatus, credit, onRestart }: GameViewProps) {
   const [showFamily, setShowFamily] = useState(false);
   const [tab, setTab] = useState<Tab>('Летопись');
   const [shop, setShop] = useState<{ section: ShopSection; itemId?: string } | null>(null);
@@ -242,7 +244,16 @@ function GameView({ settings, birthYear, game, local, serverFinances, serverFami
       {requestStatus}
 
       <section className={styles.game__family}>
-        <img src={familyImage} alt="Иллюстрация семейного вечера" />
+        <FamilyScene
+          settings={settings}
+          age={game.age}
+          family={serverFamily}
+          birth={serverBirthDetails}
+          mock={Boolean(local)}
+          sessionId={sessionId}
+          countryCode={birthCountryCode}
+          adult={serverAdult}
+        />
         <button
           type="button"
           aria-expanded={showFamily}
@@ -256,19 +267,26 @@ function GameView({ settings, birthYear, game, local, serverFinances, serverFami
             aria-hidden="true"
           />
         </button>
-        {showFamily && (
-          <div className={styles.game__familyDetails}>
-            {familyDetails.length > 0 ? familyDetails.map((fact) => (
-              <p key={fact.id}>
-                <strong>{fact.label}</strong>
-                {fact.label === 'Мама' || fact.label === 'Папа' ? ' ' : ': '}
-                {fact.value}
-              </p>
-            )) : (
-              <p>Сведения о семье пока недоступны.</p>
-            )}
+        <div
+          className={styles.game__familyCollapse}
+          data-open={showFamily}
+          aria-hidden={!showFamily}
+          inert={!showFamily}
+        >
+          <div className={styles.game__familyCollapseContent}>
+            <div className={styles.game__familyDetails}>
+              {familyDetails.length > 0 ? familyDetails.map((fact) => (
+                <p key={fact.id}>
+                  <strong>{fact.label}</strong>
+                  {fact.label === 'Мама' || fact.label === 'Папа' ? ' ' : ': '}
+                  {fact.value}
+                </p>
+              )) : (
+                <p>Сведения о семье пока недоступны.</p>
+              )}
+            </div>
           </div>
-        )}
+        </div>
       </section>
 
       <CharacterStats stats={game.stats} />
@@ -309,6 +327,14 @@ function GameView({ settings, birthYear, game, local, serverFinances, serverFami
           disabled={game.complete}
           onChange={local.game.chooseFocus}
           activity={local.game.finances.career}
+        />
+      ) : serverFocus ? (
+        <ServerYearFocus
+          key={sessionId}
+          focus={serverFocus.focus}
+          location={[currentSettings.city, currentSettings.country].filter(Boolean).join(', ')}
+          disabled={game.complete || serverFocus.disabled}
+          onChange={serverFocus.onChange}
         />
       ) : (
         <UnavailableSection title="Фокус этого года" />
@@ -475,7 +501,13 @@ function ServerSimulation({ session, server, onRestart, onCompleted }: {
   return (
     <>
       <GameView
-        settings={{ ...background, name, country: birthplace.country, city: birthplace.city }}
+        settings={{
+          ...background,
+          name,
+          gender: session.character.gender,
+          country: birthplace.country,
+          city: birthplace.city,
+        }}
         birthYear={birthYear}
         game={{
           ...clock,
@@ -490,7 +522,13 @@ function ServerSimulation({ session, server, onRestart, onCompleted }: {
         }}
         serverFamily={session.simulation?.family}
         serverBirthDetails={session.character.birthDetails}
+        birthCountryCode={birthplace.countryCode}
         serverAdult={session.simulation?.adult}
+        serverFocus={session.simulation?.yearlyFocus ? {
+          focus: session.simulation.yearlyFocus,
+          disabled: server.busy || Boolean(server.failure?.retry),
+          onChange: server.changeFocus,
+        } : undefined}
         sessionId={session.id}
         completionMessage={completedLifeMessage(session.simulation?.death)}
         onRestart={onRestart}

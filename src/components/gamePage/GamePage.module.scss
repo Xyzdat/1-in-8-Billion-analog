@@ -569,6 +569,10 @@
     font-size: 20px;
     font-weight: 800;
     text-align: left;
+
+    &[aria-expanded='true'] .game__familyChevron {
+      transform: rotate(180deg);
+    }
   }
 
   &__focusContext {
@@ -584,10 +588,39 @@
     font-size: 20px;
   }
 
+  &__focusCollapse,
+  &__familyCollapse {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      grid-template-rows 320ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 180ms ease,
+      visibility 0s linear 320ms;
+
+    &[data-open='true'] {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      visibility: visible;
+      transition-delay: 0s;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+
+  &__focusCollapseContent,
+  &__familyCollapseContent {
+    min-height: 0;
+    overflow: hidden;
+  }
+
   &__focusEditor {
     margin-top: 14px;
-    padding-top: 12px;
-    border-top: 1px solid #dce1f5;
+    // padding-top: 12px;
+    // border-top: 1px solid #dce1f5;
   }
 
   &__focusOption {

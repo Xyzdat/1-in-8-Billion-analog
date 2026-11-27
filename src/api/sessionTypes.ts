@@ -1,4 +1,4 @@
-// Life Backend OpenAPI 0.9.1.
+// Life Backend OpenAPI 0.10.0.
 import type { supportedCountries } from '../data/supportedCountries.ts';
 
 export type SupportedCountry = typeof supportedCountries[number]['iso3'];
@@ -292,6 +292,7 @@ export type SimulationDeath = {
 
 export type LocalSimulation = {
   adult?: AdultLife | null;
+  yearlyFocus?: SessionYearFocus | null;
   engineVersion: string;
   statisticsRelease: string;
   statisticsYear: number;
@@ -302,6 +303,34 @@ export type LocalSimulation = {
   skills: Record<string, number>;
   assumptions: string[];
   death?: SimulationDeath | null;
+};
+
+export type YearFocusId = 'balanced' | 'learning' | 'friends' | 'home' | 'health' | 'creativity' | 'rest' | 'work';
+export type FocusDeltaMap = Record<string, number>;
+export type FocusEffects = {
+  periodMonths: 12;
+  stats: FocusDeltaMap;
+  skills: FocusDeltaMap;
+  closeness: FocusDeltaMap;
+};
+export type YearFocusOption = {
+  id: YearFocusId;
+  title: string;
+  description: string;
+  available: boolean;
+  reason: string | null;
+  effects: FocusEffects;
+  matchingEventWeightMultiplier: 1 | 3;
+};
+export type SessionYearFocus = {
+  modelVersion: 'year-focus-1';
+  year: number;
+  selectedId: YearFocusId;
+  changedMonth: number;
+  canChange: boolean;
+  context: string;
+  options: YearFocusOption[];
+  lastApplied: ({ focusId: YearFocusId; month: number } & Omit<FocusEffects, 'periodMonths'>) | null;
 };
 
 export type AdultTraits = {

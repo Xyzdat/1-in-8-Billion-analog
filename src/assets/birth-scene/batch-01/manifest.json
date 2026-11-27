@@ -1,0 +1,275 @@
+{
+  "batch": "birth-scene-01",
+  "createdOn": "2026-11-27",
+  "generator": "built-in image_gen",
+  "stage": "birth",
+  "integratedIntoGame": false,
+  "style": "Тёплая иллюстрация, нейтральный современный интерьер, мягкий свет сверху слева.",
+  "background": {
+    "id": "background-neutral",
+    "file": "background-neutral.png",
+    "transparent": false,
+    "dimensions": [
+      1672,
+      941
+    ]
+  },
+  "sprites": [
+    {
+      "id": "newborn-bassinet",
+      "file": "newborn-bassinet.png",
+      "transparent": true,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "kind": "newborn",
+      "age": 0,
+      "heightRelativeToAdult": 0.45
+    },
+    {
+      "id": "adult-woman-01",
+      "file": "adult-woman-01.png",
+      "transparent": true,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "kind": "adult",
+      "sex": "FEMALE",
+      "approximateAge": 28,
+      "heightRelativeToAdult": 1
+    },
+    {
+      "id": "adult-man-01",
+      "file": "adult-man-01.png",
+      "transparent": true,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "kind": "adult",
+      "sex": "MALE",
+      "approximateAge": 32,
+      "heightRelativeToAdult": 1.04
+    },
+    {
+      "id": "adult-woman-02",
+      "file": "adult-woman-02.png",
+      "transparent": true,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "kind": "adult",
+      "sex": "FEMALE",
+      "approximateAge": 34,
+      "heightRelativeToAdult": 1
+    },
+    {
+      "id": "adult-man-02",
+      "file": "adult-man-02.png",
+      "transparent": true,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "kind": "adult",
+      "sex": "MALE",
+      "approximateAge": 36,
+      "heightRelativeToAdult": 1.04
+    },
+    {
+      "id": "girl-age-03",
+      "file": "girl-age-03.png",
+      "transparent": true,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "kind": "sibling",
+      "sex": "FEMALE",
+      "approximateAge": 3,
+      "heightRelativeToAdult": 0.48
+    },
+    {
+      "id": "boy-age-03",
+      "file": "boy-age-03.png",
+      "transparent": true,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "kind": "sibling",
+      "sex": "MALE",
+      "approximateAge": 3,
+      "heightRelativeToAdult": 0.48
+    },
+    {
+      "id": "girl-age-06",
+      "file": "girl-age-06.png",
+      "transparent": true,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "kind": "sibling",
+      "sex": "FEMALE",
+      "approximateAge": 6,
+      "heightRelativeToAdult": 0.64
+    },
+    {
+      "id": "boy-age-06",
+      "file": "boy-age-06.png",
+      "transparent": true,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "kind": "sibling",
+      "sex": "MALE",
+      "approximateAge": 6,
+      "heightRelativeToAdult": 0.64
+    },
+    {
+      "id": "girl-age-10",
+      "file": "girl-age-10.png",
+      "transparent": true,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "kind": "sibling",
+      "sex": "FEMALE",
+      "approximateAge": 10,
+      "heightRelativeToAdult": 0.78
+    },
+    {
+      "id": "boy-age-10",
+      "file": "boy-age-10.png",
+      "transparent": true,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "kind": "sibling",
+      "sex": "MALE",
+      "approximateAge": 10,
+      "heightRelativeToAdult": 0.78
+    }
+  ],
+  "notes": [
+    "Изображения подготовлены отдельно для последующей сборки сцены; текущий игровой экран не изменён.",
+    "Возраст детей относится к старшим братьям и сёстрам на момент рождения героя.",
+    "Размеры размещения относительные и предварительные; PNG содержат свободные прозрачные поля.",
+    "Никакая страна, национальность или имя не закреплены за вырезкой."
+  ],
+  "prompts": [
+    {
+      "id": "background-neutral",
+      "transparent": false,
+      "prompt": "Use case: illustration-story. Asset type: finished modular background plate for the birth scene in a life-simulation game. Create ONLY an empty, country-neutral, welcoming contemporary family living room / nursery, with absolutely NO people, no baby, no cradle, no animals. Wide landscape 16:9 composition. Warm hand-painted digital storybook / polished softly shaded animation illustration, delicate clean brown outlines, believable perspective, soft detailed materials, charming natural proportions; match a warm illustrated family-life game rather than photorealism, flat vector art or pixel art. Eye-level camera looking straight into the room, restrained perspective, no fisheye. The middle 65 percent must stay visually uncluttered for later placement of a newborn in a small bassinet and several full-body standing family members. A large simple muted cream oval rug and clear floor occupy the lower 40 percent, the floor plane is continuous and visible, no table or foreground furniture. Soft ivory walls, pale honey wood floor; a small sofa set well against the back wall, a low bookcase at far right, a houseplant at far left, a simple unmarked picture. A large window toward the upper left shows only soft unfocused trees and sky, no skyline, landmark, writing, nation-specific architecture, flags, symbols, holidays or religious items. Gentle warm daylight comes from upper left and casts soft shadows to lower right. Natural understated cream, sage, dusty blue, warm peach and lavender shadows. Empty central staging area, peaceful optimistic newborn-homecoming atmosphere. Full bleed, no borders, no text, no letters, no numbers, no logo, no watermark. This is a reusable production background, not a finished scene containing characters.",
+      "file": "background-neutral.png",
+      "source": "C:\\Users\\1\\.codex\\generated_images\\01a1f29b-8cb1-7151-a7e6-ccb5b10d88d3\\exec-233b3afc-a7a7-4f29-bb26-5dcf41e26e6c.png"
+    },
+    {
+      "id": "newborn-bassinet",
+      "file": "newborn-bassinet.png",
+      "prompt": "Use case: illustration-story. Asset type: reusable newborn cutout for a modular illustrated family birth scene. Input image 1 is only the reference for warm storybook illustration style and soft upper-left daylight; do not reproduce the room. ONE tiny newborn baby of unspecified gender, with a gentle peaceful face and a little dark hair, wrapped in a simple ivory swaddle with a muted sage edge, lying on their back in a compact low cream-and-pale-wood bassinet. The face remains fully visible; no large pillow or loose objects around the face. Near-frontal slightly elevated three-quarter view, enough view into the bassinet to clearly see the newborn, head toward the viewer's left. The entire bassinet including stable wooden legs and complete blanket is visible, generous transparent margins around it. Warm detailed hand-painted animation/storybook rendering, fine brown linework, rounded believable forms, cream, honey wood and dusty sage palette, gentle self-shading consistent with the reference. Isolated object on genuinely transparent alpha background. No adult, hands, siblings, background, room, ground, floor, drop shadow outside the object, text, logos or watermark. Single asset centered in a landscape 3:2 composition. This baby and bassinet are one movable cutout, not a complete scene.",
+      "transparent": true,
+      "reference": "background-neutral.png",
+      "source": "C:\\Users\\1\\.codex\\generated_images\\01a1f29b-8cb1-7151-a7e6-ccb5b10d88d3\\exec-70fa87b3-2c31-4032-a2de-2f2dada0c755.png",
+      "cleanupPrompt": "Use case: background-extraction. Edit the provided production sprite. Preserve the exact character/object identity, expression, pose, colors, clothes, linework, full body or full bassinet, original framing and dimensions. Remove the entire surrounding background including EVERY warm/brown glow, haze, vignette, color cloud and floor shadow. Keep only the actual solid painted silhouette of the person or baby-plus-bassinet. All pixels outside that silhouette must be fully transparent alpha 0. The subject itself must be opaque, with only a narrow antialiased contour at the edge. No soft glow, feathered background or large semitransparent surround. Do not add, redraw, crop or enlarge anything. Clean reusable transparent PNG cutout for compositing over another illustration."
+    },
+    {
+      "id": "adult-woman-01",
+      "file": "adult-woman-01.png",
+      "prompt": "Use case: illustration-story. Asset type: one reusable isolated character cutout for a modular newborn-family scene in a life-simulation game. Input image 1 is ONLY a style, palette, lighting and compositing reference for the surrounding room; do not reproduce any room, furniture or floor. Match its warm softly hand-painted animation/storybook rendering, delicate clean brown outlines, natural stylized proportions and matte fabric texture. Soft warm daylight from upper left, gentle lavender shadows on the right. Eye-level near-frontal camera, three-quarter body turned only slightly inward, no dramatic foreshortening. Full body including the complete hair silhouette, both hands and both feet, centered with generous clear margins. Relaxed affectionate expression looking slightly down toward a newborn just out of frame; natural anatomically correct hands resting loosely in front of waist or by sides, not holding anything, no interaction needing a missing prop or another person. Neutral contemporary everyday clothes with no lettering, religious or national symbols. Output ONE subject only, isolated on genuinely transparent alpha background. No ground, no floor patch, no cast shadow on the background, no frame, no text, no watermark; soft self-shading stays inside the character. Portrait composition, head-to-foot figure occupies about 85 percent of height. Single production PNG sprite, not a contact sheet. Subject: a kind young adult woman approximately 28 years old, average build and natural adult proportions, light-medium warm skin, shoulder-length chestnut-brown softly wavy hair tucked behind one ear, soft brown eyes. Dusty rose cardigan over a cream T-shirt, muted sage straight trousers and plain light indoor slippers. Three-quarter front pose turned slightly toward viewer's right, head gently tilted down with a tender calm smile, both hands loosely resting together at the waist without gripping an object. She is a generic parent in the moment of welcoming a newborn. One woman only.",
+      "transparent": true,
+      "reference": "background-neutral.png",
+      "source": "C:\\Users\\1\\.codex\\generated_images\\01a1f29b-8cb1-7151-a7e6-ccb5b10d88d3\\exec-47011e2c-4ac7-47d8-baf3-45dcebe40b65.png",
+      "cleanupPrompt": "Use case: background-extraction. Edit the provided production sprite. Preserve the exact character/object identity, expression, pose, colors, clothes, linework, full body or full bassinet, original framing and dimensions. Remove the entire surrounding background including EVERY warm/brown glow, haze, vignette, color cloud and floor shadow. Keep only the actual solid painted silhouette of the person or baby-plus-bassinet. All pixels outside that silhouette must be fully transparent alpha 0. The subject itself must be opaque, with only a narrow antialiased contour at the edge. No soft glow, feathered background or large semitransparent surround. Do not add, redraw, crop or enlarge anything. Clean reusable transparent PNG cutout for compositing over another illustration."
+    },
+    {
+      "id": "adult-man-01",
+      "file": "adult-man-01.png",
+      "prompt": "Use case: illustration-story. Asset type: one reusable isolated character cutout for a modular newborn-family scene in a life-simulation game. Input image 1 is ONLY a style, palette, lighting and compositing reference for the surrounding room; do not reproduce any room, furniture or floor. Match its warm softly hand-painted animation/storybook rendering, delicate clean brown outlines, natural stylized proportions and matte fabric texture. Soft warm daylight from upper left, gentle lavender shadows on the right. Eye-level near-frontal camera, three-quarter body turned only slightly inward, no dramatic foreshortening. Full body including the complete hair silhouette, both hands and both feet, centered with generous clear margins. Relaxed affectionate expression looking slightly down toward a newborn just out of frame; natural anatomically correct hands resting loosely in front of waist or by sides, not holding anything, no interaction needing a missing prop or another person. Neutral contemporary everyday clothes with no lettering, religious or national symbols. Output ONE subject only, isolated on genuinely transparent alpha background. No ground, no floor patch, no cast shadow on the background, no frame, no text, no watermark; soft self-shading stays inside the character. Portrait composition, head-to-foot figure occupies about 85 percent of height. Single production PNG sprite, not a contact sheet. Subject: a kind young adult man approximately 32 years old, average build and natural adult proportions, light-medium warm skin, short dark brown slightly wavy hair and clean-shaven face, soft brown eyes. Muted slate-blue cardigan over an ivory T-shirt, charcoal tapered trousers and simple cream indoor slippers. Three-quarter front pose turned slightly toward viewer's left, shoulders relaxed, gaze gently lowered with a warm quiet smile, arms resting naturally at the sides with complete visible hands. A generic parent welcoming a newborn. One man only.",
+      "transparent": true,
+      "reference": "background-neutral.png",
+      "source": "C:\\Users\\1\\.codex\\generated_images\\01a1f29b-8cb1-7151-a7e6-ccb5b10d88d3\\exec-b9b719f7-0dfc-46b5-8c01-640b7c7cc9c3.png",
+      "cleanupPrompt": "Use case: background-extraction. Edit the provided production sprite. Preserve the exact character/object identity, expression, pose, colors, clothes, linework, full body or full bassinet, original framing and dimensions. Remove the entire surrounding background including EVERY warm/brown glow, haze, vignette, color cloud and floor shadow. Keep only the actual solid painted silhouette of the person or baby-plus-bassinet. All pixels outside that silhouette must be fully transparent alpha 0. The subject itself must be opaque, with only a narrow antialiased contour at the edge. No soft glow, feathered background or large semitransparent surround. Do not add, redraw, crop or enlarge anything. Clean reusable transparent PNG cutout for compositing over another illustration."
+    },
+    {
+      "id": "adult-woman-02",
+      "file": "adult-woman-02.png",
+      "prompt": "Use case: illustration-story. Asset type: one reusable isolated character cutout for a modular newborn-family scene in a life-simulation game. Input image 1 is ONLY a style, palette, lighting and compositing reference for the surrounding room; do not reproduce any room, furniture or floor. Match its warm softly hand-painted animation/storybook rendering, delicate clean brown outlines, natural stylized proportions and matte fabric texture. Soft warm daylight from upper left, gentle lavender shadows on the right. Eye-level near-frontal camera, three-quarter body turned only slightly inward, no dramatic foreshortening. Full body including the complete hair silhouette, both hands and both feet, centered with generous clear margins. Relaxed affectionate expression looking slightly down toward a newborn just out of frame; natural anatomically correct hands resting loosely in front of waist or by sides, not holding anything, no interaction needing a missing prop or another person. Neutral contemporary everyday clothes with no lettering, religious or national symbols. Output ONE subject only, isolated on genuinely transparent alpha background. No ground, no floor patch, no cast shadow on the background, no frame, no text, no watermark; soft self-shading stays inside the character. Portrait composition, head-to-foot figure occupies about 85 percent of height. Single production PNG sprite, not a contact sheet. Important alpha matte: no ambient glow, vignette, mist or colored halo outside the actual silhouette; completely transparent surroundings, opaque painted subject. Subject: a warm young adult woman approximately 34 years old, medium-deep brown skin, dark brown eyes, softly rounded face and black curly hair gathered into a loose low bun with a few soft curls by the cheeks. Average adult build and natural adult proportions. Dusty teal open cardigan over a light cream blouse, warm taupe straight trousers, simple ivory indoor slippers. Three-quarter front pose turned slightly to viewer's left, kind gaze lowered toward a newborn outside the image, subtle smile. Arms rest loosely at her sides with both hands clearly visible, no props. Distinct identity and hairstyle from a chestnut-haired woman; a generic modern parent. ONE full-body woman only.",
+      "transparent": true,
+      "reference": "background-neutral.png",
+      "source": "C:\\Users\\1\\.codex\\generated_images\\01a1f29b-8cb1-7151-a7e6-ccb5b10d88d3\\exec-df65c956-6bbe-4779-98ba-cbd87a7807f0.png",
+      "cleanupPrompt": null
+    },
+    {
+      "id": "adult-man-02",
+      "file": "adult-man-02.png",
+      "prompt": "Use case: illustration-story. Asset type: one reusable isolated character cutout for a modular newborn-family scene in a life-simulation game. Input image 1 is ONLY a style, palette, lighting and compositing reference for the surrounding room; do not reproduce any room, furniture or floor. Match its warm softly hand-painted animation/storybook rendering, delicate clean brown outlines, natural stylized proportions and matte fabric texture. Soft warm daylight from upper left, gentle lavender shadows on the right. Eye-level near-frontal camera, three-quarter body turned only slightly inward, no dramatic foreshortening. Full body including the complete hair silhouette, both hands and both feet, centered with generous clear margins. Relaxed affectionate expression looking slightly down toward a newborn just out of frame; natural anatomically correct hands resting loosely in front of waist or by sides, not holding anything, no interaction needing a missing prop or another person. Neutral contemporary everyday clothes with no lettering, religious or national symbols. Output ONE subject only, isolated on genuinely transparent alpha background. No ground, no floor patch, no cast shadow on the background, no frame, no text, no watermark; soft self-shading stays inside the character. Portrait composition, head-to-foot figure occupies about 85 percent of height. Single production PNG sprite, not a contact sheet. Important alpha matte: no ambient glow, vignette, mist or colored halo outside the actual silhouette; completely transparent surroundings, opaque painted subject. Subject: a warm young adult man approximately 36 years old, medium-deep brown skin, dark eyes, short close-cropped black curls and a very short neatly trimmed beard, a calm broad friendly face, slightly broader adult build. Muted warm beige casual overshirt over an off-white T-shirt, dark olive straight trousers, plain cream indoor slippers. Three-quarter front pose turned slightly toward viewer's right, gaze gently lowered with a quiet affectionate smile. Both hands rest loosely together in front of his lower waist, fingers natural and not gripping anything. Generic modern parent, no regional or national cues. ONE full-body man only.",
+      "transparent": true,
+      "reference": "background-neutral.png",
+      "source": "C:\\Users\\1\\.codex\\generated_images\\01a1f29b-8cb1-7151-a7e6-ccb5b10d88d3\\exec-03351b07-d181-4737-a67a-915e49fc5e86.png",
+      "cleanupPrompt": null
+    },
+    {
+      "id": "girl-age-03",
+      "file": "girl-age-03.png",
+      "prompt": "Use case: illustration-story. Asset type: one reusable isolated character cutout for a modular newborn-family scene in a life-simulation game. Input image 1 is ONLY a style, palette, lighting and compositing reference for the surrounding room; do not reproduce any room, furniture or floor. Match its warm softly hand-painted animation/storybook rendering, delicate clean brown outlines, natural stylized proportions and matte fabric texture. Soft warm daylight from upper left, gentle lavender shadows on the right. Eye-level near-frontal camera, three-quarter body turned only slightly inward, no dramatic foreshortening. Full body including the complete hair silhouette, both hands and both feet, centered with generous clear margins. Relaxed affectionate expression looking slightly down toward a newborn just out of frame; natural anatomically correct hands resting loosely in front of waist or by sides, not holding anything, no interaction needing a missing prop or another person. Neutral contemporary everyday clothes with no lettering, religious or national symbols. Output ONE subject only, isolated on genuinely transparent alpha background. No ground, no floor patch, no cast shadow on the background, no frame, no text, no watermark; soft self-shading stays inside the character. Portrait composition, head-to-foot figure occupies about 85 percent of height. Single production PNG sprite, not a contact sheet. Important alpha matte: no ambient glow, vignette, mist or colored halo outside the actual silhouette; completely transparent surroundings, opaque painted subject. Subject: ONE little girl about 3 years old, clearly a toddler with short legs, small body, round cheeks and a large but natural toddler head, medium warm-brown skin, dark eyes, short soft curly dark hair. A simple dusty peach long-sleeve tunic dress, ivory leggings and small plain cream indoor shoes. Standing independently with feet slightly apart, both little arms relaxed down and both hands visible. Near-frontal pose slightly turned toward viewer's right, head and eyes looking down with a curious tender smile at a baby outside the frame. No toys or props, no adult features, absolutely not a miniature adult. Complete toddler head-to-toe isolated sprite only.",
+      "transparent": true,
+      "reference": "background-neutral.png",
+      "source": "C:\\Users\\1\\.codex\\generated_images\\01a1f29b-8cb1-7151-a7e6-ccb5b10d88d3\\exec-09c23900-5e13-4981-80d4-9d99777360b8.png",
+      "cleanupPrompt": null
+    },
+    {
+      "id": "boy-age-03",
+      "file": "boy-age-03.png",
+      "prompt": "Use case: illustration-story. Asset type: one reusable isolated character cutout for a modular newborn-family scene in a life-simulation game. Input image 1 is ONLY a style, palette, lighting and compositing reference for the surrounding room; do not reproduce any room, furniture or floor. Match its warm softly hand-painted animation/storybook rendering, delicate clean brown outlines, natural stylized proportions and matte fabric texture. Soft warm daylight from upper left, gentle lavender shadows on the right. Eye-level near-frontal camera, three-quarter body turned only slightly inward, no dramatic foreshortening. Full body including the complete hair silhouette, both hands and both feet, centered with generous clear margins. Relaxed affectionate expression looking slightly down toward a newborn just out of frame; natural anatomically correct hands resting loosely in front of waist or by sides, not holding anything, no interaction needing a missing prop or another person. Neutral contemporary everyday clothes with no lettering, religious or national symbols. Output ONE subject only, isolated on genuinely transparent alpha background. No ground, no floor patch, no cast shadow on the background, no frame, no text, no watermark; soft self-shading stays inside the character. Portrait composition, head-to-foot figure occupies about 85 percent of height. Single production PNG sprite, not a contact sheet. Important alpha matte: transparent outside the character silhouette, no scenery, no floor, no ambient glow, no vignette, no haze. Keep complete feet and hands, never crop hair or toes. Subject: ONE little boy approximately 3 years old, clearly a toddler with short legs, round cheeks and a larger natural toddler head, light warm skin, soft dark brown eyes and short straight chestnut hair with a little uneven fringe. Muted powder-blue knitted sweater, warm beige soft trousers and tiny ivory indoor shoes. Feet planted slightly apart, arms relaxed down and both small hands fully visible. Near-frontal three-quarter pose turned a little to viewer's left, affectionate curious smile, looking gently down toward a newborn outside the frame. Modern everyday clothing, no accessories or toys. Childlike body proportions, not a miniaturized adult. One complete head-to-toe toddler cutout.",
+      "transparent": true,
+      "reference": "background-neutral.png",
+      "source": "C:\\Users\\1\\.codex\\generated_images\\01a1f29b-8cb1-7151-a7e6-ccb5b10d88d3\\exec-350eae53-4938-4dea-99a7-12bfdc6e6b09.png",
+      "cleanupPrompt": null
+    },
+    {
+      "id": "girl-age-06",
+      "file": "girl-age-06.png",
+      "prompt": "Use case: illustration-story. Asset type: one reusable isolated character cutout for a modular newborn-family scene in a life-simulation game. Input image 1 is ONLY a style, palette, lighting and compositing reference for the surrounding room; do not reproduce any room, furniture or floor. Match its warm softly hand-painted animation/storybook rendering, delicate clean brown outlines, natural stylized proportions and matte fabric texture. Soft warm daylight from upper left, gentle lavender shadows on the right. Eye-level near-frontal camera, three-quarter body turned only slightly inward, no dramatic foreshortening. Full body including the complete hair silhouette, both hands and both feet, centered with generous clear margins. Relaxed affectionate expression looking slightly down toward a newborn just out of frame; natural anatomically correct hands resting loosely in front of waist or by sides, not holding anything, no interaction needing a missing prop or another person. Neutral contemporary everyday clothes with no lettering, religious or national symbols. Output ONE subject only, isolated on genuinely transparent alpha background. No ground, no floor patch, no cast shadow on the background, no frame, no text, no watermark; soft self-shading stays inside the character. Portrait composition, head-to-foot figure occupies about 85 percent of height. Single production PNG sprite, not a contact sheet. Important alpha matte: transparent outside the character silhouette, no scenery, no floor, no ambient glow, no vignette, no haze. Keep complete feet and hands, never crop hair or toes. Subject: ONE girl approximately 6 years old, unmistakable young school-age child proportions, light-medium warm skin, dark brown eyes and medium chestnut-brown hair in two low loose ponytails, no bows or accessories. A muted sage long-sleeve top, dusty blue soft overalls with full-length trousers, simple cream indoor slippers. Standing calmly with feet together and arms resting by her sides, both hands clearly visible. Near-frontal view slightly turned toward viewer's left, head gently looking down toward a newborn outside the image with a shy pleased smile. Natural age-appropriate face and body. Distinct from a curly-haired 3-year-old girl. No bag, no toys, no props. One complete full-body child.",
+      "transparent": true,
+      "reference": "background-neutral.png",
+      "source": "C:\\Users\\1\\.codex\\generated_images\\01a1f29b-8cb1-7151-a7e6-ccb5b10d88d3\\exec-ff31093a-1b99-4345-82e2-5745e7c657cf.png",
+      "cleanupPrompt": null
+    },
+    {
+      "id": "boy-age-06",
+      "file": "boy-age-06.png",
+      "prompt": "Use case: illustration-story. Asset type: one reusable isolated character cutout for a modular newborn-family scene in a life-simulation game. Input image 1 is ONLY a style, palette, lighting and compositing reference for the surrounding room; do not reproduce any room, furniture or floor. Match its warm softly hand-painted animation/storybook rendering, delicate clean brown outlines, natural stylized proportions and matte fabric texture. Soft warm daylight from upper left, gentle lavender shadows on the right. Eye-level near-frontal camera, three-quarter body turned only slightly inward, no dramatic foreshortening. Full body including the complete hair silhouette, both hands and both feet, centered with generous clear margins. Relaxed affectionate expression looking slightly down toward a newborn just out of frame; natural anatomically correct hands resting loosely in front of waist or by sides, not holding anything, no interaction needing a missing prop or another person. Neutral contemporary everyday clothes with no lettering, religious or national symbols. Output ONE subject only, isolated on genuinely transparent alpha background. No ground, no floor patch, no cast shadow on the background, no frame, no text, no watermark; soft self-shading stays inside the character. Portrait composition, head-to-foot figure occupies about 85 percent of height. Single production PNG sprite, not a contact sheet. Important alpha matte: transparent outside the character silhouette, no scenery, no floor, no ambient glow, no vignette, no haze. Keep complete feet and hands, never crop hair or toes. Subject: ONE boy approximately 6 years old, natural young school-age proportions, medium brown skin, brown eyes, short soft black curls, round gentle face. A simple muted terracotta long-sleeve sweatshirt, slate-blue straight trousers and cream indoor shoes. Standing comfortably with both arms relaxed at his sides, both complete hands visible, no clenched fists and no object. Near-frontal three-quarter pose slightly toward viewer's right, gaze gently lowered and a warm little smile as he meets a newborn outside the frame. Clearly a young child, not a teenager or miniature adult. Generic modern clothes, no text, no symbol. One complete head-to-toe boy cutout.",
+      "transparent": true,
+      "reference": "background-neutral.png",
+      "source": "C:\\Users\\1\\.codex\\generated_images\\01a1f29b-8cb1-7151-a7e6-ccb5b10d88d3\\exec-92797a7e-426d-49d6-9ff4-9806222326b1.png",
+      "cleanupPrompt": null
+    },
+    {
+      "id": "girl-age-10",
+      "file": "girl-age-10.png",
+      "prompt": "Use case: illustration-story. Asset type: one reusable isolated character cutout for a modular newborn-family scene in a life-simulation game. Input image 1 is ONLY a style, palette, lighting and compositing reference for the surrounding room; do not reproduce any room, furniture or floor. Match its warm softly hand-painted animation/storybook rendering, delicate clean brown outlines, natural stylized proportions and matte fabric texture. Soft warm daylight from upper left, gentle lavender shadows on the right. Eye-level near-frontal camera, three-quarter body turned only slightly inward, no dramatic foreshortening. Full body including the complete hair silhouette, both hands and both feet, centered with generous clear margins. Relaxed affectionate expression looking slightly down toward a newborn just out of frame; natural anatomically correct hands resting loosely in front of waist or by sides, not holding anything, no interaction needing a missing prop or another person. Neutral contemporary everyday clothes with no lettering, religious or national symbols. Output ONE subject only, isolated on genuinely transparent alpha background. No ground, no floor patch, no cast shadow on the background, no frame, no text, no watermark; soft self-shading stays inside the character. Portrait composition, head-to-foot figure occupies about 85 percent of height. Single production PNG sprite, not a contact sheet. Important alpha matte: transparent outside the character silhouette; no scenery, floor, ambient glow, vignette or haze. Complete head-to-toe framing, no cropping. Subject: ONE preteen girl approximately 10 years old, clearly an older child with natural age-appropriate proportions and no adult styling, medium warm skin, dark brown eyes, long dark brown hair tied back in one simple low ponytail. A dusty lavender lightweight cardigan over a cream plain top, muted warm-beige straight trousers, simple ivory indoor slippers. Full-body calm standing pose, arms resting loosely at her sides and both hands clearly visible. Near-frontal three-quarter view slightly toward viewer's right; gaze lowered with a proud tender smile as an older sister meeting a newborn outside the image. Distinct facial features and hairstyle from younger girls. No jewelry, makeup, phone, books or toys. One complete older-child cutout.",
+      "transparent": true,
+      "reference": "background-neutral.png",
+      "source": "C:\\Users\\1\\.codex\\generated_images\\01a1f29b-8cb1-7151-a7e6-ccb5b10d88d3\\exec-72386046-85d9-4c38-a535-f85a415c9fa1.png",
+      "cleanupPrompt": null
+    },
+    {
+      "id": "boy-age-10",
+      "file": "boy-age-10.png",
+      "prompt": "Use case: illustration-story. Asset type: one reusable isolated character cutout for a modular newborn-family scene in a life-simulation game. Input image 1 is ONLY a style, palette, lighting and compositing reference for the surrounding room; do not reproduce any room, furniture or floor. Match its warm softly hand-painted animation/storybook rendering, delicate clean brown outlines, natural stylized proportions and matte fabric texture. Soft warm daylight from upper left, gentle lavender shadows on the right. Eye-level near-frontal camera, three-quarter body turned only slightly inward, no dramatic foreshortening. Full body including the complete hair silhouette, both hands and both feet, centered with generous clear margins. Relaxed affectionate expression looking slightly down toward a newborn just out of frame; natural anatomically correct hands resting loosely in front of waist or by sides, not holding anything, no interaction needing a missing prop or another person. Neutral contemporary everyday clothes with no lettering, religious or national symbols. Output ONE subject only, isolated on genuinely transparent alpha background. No ground, no floor patch, no cast shadow on the background, no frame, no text, no watermark; soft self-shading stays inside the character. Portrait composition, head-to-foot figure occupies about 85 percent of height. Single production PNG sprite, not a contact sheet. Important alpha matte: transparent outside the character silhouette; no scenery, floor, ambient glow, vignette or haze. Complete head-to-toe framing, no cropping. Subject: ONE preteen boy approximately 10 years old, natural older-child proportions, light-medium warm skin, soft brown eyes, short straight dark brown hair with a gentle side part. A muted sage open casual shirt over a cream plain T-shirt, warm charcoal straight trousers and simple ivory indoor shoes. Relaxed full-body standing pose, both arms loosely at his sides, both hands visible, slight lean of the head but upright shoulders. Near-frontal three-quarter view slightly toward viewer's left; affectionate quiet smile and gaze lowered toward a newborn outside the image. Clearly an older brother at the moment the baby is born, no adult facial hair or adult build. No props, writing or accessories. One complete head-to-toe child cutout.",
+      "transparent": true,
+      "reference": "background-neutral.png",
+      "source": "C:\\Users\\1\\.codex\\generated_images\\01a1f29b-8cb1-7151-a7e6-ccb5b10d88d3\\exec-8b3874a2-ad27-47bb-920d-80781b01111f.png",
+      "cleanupPrompt": null
+    }
+  ]
+}

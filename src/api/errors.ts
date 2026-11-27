@@ -13,6 +13,9 @@ export const localEngineErrorMessages: Readonly<Record<string, string>> = {
   INVALID_FAMILY: 'Не удалось сохранить состав семьи. Проверьте родственников и их возраст.',
   INVALID_REQUEST: 'Проверьте введённые параметры: сервер отклонил изменение.',
   IDEMPOTENCY_CONFLICT: 'Эта команда уже использована с другими данными. Отправьте изменения заново.',
+  FOCUS_UNSUPPORTED: 'Фокус года недоступен для этой сохранённой жизни.',
+  FOCUS_UNAVAILABLE: 'Этот фокус недоступен в текущем возрасте. Выберите другой вариант.',
+  INVALID_FOCUS: 'Этот фокус отсутствует в списке сервера. Обновите сохранение.',
 };
 
 export class ApiError extends Error {

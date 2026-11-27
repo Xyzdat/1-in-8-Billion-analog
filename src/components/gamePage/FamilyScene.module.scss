@@ -1,0 +1,13 @@
+.familyScene {
+  display: block;
+  width: 100%;
+  height: 174px;
+  overflow: hidden;
+  background: #e8d5ba;
+  image-rendering: pixelated;
+
+  &__person {
+    image-rendering: pixelated;
+    shape-rendering: crispEdges;
+  }
+}

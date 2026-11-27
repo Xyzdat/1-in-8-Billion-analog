@@ -93,6 +93,15 @@ $soft: #f3f5fc;
     line-height: 24px;
   }
 
+  &__genderMan {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    color: #7962ff;
+    font-size: 24px;
+    line-height: 24px;
+  }
+
   &__location {
     margin: 0;
     color: #56637e;

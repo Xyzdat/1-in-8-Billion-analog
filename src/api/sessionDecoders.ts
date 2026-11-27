@@ -5,7 +5,7 @@ import { supportedCountries, supportedCountryCodes } from '../data/supportedCoun
 type Validator = (value: unknown) => void;
 
 function fail(): never {
-  throw new Error('Данные не соответствуют Life Backend OpenAPI 0.9.1.');
+  throw new Error('Данные не соответствуют Life Backend OpenAPI 0.10.0.');
 }
 
 function object(fields: Record<string, Validator>): Validator {
@@ -372,6 +372,30 @@ const optionEffects = object({
   closeness: record(integer(-100, 100)),
 });
 
+export const validateFocusId = enumeration(['balanced', 'learning', 'friends', 'home', 'health', 'creativity', 'rest', 'work']);
+const focusDeltaMap = record(integer(Number.MIN_SAFE_INTEGER));
+const focusDeltas = { stats: focusDeltaMap, skills: focusDeltaMap, closeness: focusDeltaMap };
+const yearlyFocus = object({
+  modelVersion: enumeration(['year-focus-1']),
+  year: integer(),
+  selectedId: validateFocusId,
+  changedMonth: integer(),
+  canChange: boolean,
+  context: text(),
+  options: array(object({
+    id: validateFocusId,
+    title: text(),
+    description: text(),
+    available: boolean,
+    reason: nullable(text()),
+    effects: object({ periodMonths: integer(12, 12), ...focusDeltas }),
+    matchingEventWeightMultiplier: (value) => {
+      if (value !== 1 && value !== 3) fail();
+    },
+  })),
+  lastApplied: nullable(object({ focusId: validateFocusId, month: integer(), ...focusDeltas })),
+});
+
 const session = object({
   id: validateUuid,
   character,
@@ -381,6 +405,7 @@ const session = object({
   highlights: optional(nullable(highlights)),
   simulation: optional(nullable(object({
     adult: optional(nullable(adult)),
+    yearlyFocus: optional(nullable(yearlyFocus)),
     engineVersion: text(),
     statisticsRelease: text(),
     statisticsYear: integer(Number.MIN_SAFE_INTEGER),

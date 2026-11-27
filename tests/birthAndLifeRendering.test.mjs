@@ -7,6 +7,7 @@ import { birthAndLifeSession } from './fixtures/birthAndLifeSession.mjs';
 import { toGeneratedBirthCard } from '../src/api/birthDetailsMapper.ts';
 import { supportedCountries } from '../src/data/supportedCountries.ts';
 import { adultSession, adultFinances } from './fixtures/adultSession.mjs';
+import { yearFocusSession } from './fixtures/yearFocusSession.mjs';
 
 let vite;
 before(async () => {
@@ -19,6 +20,26 @@ before(async () => {
   });
 });
 after(async () => { await vite?.close(); });
+
+test('server focus uses the existing card, server context and annual effects without applying them to stats', async () => {
+  const { default: Game } = await vite.ssrLoadModule('/src/components/gamePage/GamePage.tsx');
+  const session = yearFocusSession();
+  session.simulation.yearlyFocus.context = 'Школьный возраст';
+  const original = structuredClone(session);
+  const render = () => renderToStaticMarkup(createElement(Game, {
+    server: { session, busy: false, failure: null, notice: '', changeFocus: () => {} }, onRestart: () => {},
+  }));
+  const html = render();
+  assert.match(html, /Семья и дом/);
+  assert.match(html, /Школьный возраст · Япония/);
+  for (const label of ['Отношения +2', 'Интеллект −1', 'Ответственность +2', 'Близкие: +0,67']) assert(html.includes(label));
+  assert.doesNotMatch(html, /1-й класс|Бонус начисляется в конце года|фокус пока недоступен/);
+  assert.deepEqual(session, original);
+  session.state.status = 'COMPLETE';
+  assert.match(render(), /aria-expanded="false" disabled=""><span>Фокус этого года/);
+  session.simulation.yearlyFocus = null;
+  assert.match(render(), /Этот раздел пока недоступен для сохранённых жизней/);
+});
 
 test('parents remain visible with either inactive contact status and move to memorial only after death', async () => {
   const { default: People } = await vite.ssrLoadModule('/src/components/gamePage/ClosePeopleTab.tsx');

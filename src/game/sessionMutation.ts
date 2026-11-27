@@ -5,6 +5,7 @@ import type { SessionCommand } from '../api/sessions.ts';
 const refreshCodes = new Set([
   'VERSION_CONFLICT', 'SESSION_COMPLETE', 'SPENDING_INSUFFICIENT_FUNDS', 'DECISION_CHANGED',
   'BIRTH_CONFIGURATION_LOCKED', 'BIRTH_CUSTOMIZATION_UNSUPPORTED', 'CHARACTER_FIELDS_READ_ONLY',
+  'FOCUS_UNSUPPORTED', 'FOCUS_UNAVAILABLE', 'IDEMPOTENCY_CONFLICT',
 ]);
 
 // После отклонения команды любые повторы этой задачи выполняют только чтение.

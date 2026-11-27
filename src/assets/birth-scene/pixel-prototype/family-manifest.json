@@ -1,0 +1,239 @@
+{
+  "version": 1,
+  "style": "pixel-medium-detail",
+  "stage": "birth",
+  "integratedIntoGame": true,
+  "sceneSize": {
+    "width": 256,
+    "height": 144
+  },
+  "background": "background.png",
+  "sprites": [
+    {
+      "id": "adult-woman-01",
+      "file": "mother.png",
+      "label": "Женщина · вариант 1",
+      "kind": "adult",
+      "sex": "FEMALE",
+      "direction": "RIGHT",
+      "width": 28,
+      "height": 56,
+      "transparent": true,
+      "canMirror": true,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    {
+      "id": "adult-woman-02",
+      "file": "adult-woman-02.png",
+      "label": "Женщина · вариант 2",
+      "kind": "adult",
+      "sex": "FEMALE",
+      "direction": "LEFT",
+      "width": 28,
+      "height": 56,
+      "transparent": true,
+      "canMirror": true,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    {
+      "id": "adult-man-01",
+      "file": "father.png",
+      "label": "Мужчина · вариант 1",
+      "kind": "adult",
+      "sex": "MALE",
+      "direction": "LEFT",
+      "width": 28,
+      "height": 56,
+      "transparent": true,
+      "canMirror": true,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    {
+      "id": "adult-man-02",
+      "file": "adult-man-02.png",
+      "label": "Мужчина · вариант 2",
+      "kind": "adult",
+      "sex": "MALE",
+      "direction": "RIGHT",
+      "width": 28,
+      "height": 56,
+      "transparent": true,
+      "canMirror": true,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    {
+      "id": "newborn",
+      "file": "newborn.png",
+      "label": "Младенец в люльке",
+      "kind": "newborn",
+      "direction": "NONE",
+      "width": 38,
+      "height": 30,
+      "transparent": true,
+      "canMirror": false,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    {
+      "id": "girl-age-03",
+      "file": "girl-age-03.png",
+      "label": "Девочка · около 3 лет",
+      "kind": "sibling",
+      "approximateAge": 3,
+      "sex": "FEMALE",
+      "direction": "RIGHT",
+      "width": 18,
+      "height": 30,
+      "transparent": true,
+      "canMirror": true,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    {
+      "id": "boy-age-03",
+      "file": "boy-age-03.png",
+      "label": "Мальчик · около 3 лет",
+      "kind": "sibling",
+      "approximateAge": 3,
+      "sex": "MALE",
+      "direction": "LEFT",
+      "width": 18,
+      "height": 30,
+      "transparent": true,
+      "canMirror": true,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    {
+      "id": "girl-age-06",
+      "file": "girl-age-06.png",
+      "label": "Девочка · около 6 лет",
+      "kind": "sibling",
+      "approximateAge": 6,
+      "sex": "FEMALE",
+      "direction": "LEFT",
+      "width": 20,
+      "height": 38,
+      "transparent": true,
+      "canMirror": true,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    {
+      "id": "boy-age-06",
+      "file": "boy-age-06.png",
+      "label": "Мальчик · около 6 лет",
+      "kind": "sibling",
+      "approximateAge": 6,
+      "sex": "MALE",
+      "direction": "RIGHT",
+      "width": 20,
+      "height": 38,
+      "transparent": true,
+      "canMirror": true,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    {
+      "id": "girl-age-10",
+      "file": "girl-age-10.png",
+      "label": "Девочка · около 10 лет",
+      "kind": "sibling",
+      "approximateAge": 10,
+      "sex": "FEMALE",
+      "direction": "RIGHT",
+      "width": 24,
+      "height": 46,
+      "transparent": true,
+      "canMirror": true,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    {
+      "id": "boy-age-10",
+      "file": "boy-age-10.png",
+      "label": "Мальчик · около 10 лет",
+      "kind": "sibling",
+      "approximateAge": 10,
+      "sex": "MALE",
+      "direction": "LEFT",
+      "width": 24,
+      "height": 46,
+      "transparent": true,
+      "canMirror": true,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      }
+    }
+  ],
+  "examples": [
+    {
+      "label": "Две мамы, три сестры и младенец",
+      "parents": [
+        "adult-woman-01",
+        "adult-woman-02"
+      ],
+      "siblings": [
+        "girl-age-10",
+        "girl-age-03",
+        "girl-age-06"
+      ],
+      "file": "family-two-moms@4x.png"
+    },
+    {
+      "label": "Два папы, три брата и младенец",
+      "parents": [
+        "adult-man-02",
+        "adult-man-01"
+      ],
+      "siblings": [
+        "boy-age-10",
+        "boy-age-03",
+        "boy-age-06"
+      ],
+      "file": "family-two-dads@4x.png"
+    },
+    {
+      "label": "Мама, брат, сестра и младенец",
+      "parents": [
+        "adult-woman-02"
+      ],
+      "siblings": [
+        "boy-age-06",
+        "girl-age-03"
+      ],
+      "file": "family-single-mom@4x.png"
+    }
+  ],
+  "notes": [
+    "Дети — старшие братья и сёстры на момент рождения героя; возраст указан примерно.",
+    "Имена файлов mother.png и father.png сохранены для совместимости с первым примером.",
+    "У всех вырезок одна пиксельная сетка; увеличивать следует без сглаживания.",
+    "Примерный состав семьи задаётся массивами parents и siblings в render-scene.mjs."
+  ]
+}

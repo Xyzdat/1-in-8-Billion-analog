@@ -3,7 +3,7 @@ import { adultDecisions } from './adultDecisions.ts';
 
 export type FocusId = 'balanced' | 'learning' | 'friends' | 'health' | 'creativity' | 'home' | 'rest';
 export const yearlyFocus: { id: FocusId; title: string; icon: string; description: string; changes: Partial<GameStats> }[] = [
-  { id: 'balanced', title: 'Баланс', icon: '🌿', description: 'Немного времени для игр, отдыха и общения.', changes: { happiness: 1, health: 1 } },
+  { id: 'balanced', title: 'Баланс', icon: '⚖️', description: 'Немного времени для игр, отдыха и общения.', changes: { happiness: 1, health: 1 } },
   { id: 'learning', title: 'Учёба', icon: '📚', description: 'Книги, вопросы и новые открытия.', changes: { happiness: -1, intelligence: 3 } },
   { id: 'friends', title: 'Друзья и общение', icon: '🤝', description: 'Больше времени с друзьями и близкими.', changes: { relationships: 3, happiness: 1 } },
   { id: 'health', title: 'Спорт и движение', icon: '🏃', description: 'Прогулки, движение и хороший отдых.', changes: { health: 3, happiness: 1 } },

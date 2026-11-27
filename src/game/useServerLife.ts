@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { ApiError, sessionsApi } from '../api';
 import { localEngineErrorMessages } from '../api/errors';
 import { validateUuid } from '../api/sessionDecoders';
-import type { CharacterChanges, Session } from '../api/sessionTypes';
+import type { CharacterChanges, Session, YearFocusId } from '../api/sessionTypes';
 import type { SessionCommand } from '../api/sessions';
 import type { BuySpendingItemRequest } from '../api/financeTypes';
 import { prepareSessionMutation } from './sessionMutation';
@@ -197,7 +197,8 @@ export function useServerLife() {
           setResourceRevision((previous) => previous + 1);
           setNotice(review
             ? `${errorMessage(new ApiError('', 'http', 409, { code: result.rejectedCode }))} Сохранение обновлено.`
-            : ['BIRTH_CONFIGURATION_LOCKED', 'BIRTH_CUSTOMIZATION_UNSUPPORTED', 'CHARACTER_FIELDS_READ_ONLY'].includes(result.rejectedCode)
+            : ['BIRTH_CONFIGURATION_LOCKED', 'BIRTH_CUSTOMIZATION_UNSUPPORTED', 'CHARACTER_FIELDS_READ_ONLY',
+              'FOCUS_UNSUPPORTED', 'FOCUS_UNAVAILABLE', 'IDEMPOTENCY_CONFLICT'].includes(result.rejectedCode)
               ? `${errorMessage(new ApiError('', 'http', 409, { code: result.rejectedCode }))} Сохранение обновлено.`
               : 'Сохранение обновлено.');
           if (result.session.state.status === 'COMPLETE') onSuccess?.(result.session);
@@ -235,6 +236,13 @@ export function useServerLife() {
     mutate((current) => sessionsApi.prepareEditCharacter(current.id, current.version, changes), onSuccess);
   }
 
+  function changeFocus(focusId: YearFocusId) {
+    const focus = session?.simulation?.yearlyFocus;
+    if (session?.provider !== 'local' || session.state.status !== 'ACTIVE' || !focus?.canChange
+      || !focus.options.some((option) => option.id === focusId && option.available)) return;
+    mutate((current) => sessionsApi.prepareFocus(current.id, current.version, focusId));
+  }
+
   function purchase(payload: BuySpendingItemRequest, onSuccess: () => void) {
     if (session?.provider !== 'local' || session.state.status === 'COMPLETE') {
       return;
@@ -261,7 +269,7 @@ export function useServerLife() {
     }
   }
 
-  return { session, busy, failure, notice, resourceRevision, decisionReviewRequired, connect, generate, advance, answer, editCharacter, purchase, reset, refresh };
+  return { session, busy, failure, notice, resourceRevision, decisionReviewRequired, connect, generate, advance, answer, editCharacter, changeFocus, purchase, reset, refresh };
 }
 
 export type ServerLife = ReturnType<typeof useServerLife>;

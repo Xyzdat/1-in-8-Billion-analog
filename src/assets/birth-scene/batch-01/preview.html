@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Сцена рождения — партия 01</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #eef1f9;
+        color: #29354d;
+        font-family: system-ui, sans-serif;
+        line-height: 1.5;
+      }
+
+      .birth-preview {
+        max-width: 1184px;
+        margin: 0 auto;
+        padding: 32px;
+      }
+
+      .birth-preview__title {
+        margin: 0 0 12px;
+      }
+
+      .birth-preview__description {
+        max-width: 760px;
+        margin: 0 0 28px;
+        color: #63718b;
+      }
+
+      .birth-preview__heading {
+        margin: 32px 0 16px;
+        font-size: 22px;
+      }
+
+      .birth-preview__scene {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 16 / 9;
+        border-radius: 24px;
+        background: url("background-neutral.png") center / cover;
+      }
+
+      .birth-preview__person {
+        position: absolute;
+        bottom: 9%;
+        display: block;
+        width: auto;
+        height: 82%;
+        object-fit: contain;
+        transform: translateX(-50%);
+      }
+
+      .birth-preview__person--left {
+        left: 28%;
+      }
+
+      .birth-preview__person--right {
+        left: 73%;
+      }
+
+      .birth-preview__person--newborn {
+        left: 50%;
+        height: 37%;
+      }
+
+      .birth-preview__scene--extended .birth-preview__person--left {
+        left: 19%;
+      }
+
+      .birth-preview__scene--extended .birth-preview__person--right {
+        left: 81%;
+      }
+
+      .birth-preview__person--child-10 {
+        bottom: 13%;
+        left: 37%;
+        height: 64%;
+      }
+
+      .birth-preview__person--child-06 {
+        bottom: 13%;
+        left: 65%;
+        height: 52%;
+      }
+
+      .birth-preview__person--child-03 {
+        bottom: 20%;
+        left: 51%;
+        height: 39%;
+      }
+
+      .birth-preview__scene--extended .birth-preview__person--newborn {
+        bottom: 4%;
+        height: 32%;
+      }
+
+      .birth-preview__gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+      }
+
+      .birth-preview__asset {
+        overflow: hidden;
+        margin: 0;
+        border-radius: 16px;
+        background: #ffffff;
+      }
+
+      .birth-preview__image {
+        display: block;
+        width: 100%;
+        height: 300px;
+        object-fit: contain;
+        background-color: #ffffff;
+        background-image: conic-gradient(
+          #e7ebf3 25%,
+          transparent 0 50%,
+          #e7ebf3 0 75%,
+          transparent 0
+        );
+        background-size: 20px 20px;
+      }
+
+      .birth-preview__caption {
+        padding: 16px;
+      }
+
+      .birth-preview__filename {
+        display: block;
+        margin-top: 4px;
+        color: #63718b;
+        font-size: 12px;
+        overflow-wrap: anywhere;
+      }
+
+      @media (max-width: 600px) {
+        .birth-preview {
+          padding: 16px;
+        }
+
+        .birth-preview__title {
+          font-size: 26px;
+        }
+
+        .birth-preview__scene {
+          border-radius: 16px;
+        }
+
+        .birth-preview__gallery {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 12px;
+        }
+
+        .birth-preview__image {
+          height: 240px;
+        }
+
+        .birth-preview__caption {
+          padding: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="birth-preview">
+      <h1 class="birth-preview__title">Сцена рождения · партия 01</h1>
+      <p class="birth-preview__description">
+        12 отдельных изображений: комната, младенец в люльке, четверо взрослых
+        и шестеро старших детей. Ниже — примеры сборки и все исходные PNG.
+        Игровой экран проекта пока не изменён.
+      </p>
+
+      <h2 class="birth-preview__heading">Мама, папа и новорождённый</h2>
+      <div
+        class="birth-preview__scene"
+        role="img"
+        aria-label="Мама, папа и новорождённый"
+      >
+        <img
+          class="birth-preview__person birth-preview__person--left"
+          src="adult-woman-01.png"
+          alt=""
+        />
+        <img
+          class="birth-preview__person birth-preview__person--right"
+          src="adult-man-01.png"
+          alt=""
+        />
+        <img
+          class="birth-preview__person birth-preview__person--newborn"
+          src="newborn-bassinet.png"
+          alt=""
+        />
+      </div>
+
+      <h2 class="birth-preview__heading">Две мамы, три сестры и новорождённый</h2>
+      <div
+        class="birth-preview__scene birth-preview__scene--extended"
+        role="img"
+        aria-label="Две мамы, три сестры и новорождённый"
+      >
+        <img
+          class="birth-preview__person birth-preview__person--left"
+          src="adult-woman-01.png"
+          alt=""
+        />
+        <img
+          class="birth-preview__person birth-preview__person--right"
+          src="adult-woman-02.png"
+          alt=""
+        />
+        <img
+          class="birth-preview__person birth-preview__person--child-10"
+          src="girl-age-10.png"
+          alt=""
+        />
+        <img
+          class="birth-preview__person birth-preview__person--child-06"
+          src="girl-age-06.png"
+          alt=""
+        />
+        <img
+          class="birth-preview__person birth-preview__person--child-03"
+          src="girl-age-03.png"
+          alt=""
+        />
+        <img
+          class="birth-preview__person birth-preview__person--newborn"
+          src="newborn-bassinet.png"
+          alt=""
+        />
+      </div>
+
+      <h2 class="birth-preview__heading">Два папы, три брата и новорождённый</h2>
+      <div
+        class="birth-preview__scene birth-preview__scene--extended"
+        role="img"
+        aria-label="Два папы, три брата и новорождённый"
+      >
+        <img
+          class="birth-preview__person birth-preview__person--left"
+          src="adult-man-02.png"
+          alt=""
+        />
+        <img
+          class="birth-preview__person birth-preview__person--right"
+          src="adult-man-01.png"
+          alt=""
+        />
+        <img
+          class="birth-preview__person birth-preview__person--child-10"
+          src="boy-age-10.png"
+          alt=""
+        />
+        <img
+          class="birth-preview__person birth-preview__person--child-06"
+          src="boy-age-06.png"
+          alt=""
+        />
+        <img
+          class="birth-preview__person birth-preview__person--child-03"
+          src="boy-age-03.png"
+          alt=""
+        />
+        <img
+          class="birth-preview__person birth-preview__person--newborn"
+          src="newborn-bassinet.png"
+          alt=""
+        />
+      </div>
+
+      <h2 class="birth-preview__heading">Все изображения</h2>
+      <p class="birth-preview__description">
+        Шахматный узор показывает прозрачность. Возраст детей указан примерно:
+        это старшие братья и сёстры на момент рождения героя.
+      </p>
+      <div class="birth-preview__gallery">
+        <figure class="birth-preview__asset">
+          <img
+            class="birth-preview__image"
+            src="background-neutral.png"
+            alt="Нейтральная светлая комната без людей"
+          />
+          <figcaption class="birth-preview__caption">
+            Фон комнаты
+            <span class="birth-preview__filename">background-neutral.png</span>
+          </figcaption>
+        </figure>
+        <figure class="birth-preview__asset">
+          <img
+            class="birth-preview__image"
+            src="newborn-bassinet.png"
+            alt="Новорождённый в светлой люльке"
+          />
+          <figcaption class="birth-preview__caption">
+            Младенец в люльке
+            <span class="birth-preview__filename">newborn-bassinet.png</span>
+          </figcaption>
+        </figure>
+        <figure class="birth-preview__asset">
+          <img
+            class="birth-preview__image"
+            src="adult-woman-01.png"
+            alt="Женщина в розовом кардигане"
+          />
+          <figcaption class="birth-preview__caption">
+            Женщина · вариант 1
+            <span class="birth-preview__filename">adult-woman-01.png</span>
+          </figcaption>
+        </figure>
+        <figure class="birth-preview__asset">
+          <img
+            class="birth-preview__image"
+            src="adult-woman-02.png"
+            alt="Женщина в бирюзовом кардигане"
+          />
+          <figcaption class="birth-preview__caption">
+            Женщина · вариант 2
+            <span class="birth-preview__filename">adult-woman-02.png</span>
+          </figcaption>
+        </figure>
+        <figure class="birth-preview__asset">
+          <img
+            class="birth-preview__image"
+            src="adult-man-01.png"
+            alt="Мужчина в синем кардигане"
+          />
+          <figcaption class="birth-preview__caption">
+            Мужчина · вариант 1
+            <span class="birth-preview__filename">adult-man-01.png</span>
+          </figcaption>
+        </figure>
+        <figure class="birth-preview__asset">
+          <img
+            class="birth-preview__image"
+            src="adult-man-02.png"
+            alt="Мужчина в светлой рубашке"
+          />
+          <figcaption class="birth-preview__caption">
+            Мужчина · вариант 2
+            <span class="birth-preview__filename">adult-man-02.png</span>
+          </figcaption>
+        </figure>
+        <figure class="birth-preview__asset">
+          <img
+            class="birth-preview__image"
+            src="girl-age-03.png"
+            alt="Девочка примерно трёх лет"
+          />
+          <figcaption class="birth-preview__caption">
+            Девочка · около 3 лет
+            <span class="birth-preview__filename">girl-age-03.png</span>
+          </figcaption>
+        </figure>
+        <figure class="birth-preview__asset">
+          <img
+            class="birth-preview__image"
+            src="boy-age-03.png"
+            alt="Мальчик примерно трёх лет"
+          />
+          <figcaption class="birth-preview__caption">
+            Мальчик · около 3 лет
+            <span class="birth-preview__filename">boy-age-03.png</span>
+          </figcaption>
+        </figure>
+        <figure class="birth-preview__asset">
+          <img
+            class="birth-preview__image"
+            src="girl-age-06.png"
+            alt="Девочка примерно шести лет"
+          />
+          <figcaption class="birth-preview__caption">
+            Девочка · около 6 лет
+            <span class="birth-preview__filename">girl-age-06.png</span>
+          </figcaption>
+        </figure>
+        <figure class="birth-preview__asset">
+          <img
+            class="birth-preview__image"
+            src="boy-age-06.png"
+            alt="Мальчик примерно шести лет"
+          />
+          <figcaption class="birth-preview__caption">
+            Мальчик · около 6 лет
+            <span class="birth-preview__filename">boy-age-06.png</span>
+          </figcaption>
+        </figure>
+        <figure class="birth-preview__asset">
+          <img
+            class="birth-preview__image"
+            src="girl-age-10.png"
+            alt="Девочка примерно десяти лет"
+          />
+          <figcaption class="birth-preview__caption">
+            Девочка · около 10 лет
+            <span class="birth-preview__filename">girl-age-10.png</span>
+          </figcaption>
+        </figure>
+        <figure class="birth-preview__asset">
+          <img
+            class="birth-preview__image"
+            src="boy-age-10.png"
+            alt="Мальчик примерно десяти лет"
+          />
+          <figcaption class="birth-preview__caption">
+            Мальчик · около 10 лет
+            <span class="birth-preview__filename">boy-age-10.png</span>
+          </figcaption>
+        </figure>
+      </div>
+    </main>
+  </body>
+</html>

@@ -1,7 +1,7 @@
 import { birthStatisticsSource, countryBirths } from '../data/birthStatistics.ts';
 import { supportedCountries } from '../data/supportedCountries.ts';
 
-export const BIRTH_CHANCE_INTERVAL_MS = 3000;
+export const BIRTH_CHANCE_INTERVAL_MS = 4000;
 export const BIRTH_CHANCE_FADE_MS = 220;
 
 export const birthChanceCountries = supportedCountries.map((country) => ({
